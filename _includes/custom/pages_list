@@ -1,0 +1,15 @@
+{% for node in pages_list %}
+  {% if node.title != null %}
+    {% if group == null or group == node.group %}
+      {% assign node.url = decodeURI('{{node.url}}') %}
+        <li>
+            <a href="{{ BASE_PATH }}{{node.url}}">
+                {% if node.title_cn %} {{node.title_cn}} {% else %} {{node.title}} {% endif %}
+                <span style="float:right;font-size:12px;">
+                    {{ node.date | date : '%Y年%m月%-d日' }}
+                </span>
+            </a>
+        </li>
+      {% endif %}
+  {% endif %}
+{% endfor %}

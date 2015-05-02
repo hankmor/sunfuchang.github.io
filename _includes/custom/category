@@ -1,0 +1,8 @@
+{% for category in site.categories %}
+    {% if page.category_name == category[0] %}
+        <ul>
+            {% assign pages_list = category[1] %}
+            {% include JB/pages_list %}
+        </ul>
+    {% endif %}
+{% endfor %}

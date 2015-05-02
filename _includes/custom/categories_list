@@ -1,0 +1,15 @@
+{% for c in categories_list%}
+    <li>
+        <p class="small">
+            <a href="/categories/{{c.name}}.html" name="{{ c.name }}">{{c.cn}}
+                {% assign num = 0 %}
+                {% for category in site.categories %}
+                    {% if {{category[0]}} == {{c.name}} %}
+                        {% assign num = {{category.last.size}} %}
+                    {% endif %}
+                {% endfor %}
+                ({{num}})
+            </a>
+        </p>
+    </li>
+{% endfor %}

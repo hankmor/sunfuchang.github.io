@@ -5,6 +5,25 @@ tagline: Supporting tagline
 ---
 {% include JB/setup %}
 
+{% for category in site.categories %}
+<h2>{{ category | first }}</h2>
+<span>{{ category | last | size }}</span>
+<ul class="arc-list">
+    {% for page in category.last %}
+        <li>{{ page.date | date:"%d/%m/%Y"}}<a href="{{ page.url }}">{{ page.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endfor %}
+
+<ul>
+{% for c in site.data.categories %}
+  <li>
+      {{ c.name }} - {{c.cn}}
+    </a>
+  </li>
+{% endfor %}
+</ul>
+
 Read [Jekyll Quick Start](http://jekyllbootstrap.com/usage/jekyll-quick-start.html)
 
 Complete usage and documentation available at: [Jekyll Bootstrap](http://jekyllbootstrap.com)
