@@ -6,6 +6,10 @@ exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 highlighter: rouge
 encoding: utf-8
 
+defaults:
+  comments : false
+  analytics : false
+
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
@@ -122,8 +126,6 @@ JB :
   # a hash with key named for the given helper. ex:
   #
   pages_list :
-    provider : "custom"
-  categories_list :
     provider : "custom"
   #
   # Setting any helper's provider to 'custom' will bypass the helper code

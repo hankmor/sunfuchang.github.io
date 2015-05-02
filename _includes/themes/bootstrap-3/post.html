@@ -1,48 +1,49 @@
-<div class="page-header">
-  <h1>{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
-      {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
+<div class="article-title">
+    <h3>{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
+        {% if page.tagline %}
+        <small>{{page.tagline}}</small>
+        {% endif %}
+    </h3>
 </div>
 
 <div class="row post-full">
-  <div class="col-xs-12">
-    <div class="date">
-      <span>{{ page.date | date : '%Y年%m月%-d日' }}</span>
-    </div>
-    <div class="content">
-      {{ content }}
-    </div>
+    <div class="col-xs-12">
+        {% unless page.categories == empty and page.tags == empty %}
+        <ul class="tag_box inline" style="margin-bottom: 10px;font-size: 14px;">
+            <li>分类：</li>
+            <li><i class="glyphicon glyphicon-open"></i></li>
+            {% assign categories_list = page.categories %}
+            {% include custom/post_category %}
+            <li style="margin-left: 30px;">标签：</li>
+            <li><i class="glyphicon glyphicon-tags"></i></li>
+            {% assign tags_list = page.tags %}
+            {% include JB/tags_list %}
+        </ul>
+        {% endunless %}
+        <div class="date">
+            <span>{{ page.date | date : '%Y年%m月%-d日' }}</span>
+        </div>
+        <div class="content">
+            {{ content }}
+        </div>
 
-  {% unless page.categories == empty %}
-    <ul class="tag_box inline">
-      <li><i class="glyphicon glyphicon-open"></i></li>
-      {% assign categories_list = page.categories %}
-      {% include JB/categories_list %}
-    </ul>
-  {% endunless %}  
-
-  {% unless page.tags == empty %}
-    <ul class="tag_box inline">
-      <li><i class="glyphicon glyphicon-tags"></i></li>
-      {% assign tags_list = page.tags %}
-      {% include JB/tags_list %}
-    </ul>
-  {% endunless %}  
-  
-    <hr>
-    <ul class="pagination">
-    {% if page.previous %}
-      <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">&laquo; Previous</a></li>
-    {% else %}
-      <li class="prev disabled"><a>&larr; Previous</a></li>
-    {% endif %}
-      <li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">Archive</a></li>
-    {% if page.next %}
-      <li class="next"><a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">Next &raquo;</a></li>
-    {% else %}
-      <li class="next disabled"><a>Next &rarr;</a>
-    {% endif %}
-    </ul>
-    <hr>
-    {% include JB/comments %}
-  </div>
+        <hr>
+        <ul class="pagination">
+            {% if page.previous %}
+            <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">&laquo;
+                上一篇</a></li>
+            {% else %}
+            <li class="prev disabled"><a>&larr; 上一篇</a></li>
+            {% endif %}
+            <!--<li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">文章列表</a></li>-->
+            {% if page.next %}
+            <li class="next"><a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">下一篇 &raquo;</a>
+            </li>
+            {% else %}
+            <li class="next disabled"><a>下一篇 &rarr;</a>
+                {% endif %}
+        </ul>
+        <hr>
+        {% include JB/comments %}
+    </div>
 </div>

@@ -1,8 +1,18 @@
-{% for category in site.categories %}
-    {% if page.category_name == category[0] %}
-        <ul>
-            {% assign pages_list = category[1] %}
-            {% include JB/pages_list %}
-        </ul>
-    {% endif %}
-{% endfor %}
+{% comment %}<!--
+    Where click one of category list, show its posts list.
+-->{% endcomment %}
+{% if page.category_name == 'all' %}
+    <ul class="category-list">
+        {% assign pages_list = site.posts %}
+        {% include JB/pages_list %}
+    </ul>
+{% else %}
+    {% for category in site.categories %}
+        {% if page.category_name == category[0] %}
+            <ul class="category-list">
+                {% assign pages_list = category[1] %}
+                {% include JB/pages_list %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+{% endif %}

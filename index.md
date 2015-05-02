@@ -1,21 +1,22 @@
 ---
 layout: page
-title: Hello World!
-tagline: Supporting tagline
+title: home!
+tagline:
+title_cn : '首页'
 ---
 {% include JB/setup %}
 
 {% for category in site.categories %}
-<h2>{{ category | first }}</h2>
+<h3>{{ category | first }}</h3>
 <span>{{ category | last | size }}</span>
-<ul class="arc-list">
+<ul class="category-list">
     {% for page in category.last %}
-        <li>{{ page.date | date:"%d/%m/%Y"}}<a href="{{ page.url }}">{{ page.name }}</a></li>
+        <li>{{ page.date | date:"%Y年%m月%d日"}}<a href="{{ page.url }}">{{ page.name }}</a></li>
     {% endfor %}
 </ul>
 {% endfor %}
 
-<ul>
+<ul class="category-list">
 {% for c in site.data.categories %}
   <li>
       {{ c.name }} - {{c.cn}}
@@ -53,7 +54,7 @@ Here's a sample "posts list".
 
 <ul class="posts">
   {% for post in site.posts %}
-    <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
+    <li><span>{{ post.date | date:"%Y年%m月%d日" }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
 </ul>
 

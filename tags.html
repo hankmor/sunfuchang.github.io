@@ -3,6 +3,7 @@ layout: page
 title: Tags
 header: Posts By Tag
 group: navigation
+title_cn : '标签库'
 ---
 {% include JB/setup %}
 
@@ -11,11 +12,11 @@ group: navigation
   {% include JB/tags_list %}
 </ul>
 
-
 {% for tag in site.tags %} 
-  <h2 id="{{ tag[0] }}-ref">{{ tag[0] }}</h2>
-  <ul>
+  <h4 id="{{ tag[0] }}-ref">{{ tag[0] }}</h4>
+  <ul class="category-list">
     {% assign pages_list = tag[1] %}  
+    {% assign no_page = true %}
     {% include JB/pages_list %}
   </ul>
 {% endfor %}

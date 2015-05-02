@@ -1,3 +1,5 @@
+- name : all
+  cn : 全部博文
 - name : web_front
   cn : WEB前端
 - name : internet

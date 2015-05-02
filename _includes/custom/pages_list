@@ -1,15 +1,29 @@
+{% comment %}<!--
+    When click one of categories list, show its posts list.   .
+-->{% endcomment %}
 {% for node in pages_list %}
   {% if node.title != null %}
-    {% if group == null or group == node.group %}
-      {% assign node.url = decodeURI('{{node.url}}') %}
-        <li>
-            <a href="{{ BASE_PATH }}{{node.url}}">
-                {% if node.title_cn %} {{node.title_cn}} {% else %} {{node.title}} {% endif %}
-                <span style="float:right;font-size:12px;">
-                    {{ node.date | date : '%Y年%m月%-d日' }}
-                </span>
-            </a>
-        </li>
-      {% endif %}
+    <li>
+        <a href="{{ BASE_PATH }}{{node.url}}">
+            {% if node.title_cn %} {{node.title_cn}} {% else %} {{node.title}} {% endif %}
+            <span style="float:right;font-size:12px;">
+                {{ node.date | date : '%Y年%m月%-d日' }}
+            </span>
+        </a>
+    </li>
   {% endif %}
 {% endfor %}
+{% if no_page == null %}
+<ul class="pagination">
+    {% if page.previous %}
+      <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">&lt; 上一页</a></li>
+    {% else %}
+      <li class="prev disabled"><a>&lt; 上一页</a></li>
+    {% endif %}
+    {% if page.next %}
+      <li class="next"><a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">下一页 &gt;</a></li>
+    {% else %}
+      <li class="next disabled"><a>下一页 &gt;</a>
+    {% endif %}
+</ul>
+{% endif %}

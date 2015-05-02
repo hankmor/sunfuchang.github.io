@@ -1,14 +1,21 @@
+{% comment %}<!--
+    Get custom categories which are defined in /_data/categories.yml.
+-->{% endcomment %}
 {% for c in categories_list%}
     <li>
         <p class="small">
             <a href="/categories/{{c.name}}.html" name="{{ c.name }}">{{c.cn}}
-                {% assign num = 0 %}
-                {% for category in site.categories %}
-                    {% if {{category[0]}} == {{c.name}} %}
-                        {% assign num = {{category.last.size}} %}
-                    {% endif %}
-                {% endfor %}
-                ({{num}})
+                {% if c.name == 'all' %}
+                    ({{site.posts.size}})
+                {% else %}
+                    {% assign num = 0 %}
+                    {% for category in site.categories %}
+                        {% if {{category[0]}} == {{c.name}} %}
+                            {% assign num = {{category.last.size}} %}
+                        {% endif %}
+                    {% endfor %}
+                    ({{num}})
+                {% endif %}
             </a>
         </p>
     </li>
