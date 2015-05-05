@@ -47,12 +47,14 @@ title_cn: win7上安装jekyll
 <img src="/assets/images/article_imgs/technology/2015/05/04/7.png" alt="图7" align="center"/>  
 可以看到，又出现了一个跟权限有关的错误信息，解决方式如下：  
 打开[http://ruby.taobao.org/](http://ruby.taobao.org/)，可以看到如下信息：  
-<pre>$ gem sources --remove https://rubygems.org/  
+<pre>
+$ gem sources --remove https://rubygems.org/  
 $ gem sources -a https://ruby.taobao.org/  
 $ gem sources -l  
 *** CURRENT SOURCES ***   
 # 请确保只有 ruby.taobao.org  
-$ gem install rails</pre>
+$ gem install rails
+</pre>
 
 执行对应的命令：  
 <img src="/assets/images/article_imgs/technology/2015/05/04/8.png" alt="图8" align="center"/>   
