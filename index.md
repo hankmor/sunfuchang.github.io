@@ -16,6 +16,14 @@ title_cn : '首页'
 </ul>
 {% endfor %}
 
+{% highlight java %}
+public interface LanguageDriver {
+  ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql);
+  SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType);
+  SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType);
+}
+{% endhighlight %}
+
 <ul class="category-list">
 {% for c in site.data.categories %}
   <li>
