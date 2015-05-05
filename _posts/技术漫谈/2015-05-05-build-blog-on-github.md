@@ -37,12 +37,12 @@ github的page分为两种：个人/组织站点和项目站点，一般来说，
 
 2、基于jekyllbootstrap迁出你的版本库代码到本地
 <!-- {%highlight linux%} -->
-<code>
+<pre>
 git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.com
 cd USERNAME.github.com
 git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
 git push origin master
-</code>
+</pre>
 <!-- {%endhighlight%} -->
 
 3、查看你的站点  
