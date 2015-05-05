@@ -30,8 +30,11 @@ github的page分为两种：个人/组织站点和项目站点，一般来说，
 
 ### 三、使用jekyllbootstrap项目作为模板，创建个人站点
 当然，你也可以直接迁出别人的博客，修改样式和内容，从而构建自己的博客，前提是你必须安装了git。  
+
 1、创建版本库  
+
 登录github，创建一个以*username.git.io*为名称的版本库，username为你的git用户名，不是邮箱，例如，我的为：[sunfuchang.github.io](sunfuchang.github.io)。  
+
 2、基于jekyllbootstrap迁出你的版本库代码到本地
 <pre>
 git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.com
@@ -39,9 +42,13 @@ cd USERNAME.github.com
 git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
 git push origin master
 </pre>
+
 3、查看你的站点  
+
 代码push到github上后，稍等片刻，你就可以访问你的默认站点了，地址为：http://username.github.io。
-当然，此时的站点是jekyllboostrap默认的，你需要修改为你想要的内容，比如修改模板、修改站点配置等等……为了能够在本地浏览站点，方便调试、预览，我们还需要安装jekyll——静态页面解析工具。
+当然，此时的站点是jekyllboostrap默认的，你需要修改为你想要的内容，比如修改模板、修改站点配置等等……  
+
+为了能够在本地浏览站点，方便调试、预览，我们还需要安装jekyll——静态页面解析工具。
 
 ### 四、安装jekyll
 由于我的操作系统是win7 64位旗舰版，在windows上安装比较复杂，而且步骤繁多，请跟随我一步一步安装，稍有不慎，可能导致各种错误，所以定要仔细，详细安装教程见：  
