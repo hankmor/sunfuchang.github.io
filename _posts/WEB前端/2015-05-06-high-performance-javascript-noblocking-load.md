@@ -104,6 +104,7 @@ defer可以使用下述代码测试浏览器是否支持defer属性：
 &emsp;&emsp;每一个<code>async</code>属性的脚本都在它下载结束之后立刻执行，同时会在<code>window</code>的,<code>load</code>事件之前执行。所以就有可能出现脚本执行顺序被打乱的情况；每一个,<code>defer</code>属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在<code>document</code>的<code>DOMContentLoaded</code>之前执行。
 
 *  浏览器
+
 <table class="table table-condensed" style="width: 100%;">
 <tbody>
 <tr>
