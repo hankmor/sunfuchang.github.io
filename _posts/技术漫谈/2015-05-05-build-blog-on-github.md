@@ -36,12 +36,12 @@ github的page分为两种：个人/组织站点和项目站点，一般来说，
 登录github，创建一个以*username.git.io*为名称的版本库，username为你的git用户名，不是邮箱，例如，我的为：[sunfuchang.github.io](sunfuchang.github.io)。  
 
 2、基于jekyllbootstrap迁出你的版本库代码到本地
-{% highlight linux %}
+<pre>
 git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.com
 cd USERNAME.github.com
 git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
 git push origin master
-{% endhighlight %}
+</pre>
 
 3、查看你的站点  
 
