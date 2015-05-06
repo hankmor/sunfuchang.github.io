@@ -123,7 +123,7 @@ MyBatis有一个简单的处理，这在90%的情况下都会有用。而在不�
 </select>
 {% endhighlight %}
 
-<code>where<code>元素知道只有在一个以上的<code>if</code>条件有值的情况下才去插入“WHERE”子句。而且，若最后的内容是“AND”或“OR”开头的，<code>where</code>元素也知道如何将他们去除。
+<code>where</code>元素知道只有在一个以上的<code>if</code>条件有值的情况下才去插入“WHERE”子句。而且，若最后的内容是“AND”或“OR”开头的，<code>where</code>元素也知道如何将他们去除。
 
 如果<code>where</code>元素没有按正常套路出牌，我们还是可以通过自定义<code>trim</code>元素来定制我们想要的功能。比如，和<code>where</code>元素等价的自定义<code>trim</code>元素为：
 

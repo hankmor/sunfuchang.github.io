@@ -229,8 +229,9 @@ code,
 kbd,
 pre,
 samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
+  /*font-family: monospace, monospace;
+  font-size: 1em;*/
+  font-size:13px; font-family:Consolas,'Liberation Mono',Menlo,Courier,monospace; word-wrap:break-word;
 }
 
 /* Forms
