@@ -16,7 +16,31 @@ title_cn : '首页'
 </ul>
 {% endfor %}
 
+{% highlight sql %}
+SELECT * FROM BLOG WHERE AND title like ‘someTitle’
+{% endhighlight %}
 
+{% highlight xml %}
+<insert id="insert">
+  <selectKey keyProperty="id" resultType="int" order="BEFORE">
+    <if test="_databaseId == 'oracle'">
+      select seq_users.nextval from dual
+    </if>
+    <if test="_databaseId == 'db2'">
+      select nextval for seq_users from sysibm.sysdummy1"
+    </if>
+  </selectKey>
+  insert into users values (#{id}, #{name})
+</insert>
+{% endhighlight %}
+
+{% highlight java %}
+public interface LanguageDriver {
+  ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql);
+  SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType);
+  SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType);
+}
+{% endhighlight %}
 
 <ul class="category-list">
 {% for c in site.data.categories %}
