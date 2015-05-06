@@ -6,94 +6,34 @@ title_cn : '首页'
 ---
 {% include JB/setup %}
 
-{% for category in site.categories %}
-<h3>{{ category | first }}</h3>
-<span>{{ category | last | size }}</span>
-<ul class="category-list">
-    {% for page in category.last %}
-        <li>{{ page.date | date:"%Y年%m月%d日"}}<a href="{{ page.url }}">{{ page.name }}</a></li>
-    {% endfor %}
-</ul>
-{% endfor %}
-
-<pre>
-git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.com
-cd USERNAME.github.com
-git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
-git push origin master
-</pre>
-
-{% highlight sql %}
-SELECT * FROM BLOG WHERE AND title like ‘someTitle’
-{% endhighlight %}
-
-{% highlight xml %}
-<insert id="insert">
-  <selectKey keyProperty="id" resultType="int" order="BEFORE">
-    <if test="_databaseId == 'oracle'">
-      select seq_users.nextval from dual
-    </if>
-    <if test="_databaseId == 'db2'">
-      select nextval for seq_users from sysibm.sysdummy1"
-    </if>
-  </selectKey>
-  insert into users values (#{id}, #{name})
-</insert>
-{% endhighlight %}
-
-{% highlight java %}
-public interface LanguageDriver {
-  ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql);
-  SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType);
-  SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType);
-}
-{% endhighlight %}
-
-<ul class="category-list">
-{% for c in site.data.categories %}
-  <li>
-      {{ c.name }} - {{c.cn}}
-    </a>
-  </li>
+<ul>
+{% for page in site.posts %}
+  {% if page.title != null %}
+    <h3 class="index-title">
+        <a href="{{ BASE_PATH }}{{page.url}}">
+            {% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
+            <span style="font-size:12px;" class="index-tagline">
+                ({{ page.date | date : '%Y年%m月%-d日' }})
+            </span>
+        </a>
+    </h3>
+    {% unless page.categories == empty and page.tags == empty %}
+    <ul class="tag_box inline" style="margin-bottom: 10px;font-size: 14px;">
+        <li>分类：</li>
+        <li><i class="glyphicon glyphicon-open"></i></li>
+        {% assign categories_list = page.categories %}
+        {% include custom/post_category %}
+        <li style="margin-left: 30px;">标签：</li>
+        <li><i class="glyphicon glyphicon-tags"></i></li>
+        {% assign tags_list = page.tags %}
+        {% include JB/tags_list %}
+    </ul>
+    {% endunless %}
+    
+    {{ page.content | truncate: 300, '......' }}
+    
+    {% endif %}
 {% endfor %}
 </ul>
-
-Read [Jekyll Quick Start](http://jekyllbootstrap.com/usage/jekyll-quick-start.html)
-
-Complete usage and documentation available at: [Jekyll Bootstrap](http://jekyllbootstrap.com)
-
-## Update Author Attributes
-
-In `_config.yml` remember to specify your own data:
-    
-    title : My Blog =)
-    
-    author :
-      name : Name Lastname
-      email : blah@email.test
-      github : username
-      twitter : username
-
-The theme should reference these variables whenever needed.
-    
-## Sample Posts
-
-This blog contains sample posts which help stage pages and blog data.
-When you don't need the samples anymore just delete the `_posts/core-samples` folder.
-
-    $ rm -rf _posts/core-samples
-
-Here's a sample "posts list".
-
-<ul class="posts">
-  {% for post in site.posts %}
-    <li><span>{{ post.date | date:"%Y年%m月%d日" }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
-
-## To-Do
-
-This theme is still unfinished. If you'd like to be added as a contributor, [please fork](http://github.com/plusjade/jekyll-bootstrap)!
-We need to clean up the themes, make theme usage guides with theme-specific markup examples.
 
 

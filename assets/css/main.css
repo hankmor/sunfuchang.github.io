@@ -9,3 +9,37 @@
     text-align: left;
     margin-left: 30px;
 }
+
+.index-title {
+	border-bottom: 2px solid #ccc;
+	padding-bottom: 20px;
+}
+
+.index-title a {
+	color : #000;
+	text-decoration:none;
+}
+
+.index-title a:link {
+	color : #000;
+	text-decoration:none;
+}
+.index-title a:visited {
+	color : #000;
+	text-decoration:none;
+}
+.index-title a:hover {
+	color : #606c71;
+	text-decoration:none;
+}
+.index-title a:active {
+	color : #000;
+	text-decoration:none;
+}
+
+.index-title .index-tagline {
+	color: #606c71;
+	font-size: 12px;
+}
+
+.index-content
