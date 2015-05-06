@@ -104,12 +104,42 @@ defer可以使用下述代码测试浏览器是否支持defer属性：
 &emsp;&emsp;每一个<code>async</code>属性的脚本都在它下载结束之后立刻执行，同时会在<code>window</code>的,<code>load</code>事件之前执行。所以就有可能出现脚本执行顺序被打乱的情况；每一个,<code>defer</code>属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在<code>document</code>的<code>DOMContentLoaded</code>之前执行。
 
 *  浏览器
-<pre>
-Feature Chrome  Firefox (Gecko) Internet Explorer   Opera   Safari
-Basic support   1.0 1.0 (1.7 or earlier)    (Supported) (Supported) (Supported)
-asyncattribute  (Supported) 3.6 (1.9.2) 10  –   (Supported)
-deferattribute  (Supported) 3.5 (1.9.1) 4   –   (Suppo)
-</pre>
+<table class="table table-condensed" style="width: 100%;">
+<tbody>
+<tr>
+    <th>Feature</th>
+    <th>Chrome</th>
+    <th>Firefox (Gecko)</th>
+    <th>Internet Explorer</th>
+    <th>Opera</th>
+    <th>Safari</th>
+</tr>
+<tr>
+<td>Basic support</td>
+<td>1.0</td>
+<td>1.0 (1.7 or earlier)</td>
+<td>(Supported)</td>
+<td>(Supported)</td>
+<td>(Supported)</td>
+</tr>
+<tr>
+<td><code>async</code>attribute</span></td>
+<td>(Supported)</td>
+<td>3.6 (1.9.2)</td>
+<td>10</td>
+<td>–</td>
+<td>(Supported)</td>
+</tr>
+<tr>
+<td><code>defer</code>attribute</td>
+<td>(Supported)</td>
+<td>3.5 (1.9.1)</td>
+<td>4</td>
+<td>–</td>
+<td>(Supported)</td>
+</tr>
+</tbody>
+</table>
 
 &emsp;&emsp;**2. Dynamic Script Elements 动态脚本元素**
 
