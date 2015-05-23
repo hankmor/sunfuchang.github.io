@@ -76,7 +76,7 @@ title_cn: Spring框架的设计理念与设计模式分析
 图 6. <code>Context</code> 相关的类结构图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/6.png" alt="Context 相关的类结构图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/6.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/6b.png" target="_blank">查看大图</a></small>
 
 从上图中可以看出 <code>ApplicationContext</code> 继承了 <code>BeanFactory</code>，这也说明了 <code>Spring</code> 容器中运行的主体对象是 <code>Bean</code>，另外 <code>ApplicationContext</code> 继承了 <code>ResourceLoader</code> 接口，使得 <code>ApplicationContext</code> 可以访问到任何外部资源，这将在 <code>Core</code> 中详细说明。
 
@@ -106,7 +106,7 @@ title_cn: Spring框架的设计理念与设计模式分析
 图 7. Resource 相关的类结构图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/7.png" alt="Resource 相关的类结构图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/7.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/7b.png" target="_blank">查看大图</a></small>
 
 从上图可以看出 <code>Resource</code> 接口封装了各种可能的资源类型，也就是对使用者来说屏蔽了文件类型的不同。对资源的提供者来说，如何把资源包装起来交给其他人用这也是一个问题，我们看到 <code>Resource</code> 接口继承了 <code>InputStreamSource</code> 接口，这个接口中有个 <code>getInputStream</code> 方法，返回的是 <code>InputStream</code> 类。这样所有的资源都被可以通过 <code>InputStream</code> 这个类来获取，所以也屏蔽了资源的提供者。另外还有一个问题就是加载资源的问题，也就是资源的加载者要统一，从上图中可以看出这个任务是由 <code>ResourceLoader</code> 接口完成，他屏蔽了所有的资源加载者的差异，只需要实现这个接口就可以加载所有的资源，他的默认实现是 <code>DefaultResourceLoader</code>。
 
@@ -212,7 +212,7 @@ protected final void refreshBeanFactory() throws BeansException {
 图 9. <code>DefaultListableBeanFactory</code> 类继承关系图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/9.png" alt="DefaultListableBeanFactory 类继承关系图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/9.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/9b.png" target="_blank">查看大图</a></small>
 
 从这个图中发现除了 <code>BeanFactory</code> 相关的类外，还发现了与 <code>Bean</code> 的 <code>register</code> 相关。这在 <code>refreshBeanFactory</code> 方法中有一行 <code>loadBeanDefinitions(beanFactory)</code> 将找到答案，这个方法将开始加载、解析 <code>Bean</code> 的定义，也就是把用户定义的数据结构转化为 <code>Ioc</code> 容器中的特定数据结构。
 
@@ -221,14 +221,14 @@ protected final void refreshBeanFactory() throws BeansException {
 图 10. 创建 <code>BeanFactory</code> 时序图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/10.png" alt="创建BeanFactory 时序图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/10.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/10b.png" target="_blank">查看大图</a></small>
 
 <code>Bean</code> 的解析和登记流程时序图如下：
 
 图 11. 解析和登记 <code>Bean</code> 对象时序图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/11.png" alt="解析和登记Bean对象时序图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/11.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/11b.png" target="_blank">查看大图</a></small>
 
 创建好 <code>BeanFactory</code> 后，接下去添加一些 <code>Spring</code> 本身需要的一些工具类，这个操作在 <code>AbstractApplicationContext</code> 的 <code>prepareBeanFactory</code> 方法完成。
 
@@ -318,21 +318,21 @@ public void preInstantiateSingletons() throws BeansException {
 图 12.<code>Bean</code> 实例创建流程图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/12.gif" alt="Bean实例创建流程图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/12.gif" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/12b.gif" target="_blank">查看大图</a></small>
 
 如果是普通的 <code>Bean</code> 就直接创建他的实例，是通过调用 <code>getBean</code> 方法。下面是创建 <code>Bean</code> 实例的时序图：
 
 图 13.<code>Bean</code> 实例创建时序图
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/13.png" alt="Bean实例创建流程图" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/13.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/13b.png" target="_blank">查看大图</a></small>
 
 还有一个非常重要的部分就是建立 <code>Bean</code> 对象实例之间的关系，这也是 <code>Spring</code> 框架的核心竞争力，何时、如何建立他们之间的关系请看下面的时序图：
 
 图 14.<code>Bean</code> 对象关系建立
 
 <img src="/assets/images/article_imgs/architecture/2015/05/09/14.png" alt="Bean对象关系建立" align="center"/>  
-<small><a href="/assets/images/article_imgs/architecture/2015/05/09/14.png" target="_blank">查看大图</a></small>
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/14b.png" target="_blank">查看大图</a></small>
 
 #### **2.3 <code>Ioc</code> 容器的扩展点**
 
