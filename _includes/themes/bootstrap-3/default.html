@@ -8,8 +8,8 @@
     <meta name="keywords" content="Dendy's blog!, dendy, sunfuchang, {{page.tags | join: ','}}" />
     <meta name="description" content="Dendy's blog!, dendy" />
 
-    <title>{{ page.title }}</title>
-    {% if page.description %}
+    <title>{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}</title>
+       
     <meta name="description" content="{{ page.description }}">
     {% endif %}
     <meta name="author" content="{{ site.author.name }}">
