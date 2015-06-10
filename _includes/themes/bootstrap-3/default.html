@@ -6,14 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="keywords" content="Dendy's blog!, dendy, sunfuchang, {{page.tags | join: ','}}" />
-    <meta name="description" content="Dendy's blog!, dendy" />
+    <meta name="description" content="Dendy's blog!, dendy, {{ page.description }}" />
 
     <title>{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}</title>
-       
-    <meta name="description" content="{{ page.description }}">
-    {% endif %}
+  
     <meta name="author" content="{{ site.author.name }}">
-
     <!-- Enable responsive viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
