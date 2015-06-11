@@ -50,4 +50,14 @@
 	font-size: 12px;
 }
 
-.index-content
+.index-content {
+
+}
+
+.ds-top-threads li {
+    border-bottom: 1px dashed #ccc;
+}
+
+.ds-top-threads li a {
+    font-size: 14px;
+}
