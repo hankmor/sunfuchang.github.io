@@ -6,14 +6,15 @@ title_cn : '首页'
 ---
 {% include JB/setup %}
 
-<ul>
+<div>
 {% for page in site.posts %}
   {% if page.title != null %}
-    <h3 class="index-title"
+    <div class="row">
     {% if page.index == 1 %}
-        style = "border-top: none;padding-top: 0;"
+    <h3 class="index-title" style = "border-top: none;padding-top: 0;">
+    {% else %}
+    <h3 class="index-title">
     {% endif %}
-    >
         <a href="{{ BASE_PATH }}{{page.url}}">
             {% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
             <span style="font-size:12px;" class="index-tagline">
@@ -35,9 +36,9 @@ title_cn : '首页'
     {% endunless %}
     
     {{ page.content | truncate: 300, '......' }}
-    
-    {% endif %}
+    </div>
+  {% endif %}
 {% endfor %}
-</ul>
+</div>
 
 
