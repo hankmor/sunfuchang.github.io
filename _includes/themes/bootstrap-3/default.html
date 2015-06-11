@@ -166,6 +166,12 @@
         (document.getElementsByTagName('head')[0]
         || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
+
+    (function(){
+        $('.ds-recent-comments,.ds-top-threads').find('a').each(function (i, v){
+            $(this).attr('href', $(this).attr('href').replaceAll(/http:\/\/\//g, ''));
+        });
+    })();
 </script>
 </body>
 </html>
