@@ -13,6 +13,14 @@
 .index-title {
 	border-bottom: 2px solid #ccc;
 	padding-bottom: 20px;
+	  border-bottom: 2px solid #ccc;
+  	padding-bottom: 20px;
+  	/* margin-top: 50px; */
+  	font-size: 25px;
+  	font-weight: bold;
+  	font-family: '微软雅黑', '黑体';
+  	border-top: 1px dashed #ccc;
+  	padding-top: 65px;
 }
 
 .index-title a {

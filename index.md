@@ -9,7 +9,11 @@ title_cn : '首页'
 <ul>
 {% for page in site.posts %}
   {% if page.title != null %}
-    <h3 class="index-title">
+    <h3 class="index-title"
+    {% if page.index == 0%}
+        style = "border-top: none;padding-top: 0;"
+    {% endif %}
+    >
         <a href="{{ BASE_PATH }}{{page.url}}">
             {% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
             <span style="font-size:12px;" class="index-tagline">
