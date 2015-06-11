@@ -10,7 +10,7 @@ title_cn : '首页'
 {% for page in site.posts %}
   {% if page.title != null %}
     <h3 class="index-title"
-    {% if page.index == 0%}
+    {% if page.index == 1 %}
         style = "border-top: none;padding-top: 0;"
     {% endif %}
     >
