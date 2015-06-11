@@ -9,8 +9,8 @@ title_cn : '首页'
 <div>
 {% for page in site.posts %}
   {% if page.title != null %}
-    <div class="row">
-    {% if page.index == 1 %}
+    <div>
+    {% if page.index0 == 0 %}
     <h3 class="index-title" style = "border-top: none;padding-top: 0;">
     {% else %}
     <h3 class="index-title">
