@@ -10,7 +10,7 @@ title_cn : '首页'
 {% for page in site.posts %}
   {% if page.title != null %}
     <div>
-    {% if page.index0 == 0 %}
+    {% if forloop.first %}
     <h3 class="index-title" style = "border-top: none;padding-top: 0;">
     {% else %}
     <h3 class="index-title">
@@ -22,6 +22,7 @@ title_cn : '首页'
             </span>
         </a>
     </h3>
+    
     {% unless page.categories == empty and page.tags == empty %}
     <ul class="tag_box inline" style="margin-bottom: 10px;font-size: 14px;">
         <li>分类：</li>
@@ -34,9 +35,8 @@ title_cn : '首页'
         {% include JB/tags_list %}
     </ul>
     {% endunless %}
-    
-    {{ page.content | truncate: 300, '......' }}
-    </div>
+    <div>
+    {{ page.content | truncate: 300, '......' | append : '</div></div>' }}    
   {% endif %}
 {% endfor %}
 </div>
