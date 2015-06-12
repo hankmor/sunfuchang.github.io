@@ -1102,3 +1102,5 @@ $("#myform").validate({
   <input type="submit" value="Submit" />
 </form>
 {% endhighlight %}
+
+点此下载[jQuery-validator中文api](/assets/downloads/web_front/jQuery.validate.js+API_cn.pdf)
