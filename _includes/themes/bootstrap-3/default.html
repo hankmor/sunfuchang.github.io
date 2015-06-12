@@ -51,28 +51,6 @@
     <!-- atom & rss feed -->
     <link href="{{ BASE_PATH }}{{ site.JB.atom_path }}" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
     <link href="{{ BASE_PATH }}{{ site.JB.rss_path }}" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
-
-	<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
-    <script>
-        var _hmt = _hmt || [];
-        (function() {
-          var hm = document.createElement("script");
-          hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
-          var s = document.getElementsByTagName("script")[0]; 
-          s.parentNode.insertBefore(hm, s);
-        })();
-
-        // 多说公共JS代码 start (一个网页只需插入一次)
-		var duoshuoQuery = {short_name:"sunfuchang"};
-			(function() {
-				var ds = document.createElement('script');
-				ds.type = 'text/javascript';ds.async = true;
-				ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-				ds.charset = 'UTF-8';
-				(document.getElementsByTagName('head')[0] 
-				 || document.getElementsByTagName('body')[0]).appendChild(ds);
-			})();
-    </script>
 </head>
 
 <body style="background-color: #e2e2e2">
@@ -168,5 +146,26 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{{ ASSET_PATH }}/bootstrap/js/jquery-1.10.2.min.js"></script>
 <script src="{{ ASSET_PATH }}/bootstrap/js/bootstrap.min.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
 </body>
 </html>

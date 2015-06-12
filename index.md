@@ -10,11 +10,11 @@ title_cn : '首页'
 {% for page in site.posts %}
   {% if page.title != null %}
   <div>
-    <!-- {% if forloop.first %} -->
-    <!-- <h3 class="index-title" style = "border-top: none;padding-top: 0;"> -->
-    <!-- {% else %} -->
+    {% if forloop.first %}
+    <h3 class="index-title" style = "border-top: none;padding-top: 0;">
+    {% else %}
     <h3 class="index-title">
-    <!-- {% endif %} -->
+    {% endif %}
         <a href="{{ BASE_PATH }}{{page.url}}">
             {% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}
             <span style="font-size:12px;" class="index-tagline">

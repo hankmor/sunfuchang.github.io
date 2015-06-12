@@ -43,13 +43,13 @@
             </li>
             {% else %}
             <li class="next disabled"><a>下一篇 &rarr;</a>
-                {% endif %}
+            {% endif %}
         </ul>
         <hr>
         <!-- {% include JB/comments %} -->
 
         <!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="{{page.id}}" data-title="{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}" data-url="{{ BASE_PATH }}{{page.url}}"></div>
+		<div class="ds-thread" data-thread-key="{{page.id}}" data-title="{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}" data-url="http://sunfuchang.github.io{{page.url}}"></div>
 		<!-- 多说评论框 end -->
     </div>
 </div>
