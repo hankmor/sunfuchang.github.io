@@ -5,8 +5,11 @@ tagline:
 tags : [jQuery, validator, api]
 excerpt :
 title_cn: jQuery validator表单验证框架使用说明
+description: jquery.validate.js是jquery旗下的一个验证框架，借助jquery的优势，我们可以迅速验证一些常见的输入,并且可以自己扩充自己的验证方法，并且对国际化也有很好的支持。
 ---
 {% include JB/setup %}
+
+`jquery.validate.js`是`jquery`旗下的一个验证框架，借助`jquery`的优势，我们可以迅速验证一些常见的输入,并且可以自己扩充自己的验证方法，并且对国际化也有很好的支持，本文介绍了该框架的基本使用及常见API。
 
 官网地址：[http://jqueryvalidation.org/](http://jqueryvalidation.org/)
 

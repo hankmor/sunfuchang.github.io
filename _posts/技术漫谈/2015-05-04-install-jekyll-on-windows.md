@@ -5,6 +5,7 @@ tagline:
 tags : [jekyll, 安装, windows, gem, ruby]
 excerpt : 
 title_cn: win7上安装jekyll
+description: 上一篇讲了在github上构建个人站点的基本步骤，现在来详细说下win7上怎么安装jekyll。
 ---
 {% include JB/setup %}
 

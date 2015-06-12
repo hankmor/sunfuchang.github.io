@@ -9,9 +9,9 @@ title_cn : '首页'
 <div>
 {% for page in site.posts %}
   {% if page.title != null %}
-  <div>
+  <div class="article-desc">
     {% if forloop.first %}
-    <h3 class="index-title" style = "border-top: none;padding-top: 0;">
+    <h3 class="index-title">
     {% else %}
     <h3 class="index-title">
     {% endif %}
@@ -35,9 +35,11 @@ title_cn : '首页'
         {% include JB/tags_list %}
     </ul>
     {% endunless %}
-    <div>
-    {{ page.content | truncate: 300, '......' }}    
-    </div>
+
+    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a>
+    </p>
+    <!-- {{ page.content | truncate: 300, '......' }}     -->
+    
     </div>
   {% endif %}
 {% endfor %}

@@ -5,6 +5,7 @@ tagline:
 tags : [高性能, javascript, 加载]
 excerpt : 
 title_cn: 高性能Javascript--脚本的无阻塞加载策略
+description: JavaScript在浏览器中的性能，可以说是前端开发者所要面对的最重要的可用性问题。在Yahoo的Yslow23条规则当中，其中一条是将JS放在底部 。原因是，事实上，大多数浏览器使用单进程处理UI和更新JavaScript运行等多个任务，而同一时间只能有一个任务被执行。JavaScript运行了多长时间，那么在浏览器空闲下来响应用户交互之前的等待时间就有多长。
 ---
 {% include JB/setup %}
 

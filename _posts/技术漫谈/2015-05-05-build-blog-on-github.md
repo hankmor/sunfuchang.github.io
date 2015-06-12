@@ -5,8 +5,11 @@ tagline:
 tags : [jekyll, github, 博客]
 excerpt : 
 title_cn: 使用github和jekyll搭建个人站点系列——总览 
+description: 最近在使用github的pages功能，结合jekyll在windowns平台上搭建个人博客系统，经过自己不断的探索和尝试，终于搭建成功，遂记录下来，以供参考和备用。
 ---
 {% include JB/setup %}
+
+最近在使用github的pages功能，结合jekyll在windowns平台上搭建个人博客系统，经过自己不断的探索和尝试，终于搭建成功，遂记录下来，以供参考和备用。
 
 ## 前提
 

@@ -19,8 +19,6 @@
   	font-size: 25px;
   	font-weight: bold;
   	font-family: '微软雅黑', '黑体';
-  	border-top: 1px dashed #ccc;
-  	padding-top: 65px;
 }
 
 .index-title a {
@@ -60,4 +58,10 @@
 
 .ds-top-threads li a {
     font-size: 14px;
+}
+
+.article-desc {
+	border-bottom: 1px dashed #ccc;
+  	margin-bottom: 40px;
+  	padding-bottom: 10px;
 }

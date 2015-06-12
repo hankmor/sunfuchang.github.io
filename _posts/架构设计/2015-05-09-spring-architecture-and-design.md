@@ -5,6 +5,7 @@ tagline:
 tags : [Spring, architecture, design]
 excerpt : 
 title_cn: Spring框架的设计理念与设计模式分析
+description: Spring作为现在最优秀的框架之一，已被广泛的使用，并且有很多对其分析的文章。本文将从另外一个视角试图剖析出Spring框架的作者设计Spring框架的骨骼架构的设计理念，有那几个核心组件？为什么需要这些组件？它们又是如何结合在一起构成Spring的骨骼架构？Spring的AOP特性又是如何利用这些基础的骨骼架构来工作的？Spring中又使用了那些设计模式来完成它的这种设计的？它的这种设计理念对对我们以后的软件设计有何启示？本文将详细解答这些问题。
 ---
 {% include JB/setup %}
 

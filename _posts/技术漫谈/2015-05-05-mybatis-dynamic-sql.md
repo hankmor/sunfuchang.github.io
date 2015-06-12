@@ -5,6 +5,7 @@ tagline:
 tags : [mybatis, SQL, 动态]
 excerpt : 
 title_cn: mybatis——动态SQL
+description: MyBatis的强大特性之一便是它的动态SQL能力。如果你有使用JDBC或其他类似框架的经验，你就能体会到根据不同条件拼接SQL字符串有多么痛苦。拼接的时候要确保不能忘了必要的空格，还要注意省掉列名列表最后的逗号。利用动态SQL这一特性可以彻底摆脱这种痛苦。
 ---
 {% include JB/setup %}
 
