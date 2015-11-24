@@ -5,11 +5,17 @@
                         <nav class="footer-nav clearfix">
                               <ul class="footer-menu">
                                     <li><a href="/index.html">Home</a></li>
-                                    <li><a href="￥">Portfolio</a></li>
-                                    <li><a href="/blog/index.html">Blog Posts</a></li>
-                                    <li><a href="#">Shortcodes</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
                                     <li><a href="#">Contact</a></li>
                               </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
                               <!-- /.footer-menu -->
                         </nav>
                         <!-- /.footer-nav -->
@@ -19,9 +25,7 @@
             <!-- /.row -->
             <div class="row">
                   <div class="col-md-12">
-                        <p class="copyright-text">Copyright &copy; 2084 Company Name
-                              | More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect
-                              from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></p>
+                        <p class="copyright-text">Copyright &copy; {{ site.time | date: '%Y' }} {{ site.author.name }}，{{ site.author.email }}</p>
                   </div>
                   <!-- /.col-md-12 -->
             </div>
@@ -56,12 +60,12 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
 
-    $('.sf-menu > li > a').click(function (e) {
-        e.preventDefault();
-        var _this = $(this);
-        var href = _this.attr('href');
-        location.href = href;
-        _this.parent().siblings().removeClass('active');
-        _this.parent().addClass('active');
-    });
+    // $('.sf-menu > li > a').click(function (e) {
+    //     e.preventDefault();
+    //     var _this = $(this);
+    //     var href = _this.attr('href');
+    //     location.href = href;
+    //     _this.parent().siblings().removeClass('active');
+    //     _this.parent().addClass('active');
+    // });
 </script>

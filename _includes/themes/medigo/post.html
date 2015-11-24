@@ -65,24 +65,30 @@
 
                     <ul class="pagination">
                         {% if page.previous %}
-                        <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}"
-                                            title="{{ page.previous.title }}"><span class="page-artitle-title">{{ page.previous.title_cn }}</span> &laquo;
-                            上一篇</a></li>
+                        <li class="prev">
+                            <a style="border:none" href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">
+                                <span class="page-artitle-title">{{ page.previous.title_cn }}</span> &laquo; 上一篇
+                            </a>
+                        </li>
                         {% else %}
-                        <li class="prev disabled"><a><span
-                                class="page-artitle-title">{{ page.previous.title_cn }}</span> &larr; 上一篇</a></li>
+                        <li class="prev disabled">
+                            <a style="border:none">
+                                <span class="page-artitle-title">{{ page.previous.title_cn }}</span> &laquo; 上一篇
+                            </a>
+                        </li>
                         {% endif %}
                         <!--<li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">文章列表</a></li>-->
                         {% if page.next %}
                         <li class="next">
-                            <a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">下一篇 &raquo;
+                            <a style="border:none" href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">下一篇 &raquo;
                                 <span class="page-artitle-title">{{ page.next.title_cn }}</span>
                             </a>
                         </li>
                         {% else %}
-                        <li class="next disabled"><a>下一篇 &rarr;<span
-                                class="page-artitle-title">{{ page.next.title_cn }}</span></a>
-                            {% endif %}
+                        <li class="next disabled">
+                            <a style="border:none">下一篇 &raquo;<span class="page-artitle-title">{{ page.next.title_cn }}</span></a>
+                        </li>
+                        {% endif %}
                     </ul>
 
                     <!-- 多说评论框 start -->
