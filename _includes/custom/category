@@ -1,0 +1,19 @@
+{% comment %}<!--
+    Where click one of category list, show its posts list.
+-->{% endcomment %}
+
+{% if page.category_name == nil %}
+    {% include custom/pages_list %}
+{% else %}
+    {% if page.category_name == 'all' %}
+        {% assign pages_list = site.posts %}
+        {% include custom/pages_list %}
+    {% else %}
+        {% for category in site.categories %}
+            {% if page.title_cn == category[0] %}
+                {% assign pages_list = category[1] %}
+                {% include custom/pages_list %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endif %}

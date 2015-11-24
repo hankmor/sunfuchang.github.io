@@ -1,0 +1,71 @@
+@charset "utf-8";
+.nav > li > a {
+    color: #000;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 10px;
+    font-family: '微软雅黑', monospace;
+}
+.nav > li > p {
+    text-align: left;
+    margin-left: 30px;
+}
+
+.index-title {
+	border-bottom: 2px solid #ccc;
+	padding-bottom: 20px;
+	  border-bottom: 2px solid #ccc;
+  	padding-bottom: 20px;
+  	/* margin-top: 50px; */
+  	font-size: 25px;
+  	font-weight: bold;
+  	font-family: '微软雅黑', '黑体';
+}
+
+.index-title a {
+	color : #000;
+	text-decoration:none;
+}
+
+.index-title a:link {
+	color : #000;
+	text-decoration:none;
+}
+.index-title a:visited {
+	color : #000;
+	text-decoration:none;
+}
+.index-title a:hover {
+	color : #606c71;
+	text-decoration:none;
+}
+.index-title a:active {
+	color : #000;
+	text-decoration:none;
+}
+
+.index-title .index-tagline {
+	color: #606c71;
+	font-size: 12px;
+}
+
+.index-content {
+
+}
+
+.ds-top-threads li {
+    border-bottom: 1px dashed #ccc;
+}
+
+.ds-top-threads li a {
+    font-size: 14px;
+}
+
+.article-desc {
+	border-bottom: 1px dashed #ccc;
+  	margin-bottom: 40px;
+  	padding-bottom: 10px;
+}
+
+.page-artitle-title {
+	font-size: 14px;
+}

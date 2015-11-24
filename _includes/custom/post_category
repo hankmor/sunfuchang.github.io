@@ -1,0 +1,13 @@
+{% comment %}<!--
+    Show current post categories.
+-->{% endcomment %}
+
+{% for category in categories_list %}
+    {% for c in site.data.categories %}
+        {% if category == c.cn %}
+            <a href="/categories/{{c.name}}.html">
+                {{ c.cn }}
+            </a>
+        {% endif %}
+    {% endfor %}
+{% endfor %}

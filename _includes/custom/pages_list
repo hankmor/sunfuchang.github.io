@@ -1,0 +1,86 @@
+{% comment %}<!--
+    When click one of categories list, show its posts list.   .
+-->{% endcomment %}
+
+{% if pages_list == nil %}
+    <!-- 启用分页 -->
+    {% for page in paginator.posts %}
+        {% if page.title != null %}
+            <div class="post-blog">
+                <div class="blog-image">
+                    <a href="{{ BASE_PATH }}{{page.url}}">
+                        <img src="/assets/themes/medigo/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
+                    </a>
+                </div>
+                <!-- /.blog-image -->
+                <div class="blog-content">
+                    <span class="meta-date"><a href="#">{{ page.date | date : '%Y年%m月%-d日' }}</a></span>
+                    {% unless page.categories == empty %}
+                                <span class="meta-comments">
+                                    {% assign categories_list = page.categories %}
+                                    {% include custom/post_category %}
+                                </span>
+                    {% endunless %}
+                    <h3>
+                        <a href="{{ BASE_PATH }}{{page.url}}">
+                            {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
+                        </a>
+                    </h3>
+
+                    {% unless page.tags == empty %}
+                    <div class="tag-items" style="margin:20px;">
+                        <span class="small-text">Tags:</span>
+                        {% assign tags_list = page.tags %}
+                        {% include custom/tags_list %}
+                    </div>
+                    <!--<p class="light-text"></p>-->
+                    {% endunless %}
+
+                    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a></p>
+                </div>
+                <!-- /.blog-content -->
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% include themes/medigo/page.html%}
+{% else %}
+    {% for page in pages_list %}
+        {% if page.title != null %}
+            <div class="post-blog">
+                <div class="blog-image">
+                    <a href="{{ BASE_PATH }}{{page.url}}">
+                        <img src="/assets/themes/medigo/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
+                    </a>
+                </div>
+                <!-- /.blog-image -->
+                <div class="blog-content">
+                    <span class="meta-date"><a href="#">{{ page.date | date : '%Y年%m月%-d日' }}</a></span>
+                    {% unless page.categories == empty %}
+                                <span class="meta-comments">
+                                    {% assign categories_list = page.categories %}
+                                    {% include custom/post_category %}
+                                </span>
+                    {% endunless %}
+                    <h3>
+                        <a href="{{ BASE_PATH }}{{page.url}}">
+                            {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
+                        </a>
+                    </h3>
+
+                    {% unless page.tags == empty %}
+                    <div class="tag-items" style="margin:20px;">
+                        <span class="small-text">Tags:</span>
+                        {% assign tags_list = page.tags %}
+                        {% include custom/tags_list %}
+                    </div>
+                    <!--<p class="light-text"></p>-->
+                    {% endunless %}
+
+                    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a></p>
+                </div>
+                <!-- /.blog-content -->
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}

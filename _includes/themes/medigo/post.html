@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    {% include themes/medigo/meta.html %}
+</head>
+<body>
+{% include themes/medigo/header.html %}
+
+<div class="first-widget parallax" style="background-image: url('{{ASSET_PATH}}/images/includes/blogbg{{page.title | size | modulo:5}}.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="{{ASSET_PATH}}/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">{{ page.date | date : '%Y年%m月%-d日' }}</a></span>
+                            {% unless page.categories == empty %}
+                                <span class="meta-comments">
+                                    {% assign categories_list = page.categories %}
+                                    {% include custom/post_category %}
+                                </span>
+                            {% endunless %}
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>{% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}</h1>
+
+                            {{content}}
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                {% assign tags_list = page.tags %}
+                                {% include JB/tags_list %}
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        {% if page.previous %}
+                        <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}"
+                                            title="{{ page.previous.title }}"><span class="page-artitle-title">{{ page.previous.title_cn }}</span> &laquo;
+                            上一篇</a></li>
+                        {% else %}
+                        <li class="prev disabled"><a><span
+                                class="page-artitle-title">{{ page.previous.title_cn }}</span> &larr; 上一篇</a></li>
+                        {% endif %}
+                        <!--<li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">文章列表</a></li>-->
+                        {% if page.next %}
+                        <li class="next">
+                            <a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">下一篇 &raquo;
+                                <span class="page-artitle-title">{{ page.next.title_cn }}</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="next disabled"><a>下一篇 &rarr;<span
+                                class="page-artitle-title">{{ page.next.title_cn }}</span></a>
+                            {% endif %}
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="{{page.id}}"
+                         data-title="{% if page.title_cn %} {{page.title_cn}} {% else %} {{page.title}} {% endif %}"
+                         data-url="http://sunfuchang.github.io{{page.url}}"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        {% include themes/medigo/right.html %}
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+{% include themes/medigo/footer.html %}
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!-- Pagination links -->
+{% if paginator.total_pages > 1 %}
+<ul class="pages">
+    {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; 前一页</a>
+    {% else %}
+    <span>&laquo; 前一页</span>
+    {% endif %}
+
+    {% for page in (1..paginator.total_pages) %}
+    {% if page == paginator.page %}
+    <li><a href="javascript:void(0)" class="active">{{ page }}</a></li>
+    {% elsif page == 1 %}
+    <li><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a></li>
+    {% else %}
+    <li><a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a></li>
+    {% endif %}
+    {% endfor %}
+
+    {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">后一页 &raquo;</a>
+    {% else %}
+    <span>后一页 &raquo;</span>
+    {% endif %}
+</ul>
+{% endif %}

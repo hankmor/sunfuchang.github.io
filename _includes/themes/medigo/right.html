@@ -1,0 +1,85 @@
+<div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    {% assign categories_list = site.data.categories %}
+                    {% for c in categories_list%}
+                    <li>
+                        <a href="/categories/{{c.name}}.html" name="{{ c.name }}">{{c.cn}}
+                            {% if c.name == 'all' %}
+                            ({{site.posts.size}})
+                            {% else %}
+                            {% assign num = 0 %}
+                            {% for category in site.categories %}
+                            {% if {{category[0]}} == {{c.cn}} %}
+                            {% assign num = {{category.last.size}} %}
+                            {% endif %}
+                            {% endfor %}
+                            ({{num}})
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendys">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            {% for page in site.related_posts %}
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="{{ ASSET_PATH }}/images/includes/blogthumb{{page.title | size | modulo:5}}.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>{{ page.date | date : '%Y年%m月%-d日' }}</span>
+                    <h6>
+                        <a href="{{ BASE_PATH }}{{page.url}}">
+                            {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                {% assign tags_list = site.tags %}
+                {% include custom/tags_list %}
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Text Widget</h5>
+
+            <p class="light-text">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                fermentum massa justo sit amet risus. Cum sociis natoque penatibus et magnis dis
+                parturient… </p>
+        </div>
+        <!-- /.sidebar-widget -->
+    </div>
+    <!-- /.sidebar -->
+</div>
