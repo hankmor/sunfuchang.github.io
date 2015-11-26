@@ -1002,7 +1002,7 @@ blockquote {
   height: auto;
 }
 .post-blog .blog-content span {
-  color: #aaaaaa;
+  /*color: #aaaaaa;*/
   margin-right: 10px;
   font-size: 14px;
 }
