@@ -16,22 +16,22 @@ description: 最近开发微信红包活动，并发量大概在100左右，数�
 <code>explain</code>命令在解决数据库性能上是第一推荐使用命令，大部分的性能问题可以通过此命令来简单的解决，<code>explain</code>可以用来查看 SQL 语句的执行效 果，可以帮助选择更好的索引和优化查询语句，写出更好的优化语句。
 
 Explain语法：
-<prev>explain select … from … [where ...]</prev>
+<pre>explain select … from … [where ...]</pre>
 
 例如：explain select * from news;
 输出：
-```
+<pre>
 ---- ------------- ------- ------- ------------------- --------- --------- ------- ------ -------
 | id | select_type | table | type | possible_keys | key | key_len | ref | rows | Extra |
 ---- ------------- ------- ------- ------------------- --------- --------- ------- ------ -------
-```
+</pre>
 
 下面对各个属性进行了解：
 
 1、<strong>id</strong>：这是SELECT的查询序列号
 
 2、<strong>select_type</strong>：select_type就是select的类型，可以有以下几种：
-<prev>
+<pre>
 *SIMPLE*：简单SELECT(不使用UNION或子查询等)
 *PRIMARY*：最外面的SELECT
 *UNION*：UNION中的第二个或后面的SELECT语句
@@ -40,15 +40,15 @@ Explain语法：
 *SUBQUERY*：子查询中的第一个SELECT
 *DEPENDENT SUBQUERY*：子查询中的第一个SELECT，取决于外面的查询
 *DERIVED*：导出表的SELECT(FROM子句的子查询)
-</prev>
+</pre>
 
 3、<strong>table</strong>：显示这一行的数据是关于哪张表的
 
 4、<strong>type</strong>：这列最重要，显示了连接使用了哪种类别,有无使用索引，是使用Explain命令分析性能瓶颈的关键项之一。
 
-<prev>
+<pre>
 结果值从好到坏依次是：
-<prev>system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL</prev>
+<pre>system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL</pre>
 
 一般来说，得保证查询至少达到range级别，最好能达到ref，否则就可能会出现性能问题。
 
@@ -75,7 +75,7 @@ Explain语法：
 **ALL**
 
 这个连接类型对于前面的每一个记录联合进行完全扫描，这一般比较糟糕，应该尽量避免
-</prev>
+</pre>
 
 5、<strong>possible_keys</strong>：列指出MySQL能使用哪个索引在该表中找到行
 
@@ -89,7 +89,7 @@ Explain语法：
 
 10、<strong>Extra</strong>：包含MySQL解决查询的详细信息，也是关键参考项之一。
 
-<prev>
+<pre>
 **Distinct**
 
 一旦MYSQL找到了与行相联合匹配的行，就不再搜索了
@@ -119,7 +119,7 @@ Record（index map:#）
 **Using where**
 
 使用了WHERE从句来限制哪些行将与下一张表匹配或者是返回给用户。如果不想返回表中的全部行，并且连接类型ALL或index， 这就会发生，或者是查询有问题
-</prev>
+</pre>
 
 其他一些Tip：
 
@@ -155,35 +155,35 @@ MySQL数据库有几个配置选项可以帮助我们及时捕获低效SQL语句
 
 MySQL在Windows系统中的配置文件一般是是my.ini找到[mysqld]下面加上
 
-<prev>
+<pre>
 log-slow-queries = F:/MySQL/log/mysqlslowquery。log
 long_query_time = 2
-</prev>
+</pre>
 
 #####（2）、Linux下启用MySQL慢查询
 
 MySQL在Windows系统中的配置文件一般是是my.cnf找到[mysqld]下面加上
-<prev>
+<pre>
 log-slow-queries=/data/mysqldata/slowquery。log
 long_query_time=2
-</prev>
+</pre>
 
 **说明**
-<prev>
+<pre>
 log-slow-queries = F:/MySQL/log/mysqlslowquery。
-<prev>
+<pre>
 为慢查询日志存放的位置，一般这个目录要有MySQL的运行帐号的可写权限，一般都将这个目录设置为MySQL的数据存放目录；
 
-<prev>
+<pre>
 long_query_time=2中的2表示查询超过两秒才记录；
-</prev>
+</pre>
 
 ####2.show processlist 命令
 
 <code>SHOW PROCESSLIST</code>显示哪些线程正在运行。您也可以使用<code>mysqladmin processlist</code>语句得到此信息。
 
 各列的含义和用途：
-<prev>
+<pre>
 ID列
 一个标识，你要kill一个语句的时候很有用，用命令杀掉此查询 /*/mysqladmin kill 进程号。
 user列
@@ -200,11 +200,11 @@ state列
 显示使用当前连接的sql语句的状态，很重要的列，后续会有所有的状态的描述，请注意，state只是语句执行中的某一个状态，一个 sql语句，以查询为例，可能需要经过copying to tmp table，Sorting result，Sending data等状态才可以完成
 info列
 显示这个sql语句，因为长度有限，所以长的sql语句就显示不全，但是一个判断问题语句的重要依据。
-</prev>
+</pre>
 
 这个命令中最关键的就是state列，mysql列出的状态主要有以下几种：
 
-<prev>
+<pre>
 Checking table
 正在检查数据表（这是自动的）。
 Closing tables
@@ -261,13 +261,13 @@ waiting for handler insert
  INSERT DELAYED已经处理完了所有待处理的插入操作，正在等待新的请求。
  大部分状态对应很快的操作，只要有一个线程保持同一个状态好几秒钟，那么可能是有问题发生了，需要检查一下。
  还有其他的状态没在上面中列出来，不过它们大部分只是在查看服务器是否有存在错误是才用得着。
-<prev>
+<pre>
 
 ## 3、开启profiling功能
 
 MySQL 的 SQL 語法調整主要都是使用 EXPLAIN , 但是這個並沒辦法知道詳細的 Ram(Memory)/CPU 等使用量.於 MySQL 5.0.37 以上開始支援 MySQL Query Profiler, 可以查詢到此 SQL 會執行多少時間, 並看出 CPU/Memory 使用量, 執行過程中 System lock, Table lock 花多少時間等等.
 啟動
-<prev>
+<pre>
 mysql> set profiling=1; # 此命令於 MySQL 會於 information_schema 的 database 建立一個 PROFILING 的 table 來紀錄.
 SQL profiles show
 mysql> show profiles; # 從啟動之後所有語法及使用時間, 含錯誤語法都會紀錄.
@@ -280,10 +280,10 @@ ex: (root@localhost) [test]> show profiles; # 注意 Query_ID, 下面執行時�
  |        3 | 0.00183800 | show tables               |
  |        4 | 0.00027600 | mysql> show profiles      |
  +----------+------------+---------------------------+
- <prev>
+ <pre>
 
  查詢所有花費時間加總
- <prev>
+ <pre>
 mysql> select sum(duration) from information_schema.profiling where query_id=1; # Query ID = 1
  +---------------+
  | sum(duration) |
@@ -291,10 +291,10 @@ mysql> select sum(duration) from information_schema.profiling where query_id=1; 
  |      0.000447 |
  +---------------+
 
- </prev>
+ </pre>
 
  查詢各執行階段花費多少時間
- <prev>
+ <pre>
 mysql> show profile for query 1; # Query ID = 1
  +--------------------+------------+
  | Status             | Duration   |
@@ -315,10 +315,10 @@ mysql> show profile for query 1; # Query ID = 1
  | closing tables     | 0.00000800 |
  | logging slow query | 0.00000400 |
  +--------------------+------------+
- </prev>
+ </pre>
 
  查詢各執行階段花費的各種資源列表
- <prev>
+ <pre>
 mysql> show profile cpu for query 1; # Query ID = 1
  +--------------------------------+----------+----------+------------+
  | Status                         | Duration | CPU_user | CPU_system |
@@ -363,11 +363,11 @@ mysql> show profile cpu for query 1; # Query ID = 1
  | closing tables                 | 0.000019 |             0 |                 0 |
  | logging slow query             | 0.000009 |             0 |                 0 |
  +--------------------------------+----------+---------------+-------------------+
- </prev>
+ </pre>
 
  其它屬性列表
 
- <prev>
+ <pre>
 ALL - displays all information
 BLOCK IO - displays counts for block input and output operations
 CONTEXT SWITCHES - displays counts for voluntary and involuntary context switches
@@ -376,14 +376,14 @@ MEMORY - is not currently implemented
 PAGE FAULTS - displays counts for major and minor page faults
 SOURCE - displays the names of functions from the source code, together with the name and line number of the file in which the function occurs
 SWAPS - displays swap counts
-</prev>
+</pre>
 
 設定 Profiling 存的 Size
-<prev>
+<pre>
 mysql> show variables where variable_name='profiling_history_size'; # 預設是 15筆
-</prev>
+</pre>
 
 關閉
-<prev>
+<pre>
 mysql> set profiling=0;
-</prev>
+</pre>
