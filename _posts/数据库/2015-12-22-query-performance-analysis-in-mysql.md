@@ -32,14 +32,14 @@ Explain语法：
 
 2、<strong>select_type</strong>：select_type就是select的类型，可以有以下几种：
 <pre>
-*SIMPLE*：简单SELECT(不使用UNION或子查询等)
-*PRIMARY*：最外面的SELECT
-*UNION*：UNION中的第二个或后面的SELECT语句
-*DEPENDENT UNION*：UNION中的第二个或后面的SELECT语句，取决于外面的查询
-*UNION RESULT*：UNION的结果。
-*SUBQUERY*：子查询中的第一个SELECT
-*DEPENDENT SUBQUERY*：子查询中的第一个SELECT，取决于外面的查询
-*DERIVED*：导出表的SELECT(FROM子句的子查询)
+SIMPLE：简单SELECT(不使用UNION或子查询等)
+PRIMARY：最外面的SELECT
+UNION：UNION中的第二个或后面的SELECT语句
+DEPENDENT UNION：UNION中的第二个或后面的SELECT语句，取决于外面的查询
+UNION RESULT：UNION的结果。
+SUBQUERY：子查询中的第一个SELECT
+DEPENDENT SUBQUERY：子查询中的第一个SELECT，取决于外面的查询
+DERIVED：导出表的SELECT(FROM子句的子查询)
 </pre>
 
 3、<strong>table</strong>：显示这一行的数据是关于哪张表的
@@ -48,32 +48,25 @@ Explain语法：
 
 <pre>
 结果值从好到坏依次是：
-<pre>system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL</pre>
-
+system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL<
 一般来说，得保证查询至少达到range级别，最好能达到ref，否则就可能会出现性能问题。
 
-**const**
-
+const
 表中的一个记录的最大值能够匹配这个查询（索引可以是主键或惟一索引）。因为只有一行，这个值实际就是常数，因为MYSQL先读这个值然后把它当做常数来对待
 
-**eq_ref**
-
+eq_ref
 在连接中，MYSQL在查询时，从前面的表中，对每一个记录的联合都从表中读取一个记录，它在查询使用了索引为主键或惟一键的全部时使用
 
-**ref**
-
+ref
 这个连接类型只有在查询使用了不是惟一或主键的键或者是这些类型的部分（比如，利用最左边前缀）时发生。对于之前的表的每一个行联合，全部记录都将从表中读出。这个类型严重依赖于根据索引匹配的记录多少—越少越好
 
-**range**
-
+range
 这个连接类型使用索引返回一个范围中的行，比如使用>或<查找东西时发生的情况
 
-**index**
-
+index
 这个连接类型对前面的表中的每一个记录联合进行完全扫描（比ALL更好，因为索引一般小于表数据）
 
-**ALL**
-
+ALL
 这个连接类型对于前面的每一个记录联合进行完全扫描，这一般比较糟糕，应该尽量避免
 </pre>
 
@@ -90,34 +83,26 @@ Explain语法：
 10、<strong>Extra</strong>：包含MySQL解决查询的详细信息，也是关键参考项之一。
 
 <pre>
-**Distinct**
-
+Distinct
 一旦MYSQL找到了与行相联合匹配的行，就不再搜索了
 
-**Not exists**
-
+Not exists
 MYSQL 优化了LEFT JOIN，一旦它找到了匹配LEFT JOIN标准的行，就不再搜索了
-
 Range checked for each
 
 Record（index map:#）
-
 没有找到理想的索引，因此对于从前面表中来的每一 个行组合，MYSQL检查使用哪个索引，并用它来从表中返回行。这是使用索引的最慢的连接之一
 
-**Using filesort**
-
+Using filesort
 看 到这个的时候，查询就需要优化了。MYSQL需要进行额外的步骤来发现如何对返回的行排序。它根据连接类型以及存储排序键值和匹配条件的全部行的行指针来 排序全部行
 
-**Using index**
-
+Using index
 列数据是从仅仅使用了索引中的信息而没有读取实际的行动的表返回的，这发生在对表 的全部的请求列都是同一个索引的部分的时候
 
-**Using temporary**
-
+Using temporary
 看到这个的时候，查询需要优化了。这 里，MYSQL需要创建一个临时表来存储结果，这通常发生在对不同的列集进行ORDER BY上，而不是GROUP BY上
 
-**Using where**
-
+Using where
 使用了WHERE从句来限制哪些行将与下一张表匹配或者是返回给用户。如果不想返回表中的全部行，并且连接类型ALL或index， 这就会发生，或者是查询有问题
 </pre>
 
@@ -131,19 +116,19 @@ Record（index map:#）
 
 MySQL数据库有几个配置选项可以帮助我们及时捕获低效SQL语句
 
-1，**slow_query_log**
+1，slow_query_log
 
 这个参数设置为ON，可以捕获执行时间超过一定数值的SQL语句。
 
-2，**long_query_time**
+2，long_query_time
 
 当SQL语句执行时间超过此数值时，就会被记录到日志中，建议设置为1或者更短。
 
-3，**slow_query_log_file**
+3，slow_query_log_file
 
 记录日志的文件名。
 
-4，**log_queries_not_using_indexes**
+4，log_queries_not_using_indexes
 
 这个参数设置为ON，可以捕获到所有未使用索引的SQL语句，尽管这个SQL语句有可能执行得挺快。
 
@@ -168,10 +153,10 @@ log-slow-queries=/data/mysqldata/slowquery。log
 long_query_time=2
 </pre>
 
-**说明**
+说明
 <pre>
 log-slow-queries = F:/MySQL/log/mysqlslowquery。
-<pre>
+</pre>
 为慢查询日志存放的位置，一般这个目录要有MySQL的运行帐号的可写权限，一般都将这个目录设置为MySQL的数据存放目录；
 
 <pre>
@@ -261,7 +246,7 @@ waiting for handler insert
  INSERT DELAYED已经处理完了所有待处理的插入操作，正在等待新的请求。
  大部分状态对应很快的操作，只要有一个线程保持同一个状态好几秒钟，那么可能是有问题发生了，需要检查一下。
  还有其他的状态没在上面中列出来，不过它们大部分只是在查看服务器是否有存在错误是才用得着。
-<pre>
+</pre>
 
 ## 3、开启profiling功能
 
@@ -280,7 +265,7 @@ ex: (root@localhost) [test]> show profiles; # 注意 Query_ID, 下面執行時�
  |        3 | 0.00183800 | show tables               |
  |        4 | 0.00027600 | mysql> show profiles      |
  +----------+------------+---------------------------+
- <pre>
+ </pre>
 
  查詢所有花費時間加總
  <pre>
