@@ -79,6 +79,18 @@
         </div>
         <!-- /.sidebar-widget -->
 
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                {% assign posts_collate = site.posts %}
+					{% include JB/posts_collate %}
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
         <!-- /.sidebar-widget -->
         <div class="sidebar-widget">
             <h5 class="widget-title">Tags</h5>

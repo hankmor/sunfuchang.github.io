@@ -1,0 +1,55 @@
+{% comment %}<!--
+    Where click one of category list, show its posts list.
+-->{% endcomment %}
+<div class="thunm-bread">
+    <span class="meta-date"><a href="#">Blog</a></span> 
+  <span class="meta-date"><a href="#">Archive</a></span>            
+        <span class="meta-comments">
+            <a href="#">
+                {{cur_year}}-{{cur_month}}
+            </a>
+        </span>     
+    </div>
+{% for page in site.posts  %}
+    {% capture this_year %}{{ page.date | date: "%Y" }}{% endcapture %}
+    {% capture this_month %}{{ page.date | date: "%m" }}{% endcapture %}
+    {% capture next_year %}{{ page.previous.date | date: "%Y" }}{% endcapture %}
+    {% capture next_month %}{{ page.previous.date | date: "%m" }}{% endcapture %}
+ 
+      {% if this_year == cur_year and this_month == cur_month %}
+         <div class="post-blog">
+                <div class="blog-image">
+                    <a href="{{ BASE_PATH }}{{page.url}}">
+                        <img src="/assets/themes/medigo/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
+                    </a>
+                </div>
+                <!-- /.blog-image -->
+                <div class="blog-content">
+                    <span class="meta-date"><a href="#">{{ page.date | date : '%Y年%m月%-d日' }}</a></span>
+                    {% unless page.categories == empty %}
+                                <span class="meta-comments">
+                                    {% assign categories_list = page.categories %}
+                                    {% include custom/post_category %}
+                                </span>
+                    {% endunless %}
+                    <h3>
+                        <a href="{{ BASE_PATH }}{{page.url}}">
+                            {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
+                        </a>
+                    </h3>
+
+                    {% unless page.tags == empty %}
+                    <div class="tag-items" style="margin:20px;">
+                        <span class="small-text">Tags:</span>
+                        {% assign tags_list = page.tags %}
+                        {% include custom/tags_list %}
+                    </div>
+                    <!--<p class="light-text"></p>-->
+                    {% endunless %}
+
+                    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a></p>
+                </div>
+                <!-- /.blog-content -->
+            </div>
+      {% endif %}
+  {% endfor %}

@@ -4,7 +4,7 @@ permalink: /:categories/:year/:month/:day/:title
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 # pygments, 
-highlighter: pygments
+highlighter:  
 
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
@@ -137,6 +137,8 @@ JB :
 
   tags_list :
       provider : "custom"
-  
+  posts_collate:
+    provider: "custom"
+
 paginate: 5
 paginate_path: "/blog/page:num/"

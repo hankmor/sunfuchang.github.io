@@ -11,6 +11,7 @@
     {% else %}
         {% for category in site.categories %}
             {% if page.title_cn == category[0] %}
+                {% assign cur_category = category[0] %}
                 {% assign pages_list = category[1] %}
                 {% include custom/pages_list %}
             {% endif %}
