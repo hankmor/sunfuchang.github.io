@@ -19,7 +19,7 @@ maven私服有很多开源软件，最常用的就是本文需要介绍的nexus�
 
 如下图所示：
 
-![2463997d-c06d-46e5-84f8-69ea9d70757c.jpg](/assets/images/article_imgs/technology/2015/12/24/img/2015/2463997d-c06d-46e5-84f8-69ea9d70757c.jpg "nexus下载")
+![2463997d-c06d-46e5-84f8-69ea9d70757c.jpg](/assets/images/article_imgs/technology/2015/12/24/2015/2463997d-c06d-46e5-84f8-69ea9d70757c.jpg "nexus下载")
 
 ## 2、将下载的zip包或者tgz包解压出来：
 
