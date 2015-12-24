@@ -18,19 +18,16 @@ maven私服有很多开源软件，最常用的就是本文需要介绍的nexus�
 没什么难的，下载一个oss版本，即open source开源版。下载地址：http://www.sonatype.org/nexus/go
 
 如下图所示：
-
-![2463997d-c06d-46e5-84f8-69ea9d70757c.jpg](/assets/images/article_imgs/technology/2015/12/24/2463997d-c06d-46e5-84f8-69ea9d70757c.jpg "nexus下载")
+<img src="/assets/images/article_imgs/technology/2015/12/24/2463997d-c06d-46e5-84f8-69ea9d70757c.jpg" />
 
 ## 2、将下载的zip包或者tgz包解压出来：
-
-![861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png](/assets/images/article_imgs/technology/2015/12/24/861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png)
+<img src="/assets/images/article_imgs/technology/2015/12/24/861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png" />
 
 如图所示，nexus默认的工作目录为统计目录下的sonatype-work目录，可以在`%nexus_home%/conf/nexus.properties`中进行修改。
 工作目录的作用：最主要是存储，所有的仓库索引文件、插件索引文件都存在工作目录中(storage、plugin-repository目录)；另外就是存储系统日志（log文件夹）。因此，工作目录应该设置为磁盘空间较大的目录。
 
 ## 3、启动nexus：
-
-![b9351649-b0e3-4bb0-a953-7c4980393208.png](/assets/images/article_imgs/technology/2015/12/24/b9351649-b0e3-4bb0-a953-7c4980393208.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/b9351649-b0e3-4bb0-a953-7c4980393208.png"/>
 
 `%nexus_home%/bin/js/`下找到操作系统对应的脚本`console-nexus.bat`，运行即可。
 
@@ -43,7 +40,7 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
 ## 5、仓库管理：
 
 点击菜单栏的view/repostories-repostories菜单，进入仓库界面：
-![469f9086-9013-4a2f-a62b-ec34fbbad560.png](/assets/images/article_imgs/technology/2015/12/24/469f9086-9013-4a2f-a62b-ec34fbbad560.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/469f9086-9013-4a2f-a62b-ec34fbbad560.png"/>
 
 ### （1）仓库类型：
 
@@ -55,7 +52,7 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
 ### （2）说明：
 
 如图的界面所示，nexus默认有一个仓库组（`public repositories`），其配置可以通过它的`configuration`子标签页查看：
-![a1d832cd-782a-4314-9105-66ea4ef51936.png](/assets/images/article_imgs/technology/2015/12/24/a1d832cd-782a-4314-9105-66ea4ef51936.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/a1d832cd-782a-4314-9105-66ea4ef51936.png"/>
 
 可以看到，这个组里边默认有本地的`releases`、`snapsots`、`3rd party`库，同时还有`central`库，这些仓库的顺序决定了查找资源的顺序，所以最好将本地的放在前边。
 
@@ -72,20 +69,20 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
 
 找到maven的配置文件（这里我直接修改`%M2_HOME%/conf/setting.xml`文件），找到`<mirrors>`节点，添加一个镜像节点：
 
-```
+{% highlight xml%}
 <mirror>
     <id>nexus</id>
     <mirrorOf>*</mirrorOf>
     <url>http://localhost:8081/nexus/content/groups/public</url>
 </mirror>
-```
+{% endhighlight %}
 
 * **id**：镜像的位唯一标示
 * **mirrorOf**：代理哪些仓库，*为所有的资源都从本`maven`私服获取
 * **url**：及新搭建的私服的默认仓库组的url地址（通过页面可以查看）
 同样，在`<profile>`节点配置一个`<repository>`节点和`<pluginRepostory>`节点。
 
-```
+{% highlight xml%}
 <repository>
     <id>dc-chengdu</id>
     <name>dc-chengdu</name>
@@ -97,7 +94,7 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
         <enabled>true</enabled>
     </snapshots>
 </repository>
-```
+{% endhighlight %}
 
 ok，配置完成，接下来，我们可以在项目的`pom.xml`中配置需要的jar包，如果本地没有，则会到我们搭建的私服中找其索引文件，并并下载到本地，如果私服没有，则会去仓库组中找（确切的说是仓库组配置的Apache中央仓库去找），找到并将索引文件保存到私服中，将jar包下载到本地仓库中。
 
@@ -107,34 +104,34 @@ ok，配置完成，接下来，我们可以在项目的`pom.xml`中配置需要
 ###（1）配置授权：
 在`maven`的配置文件（这里我直接修改`%M2_HOME%/conf/setting.xml`文件）中，找到`<servers>`节点，添加两个`<server>`配置：
 
-```
-    <server>
-        <id>releases</id>
-        <username>deployment</username>
-        <password>123456</password>
-    </server>
-    <server>
-        <id>snapshots</id>
-        <username>deployment</username>
-        <password>123456</password>
-    </server>
-```
+{% highlight xml%}
+<server>
+    <id>releases</id>
+    <username>deployment</username>
+    <password>123456</password>
+</server>
+<server>
+    <id>snapshots</id>
+    <username>deployment</username>
+    <password>123456</password>
+</server>
+{% endhighlight %}
 
 * **id**：必须与项目的`pom`中配置`<distributionManagement>`的中的id相同，唯一标示，这里的`release`表示发布`release`版本的包到`release`仓库，而`snapshot`表示发布`snapshot`版本的包到`snapshot`仓库；
 * **username**：具有私服发布包权限的用户的`User ID`，具体见私服的权限和用户说明
 * **password**：当然是用户的密码。
 
-![a545c31b-39b3-4f7a-90f9-272b8830040d.png](/assets/images/article_imgs/technology/2015/12/24/a545c31b-39b3-4f7a-90f9-272b8830040d.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/a545c31b-39b3-4f7a-90f9-272b8830040d.png"/>
 
 ###（2）配置发布的地址信息
 在项目的`pom.xml`配置文件中，配置发布的地址信息：
-![d9a6c058-9ca7-4306-95a7-0f38601b8660.png](/assets/images/article_imgs/technology/2015/12/24/d9a6c058-9ca7-4306-95a7-0f38601b8660.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/d9a6c058-9ca7-4306-95a7-0f38601b8660.png"/>
 
 * **id**：与（1）中配置授权时的id一致；
 * **url**：私服对应的仓库的url地址。
 
 其实，这部分信息在私服仓库子标签页`summary`可以查看：
-![ae52277c-0c53-492b-a5bf-6cb5f22b823a.png](/assets/images/article_imgs/technology/2015/12/24/ae52277c-0c53-492b-a5bf-6cb5f22b823a.png "")
+<img src="/assets/images/article_imgs/technology/2015/12/24/ae52277c-0c53-492b-a5bf-6cb5f22b823a.png"/>
 
 ###（3）配置完成:
 
