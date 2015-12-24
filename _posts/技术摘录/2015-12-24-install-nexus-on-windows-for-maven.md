@@ -113,7 +113,6 @@ ok，配置完成，接下来，我们可以在项目的`pom.xml`中配置需要
         <username>deployment</username>
         <password>123456</password>
     </server>
-
     <server>
         <id>snapshots</id>
         <username>deployment</username>
@@ -139,7 +138,7 @@ ok，配置完成，接下来，我们可以在项目的`pom.xml`中配置需要
 
 ###（3）配置完成:
 
-可以发布你的jar包到私服中了，如果项目的pom.xml中，<version>属性有SNAPSHOT表示为快照版，则会发布到snapshot仓库中，否则，发布到release仓库中。
+可以发布你的jar包到私服中了，如果项目的pom.xml中，`<version>`属性有SNAPSHOT表示为快照版，则会发布到snapshot仓库中，否则，发布到release仓库中。
 
 ## 注意事项总结：
 
