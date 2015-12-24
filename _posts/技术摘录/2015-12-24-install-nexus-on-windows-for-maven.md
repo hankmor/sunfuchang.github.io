@@ -23,7 +23,7 @@ maven私服有很多开源软件，最常用的就是本文需要介绍的nexus�
 
 ## 2、将下载的zip包或者tgz包解压出来：
 
-![861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png](/assets/images/article_imgs/technology/2015/12/24/861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png "")
+![861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png](/assets/images/article_imgs/technology/2015/12/24/861b0cb9-8f70-4235-aa0f-bf8cfcd394e4.png)
 
 如图所示，nexus默认的工作目录为统计目录下的sonatype-work目录，可以在`%nexus_home%/conf/nexus.properties`中进行修改。
 工作目录的作用：最主要是存储，所有的仓库索引文件、插件索引文件都存在工作目录中(storage、plugin-repository目录)；另外就是存储系统日志（log文件夹）。因此，工作目录应该设置为磁盘空间较大的目录。
