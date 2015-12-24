@@ -57,7 +57,10 @@
                             <h1>{% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}</h1>
 
                             <!-- 目录 -->
-                            <div id="tree"></div>
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
                             
                             {{content}}
 

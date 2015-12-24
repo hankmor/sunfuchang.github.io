@@ -42,10 +42,6 @@
 <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
 <!-- Templatemo Script -->
 
-<!-- 目录生成插件 -->
-<script type="text/javascript" src="/assets/js/jquery.ztree.core-3.5.js"></script>
-<script type="text/javascript" src="/assets/js/ztree_toc.js"></script>
-
 <script>
     var _hmt = _hmt || [];
     (function() {
@@ -65,12 +61,16 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
 
-    // $('.sf-menu > li > a').click(function (e) {
-    //     e.preventDefault();
-    //     var _this = $(this);
-    //     var href = _this.attr('href');
-    //     location.href = href;
-    //     _this.parent().siblings().removeClass('active');
-    //     _this.parent().addClass('active');
-    // });
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
 </script>
