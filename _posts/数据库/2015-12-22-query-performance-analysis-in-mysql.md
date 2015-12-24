@@ -163,7 +163,7 @@ log-slow-queries = F:/MySQL/log/mysqlslowquery。
 long_query_time=2中的2表示查询超过两秒才记录；
 </pre>
 
-####2.show processlist 命令
+####2、show processlist 命令
 
 <code>SHOW PROCESSLIST</code>显示哪些线程正在运行。您也可以使用<code>mysqladmin processlist</code>语句得到此信息。
 

@@ -170,3 +170,7 @@ h6,h6 a {
 .toc .toc-content {
 	margin: 10px;
 }
+
+img {
+	width: 100%;
+}
