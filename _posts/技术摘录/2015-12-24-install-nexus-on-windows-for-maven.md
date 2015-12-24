@@ -15,7 +15,7 @@ maven私服有很多开源软件，最常用的就是本文需要介绍的nexus�
 
 ## 1、下载nexus：
 
-没什么难的，下载一个oss版本，即`open source`开源版。下载地址：http://www.sonatype.org/nexus/go
+没什么难的，下载一个oss版本，即open source开源版。下载地址：http://www.sonatype.org/nexus/go
 
 如下图所示：
 
