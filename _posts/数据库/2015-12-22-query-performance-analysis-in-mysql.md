@@ -248,7 +248,7 @@ waiting for handler insert
  还有其他的状态没在上面中列出来，不过它们大部分只是在查看服务器是否有存在错误是才用得着。
 </pre>
 
-## 3、开启profiling功能
+#### 3、开启profiling功能
 
 MySQL 的 SQL 語法調整主要都是使用 EXPLAIN , 但是這個並沒辦法知道詳細的 Ram(Memory)/CPU 等使用量.於 MySQL 5.0.37 以上開始支援 MySQL Query Profiler, 可以查詢到此 SQL 會執行多少時間, 並看出 CPU/Memory 使用量, 執行過程中 System lock, Table lock 花多少時間等等.
 啟動
