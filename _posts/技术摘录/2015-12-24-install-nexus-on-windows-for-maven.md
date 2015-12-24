@@ -72,7 +72,7 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
 
 找到maven的配置文件（这里我直接修改`%M2_HOME%/conf/setting.xml`文件），找到`<mirrors>`节点，添加一个镜像节点：
 
-```xml
+```
 <mirror>
     <id>nexus</id>
     <mirrorOf>*</mirrorOf>
@@ -85,7 +85,7 @@ nexus默认的管理员账号为`admin`，密码`admin123`，可以通过左侧�
 * **url**：及新搭建的私服的默认仓库组的url地址（通过页面可以查看）
 同样，在`<profile>`节点配置一个`<repository>`节点和`<pluginRepostory>`节点。
 
-```xml
+```
 <repository>
     <id>dc-chengdu</id>
     <name>dc-chengdu</name>
@@ -107,7 +107,7 @@ ok，配置完成，接下来，我们可以在项目的`pom.xml`中配置需要
 ###（1）配置授权：
 在`maven`的配置文件（这里我直接修改`%M2_HOME%/conf/setting.xml`文件）中，找到`<servers>`节点，添加两个`<server>`配置：
 
-```xml
+```
     <server>
         <id>releases</id>
         <username>deployment</username>
