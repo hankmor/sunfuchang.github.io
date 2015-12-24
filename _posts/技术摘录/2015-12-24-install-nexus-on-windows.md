@@ -9,8 +9,8 @@ description: maven如今已经是非常流行的项目构建工具，开发人�
 ---
 {% include JB/setup %}
 
-test : `this is code`
+test : <code>this is code</code>
 
-```
+<pre>
 this is code.
-```
+</pre>
