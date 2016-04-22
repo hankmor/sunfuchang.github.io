@@ -1,5 +1,5 @@
 ---
-layout: post
+layout : post
 category : 系统运维
 tagline: 
 tags : [linux, command]

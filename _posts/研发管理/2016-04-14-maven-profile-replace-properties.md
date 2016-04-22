@@ -1,7 +1,7 @@
 ﻿---
-layout: post
+layout : post
 category : 研发管理
-tagline: 
+tagline : 
 tags : [maven,profile]
 excerpt : 
 title_cn: maven的web工程多个Profile无法替换property属性
