@@ -32,7 +32,7 @@
         {% if page.title != null %}
             <div class="post-blog">
                 <div class="blog-image">
-                    <a href="{{ BASE_PATH }}{{page.url}}">
+                    <a href="{{ BASE_PATH }}{{page.url}}.html">
                         <img src="/assets/themes/medigo/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
                     </a>
                 </div>
@@ -46,7 +46,7 @@
                                 </span>
                     {% endunless %}
                     <h3>
-                        <a href="{{ BASE_PATH }}{{page.url}}">
+                        <a href="{{ BASE_PATH }}{{page.url}}.html">
                             {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
                         </a>
                     </h3>
@@ -60,7 +60,7 @@
                     <!--<p class="light-text"></p>-->
                     {% endunless %}
 
-                    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a></p>
+                    <p>{{ page.description }}<a href="{{ page.url }}.html">阅读全文...</a></p>
                 </div>
                 <!-- /.blog-content -->
             </div>
@@ -73,7 +73,7 @@
         {% if page.title != null %}
             <div class="post-blog">
                 <div class="blog-image">
-                    <a href="{{ BASE_PATH }}{{page.url}}">
+                    <a href="{{ BASE_PATH }}{{page.url}}.html">
                         <img src="/assets/themes/medigo/images/includes/blog{{page.title | size | modulo:5}}.jpg" alt="">
                     </a>
                 </div>
@@ -87,7 +87,7 @@
                                 </span>
                     {% endunless %}
                     <h3>
-                        <a href="{{ BASE_PATH }}{{page.url}}">
+                        <a href="{{ BASE_PATH }}{{page.url}}.html">
                             {% if page.title_cn %}{{ page.title_cn }}{% else %}{{ page.title }}{% endif %}
                         </a>
                     </h3>
@@ -101,7 +101,7 @@
                     <!--<p class="light-text"></p>-->
                     {% endunless %}
 
-                    <p>{{ page.description }}<a href="{{ page.url }}">阅读全文...</a></p>
+                    <p>{{ page.description }}<a href="{{ page.url }}.html">阅读全文...</a></p>
                 </div>
                 <!-- /.blog-content -->
             </div>
