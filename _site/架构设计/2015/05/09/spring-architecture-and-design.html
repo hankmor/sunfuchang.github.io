@@ -1,0 +1,1696 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="baidu-site-verification" content="MCykuGqiPQ"/>
+<meta name="keywords" content="Fukas's blog!, Fukas, sunfuchang, Spring,architecture,design"/>
+<meta name="description" content="Fukas's blog!, Fukas, Spring作为现在最优秀的框架之一，已被广泛的使用，并且有很多对其分析的文章。本文将从另外一个视角试图剖析出Spring框架的作者设计Spring框架的骨骼架构的设计理念，有那几个核心组件？为什么需要这些组件？它们又是如何结合在一起构成Spring的骨骼架构？Spring的AOP特性又是如何利用这些基础的骨骼架构来工作的？Spring中又使用了那些设计模式来完成它的这种设计的？它的这种设计理念对对我们以后的软件设计有何启示？本文将详细解答这些问题。"/>
+
+<title> Spring框架的设计理念与设计模式分析 </title>
+
+<meta name="author" content="fukas">
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- sina weibo -->
+<meta property="wb:webmaster" content="01d60bef1678aca3"/>
+
+<!-- google fonts -->
+<!--<link href="http://fonts.useso.com/css?family=PT+Serif:400,700,400italic,700itali" rel="stylesheet">-->
+<!--<link href="http://fonts.useso.com/css?family=Raleway:400,900,800,700,500,200,100,600" rel="stylesheet">-->
+
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="/assets/themes/medigo/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/misc.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/blue-scheme.css">
+<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all">
+<!-- syntax css -->
+<link href="/assets/css/main.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/normalize.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/syntax.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/pygment_trac.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/stylesheet.css" rel="stylesheet" type="text/css" media="all">
+
+<!-- JavaScripts -->
+<script src="/assets/themes/medigo/js/jquery-1.10.2.min.js"></script>
+<script src="/assets/themes/medigo/js/jquery-migrate-1.2.1.min.js"></script>
+
+<link rel="shortcut icon" href="/assets/themes/medigo/images/favicon.ico" type="image/x-icon"/>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+<![endif]-->
+
+<!-- atom & rss feed -->
+<link href="/atom.xml" type="application/atom+xml" rel="alternate"
+      title="Sitewide ATOM Feed">
+<link href="/rss.xml" type="application/rss+xml" rel="alternate"
+      title="Sitewide RSS Feed">	
+</head>
+<body>
+<div class="responsive_menu">
+      <ul class="main_menu">
+            <li><a href="/index.html">Home</a></li>
+            <!--<li><a href="#">Portfolio</a></li>-->
+            <li><a href="/blog/index.html">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/concat.html">Contact</a></li>
+      </ul>
+      <!-- /.main_menu -->
+</div>
+<!-- /.responsive_menu -->
+
+<header class="site-header clearfix">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <div class="pull-left logo">
+                              <a href="index.html" style="font-size: 1.8em!important; font-weight: bold; font-family: sans-serif;">
+                                    <img src="/assets/themes/medigo/images/favicon.ico" style="width: 12%;" alt="Medigo by templatemo">
+                                    Fukas's blog!
+                              </a>
+                        </div>
+                        <!-- /.logo -->
+
+                        <div class="main-navigation pull-right">
+                              <nav class="main-nav visible-md visible-lg">
+                                    <ul class="sf-menu">
+                                          <li class=""><a href="/index.html">Home</a></li>
+                                          <!--<li><a href="#">Portfolio</a></li>-->
+                                          <!-- 添加分页后，index。html -->
+                                          <li class=" active "><a href="/blog/index.html">Blog</a></li>
+                                          <li class=""><a href="/about.html">About</a></li>
+                                          <li class=""><a href="/concat.html">Contact</a></li>
+                                    </ul>
+                                    <!-- /.sf-menu -->
+                              </nav>
+                              <!-- /.main-nav -->
+                              <!-- This one in here is responsive menu for tablet and mobiles -->
+                              <div class="responsive-navigation visible-sm visible-xs">
+                                    <a href="#nogo" class="menu-toggle-btn">
+                                          <i class="fa fa-bars"></i>
+                                    </a>
+                              </div>
+                              <!-- /responsive_navigation -->
+                        </div>
+                        <!-- /.main-navigation -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</header>
+<!-- /.site-header -->
+
+<div class="first-widget parallax" style="background-image: url('/assets/themes/medigo/images/includes/blogbg0.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="thunm-bread">
+                      <span class="meta-date"><a href="#">Blog</a></span>            
+                            <span class="meta-comments">
+                                <a href="#">
+                                    文章详情
+                                </a>
+                            </span>     
+                        </div>
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="/assets/themes/medigo/images/includes/blog0.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">2015年05月9日</a></span>
+                            
+                                <span class="meta-comments">
+                                    
+                                    
+
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <a href="/categories/architecture.html">
+                架构设计
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+                                </span>
+                            
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>Spring框架的设计理念与设计模式分析</h1>
+
+                            <!-- 目录 -->
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
+                            
+                            
+<p><code>Spring</code> 作为现在最优秀的框架之一，已被广泛的使用，并且有很多对其分析的文章。本文将从另外一个视角试图剖析出<code>Spring</code>框架的作者设计 <code>Spring</code> 框架的骨骼架构的设计理念，有那几个核心组件？为什么需要这些组件？它们又是如何结合在一起构成<code>Spring</code>的骨骼架构？<code>Spring</code>的AOP特性又是如何利用这些基础的骨骼架构来工作的？<code>Spring</code>中又使用了那些设计模式来完成它的这种设计的？它的这种设计理念对对我们以后的软件设计有何启示？本文将详细解答这些问题。</p>
+
+<h2 id="spring"><strong>一、Spring的骨骼架构</strong></h2>
+
+<p><code>Spring</code>总共有十几个组件，但是真正核心的组件只有几个，下面是<code>Spring</code>框架的总体架构图：</p>
+
+<p>图 1 .<code>Spring</code> 框架的总体架构图<br />
+<img src="/assets/images/article_imgs/architecture/2015/05/09/1.gif" alt="Spring框架的总体架构图" align="center" /></p>
+
+<p>从上图中可以看出<code>Spring</code>框架中的核心组件只有三个：<code>Core</code>、<code>Context</code>和<code>Beans</code>。它们构建起了整个<code>Spring</code> 的骨骼架构。没有它们就不可能有<code>AOP</code>、<code>Web</code>等上层的特性功能。下面也将主要从这三个组件入手分析<code>Spring</code>。</p>
+
+<h2 id="spring-"><strong>二、Spring 的设计理念</strong></h2>
+
+<p>前面介绍了<code>Spring</code>的三个核心组件，如果再在它们三个中选出核心的话，那就非<code>Beans</code>组件莫属了，为何这样说，其实<code>Spring</code>就是面向<code>Bean</code>的编程（BOP,Bean Oriented Programming），Bean在<code>Spring</code>中才是真正的主角。</p>
+
+<p><code>Bean</code>在<code>Spring</code>中作用就像<code>Object</code>对<code>OOP</code>的意义一样，没有对象的概念就像没有面向对象编程，<code>Spring</code>中没有<code>Bean</code>也就没有<code>Spring</code>存在的意义。就像一次演出舞台都准备好了但是却没有演员一样。为什么要<code>Bean</code>这种角色<code>Bean</code>或者为何在 <code>Spring</code> 如此重要，这由<code>Spring</code> 框架的设计目标决定，<code>Spring</code>为何如此流行，我们用<code>Spring</code> 的原因是什么，想想你会发现原来<code>Spring</code> 解决了一个非常关键的问题他可以让你把对象之间的依赖关系转而用配置文件来管理，也就是他的依赖注入机制。而这个注入关系在一个叫 <code>Ioc</code> 容器中管理，那 <code>Ioc</code> 容器中有又是什么就是被 <code>Bean</code> 包裹的对象。<code>Spring</code> 正是通过把对象包装在 Bean 中而达到对这些对象管理以及一些列额外操作的目的。
+它这种设计策略完全类似于 <code>Java</code> 实现 <code>OOP</code> 的设计理念，当然了 <code>Java</code> 本身的设计要比 <code>Spring</code> 复杂太多太多，但是都是构建一个数据结构，然后根据这个数据结构设计他的生存环境，并让它在这个环境中按照一定的规律在不停的运动，在它们的不停运动中设计一系列与环境或者与其他个体完成信息交换。这样想来回过头想想我们用到的其他框架都是大慨类似的设计理念。</p>
+
+<h2 id="section"><strong>三、核心组件如何协同工作</strong></h2>
+
+<p>前面说 <code>Bean</code> 是 <code>Spring</code> 中关键因素，那 <code>Context</code> 和 <code>Core</code> 又有何作用呢？前面把 <code>Bean</code>比作一场演出中的演员的话，那 <code>Context</code> 就是这场演出的舞台背景，而 <code>Core</code> 应该就是演出的道具了。只有他们在一起才能具备能演出一场好戏的最基本的条件。当然有最基本的条件还不能使这场演出脱颖而出，还要他表演的节目足够的精彩，这些节目就是 <code>Spring</code> 能提供的特色功能了。</p>
+
+<p>我们知道 <code>Bean</code> 包装的是 <code>Object</code>，而 <code>Object</code>必然有数据，如何给这些数据提供生存环境就是<code>Context</code>要解决的问题，对<code>Context</code>来说他就是要发现每个<code>Bean</code>之间的关系，为它们建立这种关系并且要维护好这种关系。所以<code>Context</code>就是一个 <code>Bean</code> 关系的集合，这个关系集合又叫 <code>Ioc</code>容器，一旦建立起这个 <code>Ioc</code> 容器后 <code>Spring</code> 就可以为你工作了。那 <code>Core</code> 组件又有什么用武之地呢？其实 <code>Core</code> 就是发现、建立和维护每个 <code>Bean</code> 之间的关系所需要的一些列的工具，从这个角度看来，<code>Core</code> 这个组件叫 <code>Util</code> 更能让你理解。</p>
+
+<p>它们之间可以用下图来表示：</p>
+
+<p>图 2. 三个组件关系<br />
+<img src="/assets/images/article_imgs/architecture/2015/05/09/2.gif" alt="三个组件关系" align="center" /></p>
+
+<h3 id="section-1"><strong>1、核心组件详解</strong></h3>
+
+<p>这里将详细介绍每个组件内部类的层次关系，以及它们在运行时的时序顺序。我们在使用 <code>Spring</code> 是应该注意的地方。</p>
+
+<h4 id="bean-"><strong>1.1 Bean 组件</strong></h4>
+
+<p>前面已经说明了 <code>Bean</code> 组件对 <code>Spring</code> 的重要性，下面看看 <code>Bean</code> 这个组件式怎么设计的。<code>Bean</code> 组件在 <code>Spring</code> 的 <code>org.springframework.beans</code> 包下。这个包下的所有类主要解决了三件事：<code>Bean</code> 的定义、<code>Bean</code> 的创建以及对 <code>Bean</code> 的解析。对 <code>Spring</code> 的使用者来说唯一需要关心的就是 <code>Bean</code> 的创建，其他两个由 <code>Spring</code> 在内部帮你完成了，对你来说是透明的。
+<code>Spring Bean</code> 的创建是典型的工厂模式，他的顶级接口是 <code>BeanFactory</code>，下图是这个工厂的继承层次关系：</p>
+
+<p>图 3. <code>Bean</code> 工厂的继承关系</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/3.png" alt="Bean 工厂的继承关系" align="center" /></p>
+
+<p><code>BeanFactory</code> 有三个子类：<code>ListableBeanFactory</code>、<code>HierarchicalBeanFactory</code> 和 <code>AutowireCapableBeanFactory</code>。但是从上图中我们可以发现最终的默认实现类是 <code>DefaultListableBeanFactory</code>，他实现了所有的接口。那为何要定义这么多层次的接口呢？查阅这些接口的源码和说明发现，每个接口都有他使用的场合，它主要是为了区分在 <code>Spring</code> 内部在操作过程中对象的传递和转化过程中，对对象的数据访问所做的限制。例如 <code>ListableBeanFactory</code> 接口表示这些 <code>Bean</code> 是可列表的，而 <code>HierarchicalBeanFactory</code> 表示的是这些 <code>Bean</code> 是有继承关系的，也就是每个 <code>Bean</code> 有可能有父 <code>Bean</code>。<code>AutowireCapableBeanFactory</code> 接口定义 <code>Bean</code> 的自动装配规则。这四个接口共同定义了 <code>Bean</code> 的集合、<code>Bean</code> 之间的关系、以及 <code>Bean</code> 行为。</p>
+
+<p><code>Bean</code> 的定义主要有 <code>BeanDefinition</code> 描述，如下图说明了这些类的层次关系：</p>
+
+<p>图 4. <code>Bean</code> 定义的类层次关系图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/4.png" alt="Bean 定义的类层次关系图" align="center" /></p>
+
+<p><code>Bean</code> 的定义就是完整的描述了在 <code>Spring</code> 的配置文件中你定义的 <code><bean></bean></code> 节点中所有的信息，包括各种子节点。当 <code>Spring</code> 成功解析你定义的一个 <code><bean></bean></code> 节点后，在 <code>Spring</code> 的内部他就被转化成 <code>BeanDefinition</code> 对象。以后所有的操作都是对这个对象完成的。</p>
+
+<p><code>Bean</code> 的解析过程非常复杂，功能被分的很细，因为这里需要被扩展的地方很多，必须保证有足够的灵活性，以应对可能的变化。<code>Bean</code> 的解析主要就是对 <code>Spring</code> 配置文件的解析。这个解析过程主要通过下图中的类完成：</p>
+
+<p>图 5. <code>Bean</code> 的解析类</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/5.png" alt="Bean的解析类" align="center" /></p>
+
+<p>当然还有具体对 <code>tag</code> 的解析这里并没有列出。</p>
+
+<h4 id="context-"><strong>1.2 Context 组件</strong></h4>
+
+<p><code>Context</code> 在 <code>Spring</code> 的 <code>org.springframework.context</code> 包下，前面已经讲解了 <code>Context</code> 组件在 <code>Spring</code> 中的作用，他实际上就是给 <code>Spring</code> 提供一个运行时的环境，用以保存各个对象的状态。下面看一下这个环境是如何构建的。
+<code>ApplicationContext</code> 是 <code>Context</code> 的顶级父类，他除了能标识一个应用环境的基本信息外，他还继承了五个接口，这五个接口主要是扩展了 <code>Context</code> 的功能。下面是 <code>Context</code> 的类结构图：</p>
+
+<p>图 6. <code>Context</code> 相关的类结构图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/6.png" alt="Context 相关的类结构图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/6b.png" target="_blank">查看大图</a></small></p>
+
+<p>从上图中可以看出 <code>ApplicationContext</code> 继承了 <code>BeanFactory</code>，这也说明了 <code>Spring</code> 容器中运行的主体对象是 <code>Bean</code>，另外 <code>ApplicationContext</code> 继承了 <code>ResourceLoader</code> 接口，使得 <code>ApplicationContext</code> 可以访问到任何外部资源，这将在 <code>Core</code> 中详细说明。</p>
+
+<p><code>ApplicationContext</code> 的子类主要包含两个方面：</p>
+
+<ol>
+  <li>
+    <p><code>ConfigurableApplicationContext</code> 表示该 <code>Context</code> 是可修改的，也就是在构建 <code>Context</code> 中用户可以动态添加或修改已有的配置信息，它下面又有多个子类，其中最经常使用的是可更新的 <code>Context</code>，即 <code>AbstractRefreshableApplicationContext</code> 类。</p>
+  </li>
+  <li>
+    <p><code>WebApplicationContext</code> 顾名思义，就是为 <code>web</code> 准备的 <code>Context</code> 他可以直接访问到 <code>ServletContext</code>，通常情况下，这个接口使用的少。</p>
+  </li>
+</ol>
+
+<p>再往下分就是按照构建 <code>Context</code> 的文件类型，接着就是访问 <code>Context</code> 的方式。这样一级一级构成了完整的 <code>Context</code> 等级层次。</p>
+
+<p>总体来说 <code>ApplicationContext</code> 必须要完成以下几件事：</p>
+
+<ol>
+  <li>标识一个应用环境</li>
+  <li>利用 BeanFactory 创建 Bean 对象</li>
+  <li>保存对象关系表</li>
+  <li>能够捕获各种事件</li>
+</ol>
+
+<p><code>Context</code> 作为 <code>Spring</code> 的 <code>Ioc</code> 容器，基本上整合了 <code>Spring</code> 的大部分功能，或者说是大部分功能的基础。</p>
+
+<h4 id="core-"><strong>1.3 Core 组件</strong></h4>
+
+<p><code>Core</code> 组件作为 <code>Spring</code> 的核心组件，他其中包含了很多的关键类，其中一个重要组成部分就是定义了资源的访问方式。这种把所有资源都抽象成一个接口的方式很值得在以后的设计中拿来学习。下面就重要看一下这个部分在 <code>Spring</code> 的作用。</p>
+
+<p>下图是 Resource 相关的类结构图：</p>
+
+<p>图 7. Resource 相关的类结构图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/7.png" alt="Resource 相关的类结构图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/7b.png" target="_blank">查看大图</a></small></p>
+
+<p>从上图可以看出 <code>Resource</code> 接口封装了各种可能的资源类型，也就是对使用者来说屏蔽了文件类型的不同。对资源的提供者来说，如何把资源包装起来交给其他人用这也是一个问题，我们看到 <code>Resource</code> 接口继承了 <code>InputStreamSource</code> 接口，这个接口中有个 <code>getInputStream</code> 方法，返回的是 <code>InputStream</code> 类。这样所有的资源都被可以通过 <code>InputStream</code> 这个类来获取，所以也屏蔽了资源的提供者。另外还有一个问题就是加载资源的问题，也就是资源的加载者要统一，从上图中可以看出这个任务是由 <code>ResourceLoader</code> 接口完成，他屏蔽了所有的资源加载者的差异，只需要实现这个接口就可以加载所有的资源，他的默认实现是 <code>DefaultResourceLoader</code>。</p>
+
+<p>下面看一下 <code>Context</code> 和 <code>Resource</code> 是如何建立关系的？首先看一下他们的类关系图：</p>
+
+<p>图 8. <code>Context</code> 和 <code>Resource</code> 的类关系图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/8.png" alt="Context和Resource的类关系图" align="center" /></p>
+
+<p>从上图可以看出，<code>Context</code> 是把资源的加载、解析和描述工作委托给了 <code>ResourcePatternResolver</code> 类来完成，他相当于一个接头人，他把资源的加载、解析和资源的定义整合在一起便于其他组件使用。<code>Core</code> 组件中还有很多类似的方式。</p>
+
+<h3 id="ioc-"><strong>2、Ioc 容器如何工作</strong></h3>
+
+<p>前面介绍了 <code>Core</code> 组件、<code>Bean</code> 组件和 <code>Context</code> 组件的结构与相互关系，下面这里从使用者角度看一下他们是如何运行的，以及我们如何让 <code>Spring</code> 完成各种功能，<code>Spring</code> 到底能有那些功能，这些功能是如何得来的，下面介绍。</p>
+
+<h4 id="codebeanfactorycode-"><strong>2.1 如何创建 <code>BeanFactory</code> 工厂</strong></h4>
+
+<p>正如图 2 描述的那样，<code>Ioc</code> 容器实际上就是 <code>Context</code> 组件结合其他两个组件共同构建了一个 <code>Bean</code> 关系网，如何构建这个关系网？构建的入口就在 <code>AbstractApplicationContext</code> 类的 <code>refresh</code> 方法中。这个方法的代码如下：</p>
+
+<p>清单 1. <code>AbstractApplicationContext.refresh</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">refresh</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span><span class="o">,</span> <span class="n">IllegalStateException</span> <span class="o">{</span> 
+    <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">startupShutdownMonitor</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="c1">// Prepare this context for refreshing. </span>
+        <span class="n">prepareRefresh</span><span class="o">();</span> 
+        <span class="c1">// Tell the subclass to refresh the internal bean factory. </span>
+        <span class="n">ConfigurableListableBeanFactory</span> <span class="n">beanFactory</span> <span class="o">=</span> <span class="n">btainFreshBeanFactory</span><span class="o">();</span> 
+        <span class="c1">// Prepare the bean factory for use in this context. </span>
+        <span class="n">prepareBeanFactory</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span> 
+        <span class="k">try</span> <span class="o">{</span> 
+            <span class="c1">// Allows post-processing of the bean factory in context</span>
+            <span class="n">subclasses</span><span class="o">.</span><span class="na">postProcessBeanFactory</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span>
+            <span class="c1">// Invoke factory processors registered as beans in the context.</span>
+            <span class="n">invokeBeanFactoryPostProcessors</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span>
+            <span class="c1">// Register bean processors that intercept bean creation.</span>
+            <span class="n">registerBeanPostProcessors</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span> 
+            <span class="c1">// Initialize message source for this context. </span>
+            <span class="n">initMessageSource</span><span class="o">();</span> 
+            <span class="c1">// Initialize event multicaster for this context. </span>
+            <span class="n">initApplicationEventMulticaster</span><span class="o">();</span> 
+            <span class="c1">// Initialize other special beans in specific context subclasses. </span>
+            <span class="n">onRefresh</span><span class="o">();</span> 
+            <span class="c1">// Check for listener beans and register them. </span>
+            <span class="n">registerListeners</span><span class="o">();</span> 
+            <span class="c1">// Instantiate all remaining (non-lazy-init) singletons. </span>
+            <span class="n">finishBeanFactoryInitialization</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span> 
+            <span class="c1">// Last step: publish corresponding event. </span>
+            <span class="n">finishRefresh</span><span class="o">();</span> 
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">BeansException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span> 
+            <span class="c1">// Destroy already created singletons to avoid dangling resources. </span>
+            <span class="n">destroyBeans</span><span class="o">();</span> 
+            <span class="c1">// Reset 'active' flag. </span>
+            <span class="n">cancelRefresh</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span> 
+            <span class="c1">// Propagate exception to caller. </span>
+            <span class="k">throw</span> <span class="n">ex</span><span class="o">;</span> 
+        <span class="o">}</span> 
+    <span class="o">}</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>这个方法就是构建整个 <code>Ioc</code> 容器过程的完整的代码，了解了里面的每一行代码基本上就了解大部分 Spring 的原理和功能了。</p>
+
+<p>这段代码主要包含这样几个步骤：</p>
+
+<ol>
+  <li>构建 <code>BeanFactory</code>，以便于产生所需的“演员”</li>
+  <li>注册可能感兴趣的事件</li>
+  <li>创建 <code>Bean</code> 实例对象</li>
+  <li>触发被监听的事件</li>
+</ol>
+
+<p>下面就结合代码分析这几个过程。</p>
+
+<p>第二三句就是在创建和配置 <code>BeanFactory</code>。这里是 <code>refresh</code> 也就是刷新配置，前面介绍了 <code>Context</code> 有可更新的子类，这里正是实现这个功能，当 <code>BeanFactory</code> 已存在是就更新，如果没有就新创建。下面是更新 <code>BeanFactory</code> 的方法代码：</p>
+
+<p>清单 2. <code>AbstractRefreshableApplicationContext. refreshBeanFactory</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">protected</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">refreshBeanFactory</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span> <span class="o">{</span> 
+    <span class="k">if</span> <span class="o">(</span><span class="n">hasBeanFactory</span><span class="o">())</span> <span class="o">{</span> 
+        <span class="n">destroyBeans</span><span class="o">();</span> 
+        <span class="n">closeBeanFactory</span><span class="o">();</span> 
+    <span class="o">}</span> 
+    <span class="k">try</span> <span class="o">{</span> 
+        <span class="n">DefaultListableBeanFactory</span> <span class="n">beanFactory</span> <span class="o">=</span> <span class="n">createBeanFactory</span><span class="o">();</span> 
+        <span class="n">beanFactory</span><span class="o">.</span><span class="na">setSerializationId</span><span class="o">(</span><span class="n">getId</span><span class="o">());</span> 
+        <span class="n">customizeBeanFactory</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span> 
+        <span class="n">loadBeanDefinitions</span><span class="o">(</span><span class="n">beanFactory</span><span class="o">);</span> 
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">beanFactoryMonitor</span><span class="o">)</span> <span class="o">{</span> 
+            <span class="k">this</span><span class="o">.</span><span class="na">beanFactory</span> <span class="o">=</span> <span class="n">beanFactory</span><span class="o">;</span> 
+        <span class="o">}</span> 
+    <span class="o">}</span> 
+    <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">ApplicationContextException</span><span class="o">(</span>
+            <span class="s">"I/O error parsing bean definition source for "</span> 
+            <span class="o">+</span> <span class="n">getDisplayName</span><span class="o">(),</span> <span class="n">ex</span><span class="o">);</span> 
+    <span class="o">}</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>这个方法实现了 <code>AbstractApplicationContext</code> 的抽象方法 <code>refreshBeanFactory</code>，这段代码清楚的说明了 <code>BeanFactory</code> 的创建过程。注意 <code>BeanFactory</code> 对象的类型的变化，前面介绍了他有很多子类，在什么情况下使用不同的子类这非常关键。<code>BeanFactory</code> 的原始对象是 <code>DefaultListableBeanFactory</code>，这个非常关键，因为他设计到后面对这个对象的多种操作，下面看一下这个类的继承层次类图：</p>
+
+<p>图 9. <code>DefaultListableBeanFactory</code> 类继承关系图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/9.png" alt="DefaultListableBeanFactory 类继承关系图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/9b.png" target="_blank">查看大图</a></small></p>
+
+<p>从这个图中发现除了 <code>BeanFactory</code> 相关的类外，还发现了与 <code>Bean</code> 的 <code>register</code> 相关。这在 <code>refreshBeanFactory</code> 方法中有一行 <code>loadBeanDefinitions(beanFactory)</code> 将找到答案，这个方法将开始加载、解析 <code>Bean</code> 的定义，也就是把用户定义的数据结构转化为 <code>Ioc</code> 容器中的特定数据结构。</p>
+
+<p>这个过程可以用下面时序图解释：</p>
+
+<p>图 10. 创建 <code>BeanFactory</code> 时序图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/10.png" alt="创建BeanFactory 时序图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/10b.png" target="_blank">查看大图</a></small></p>
+
+<p><code>Bean</code> 的解析和登记流程时序图如下：</p>
+
+<p>图 11. 解析和登记 <code>Bean</code> 对象时序图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/11.png" alt="解析和登记Bean对象时序图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/11b.png" target="_blank">查看大图</a></small></p>
+
+<p>创建好 <code>BeanFactory</code> 后，接下去添加一些 <code>Spring</code> 本身需要的一些工具类，这个操作在 <code>AbstractApplicationContext</code> 的 <code>prepareBeanFactory</code> 方法完成。</p>
+
+<p><code>AbstractApplicationContext</code> 中接下来的三行代码对 <code>Spring</code> 的功能扩展性起了至关重要的作用。前两行主要是让你现在可以对已经构建的 <code>BeanFactory</code> 的配置做修改，后面一行就是让你可以对以后再创建 <code>Bean</code> 的实例对象时添加一些自定义的操作。所以他们都是扩展了 <code>Spring</code> 的功能，所以我们要学习使用 <code>Spring</code> 必须对这一部分搞清楚。</p>
+
+<p>其中在 <code>invokeBeanFactoryPostProcessors</code> 方法中主要是获取实现 <code>BeanFactoryPostProcessor</code> 接口的子类。并执行它的 <code>postProcessBeanFactory</code> 方法，这个方法的声明如下：</p>
+
+<p>清单 3. <code>BeanFactoryPostProcessor.postProcessBeanFactory</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">postProcessBeanFactory</span><span class="p">(</span><span class="n">ConfigurableListableBeanFactory</span> <span class="n">beanFactory</span><span class="o">)</span> 
+    <span class="kd">throws</span> <span class="n">BeansException</span><span class="o">;</span></code></pre></figure>
+
+<p>它的参数是 <code>beanFactory</code>，说明可以对 <code>beanFactory</code> 做修改，这里注意这个 <code>beanFactory</code> 是 <code>ConfigurableListableBeanFactory</code> 类型的，这也印证了前面介绍的不同 <code>BeanFactory</code> 所使用的场合不同，这里只能是可配置的<code>BeanFactory</code>，防止一些数据被用户随意修改。</p>
+
+<p><code>registerBeanPostProcessors</code> 方法也是可以获取用户定义的实现了<code>BeanPostProcessor</code> 接口的子类，并执行把它们注册到 <code>BeanFactory</code> 对象中的 <code>beanPostProcessors</code> 变量中。<code>BeanPostProcessor</code> 中声明了两个方法：<code>postProcessBeforeInitialization</code>、<code>postProcessAfterInitialization</code> 分别用于在 <code>Bean</code> 对象初始化时执行。可以执行用户自定义的操作。</p>
+
+<p>后面的几行代码是初始化监听事件和对系统的其他监听者的注册，监听者必须是 <code>ApplicationListener</code> 的子类。</p>
+
+<h4 id="bean--bean-"><strong>2.2 如何创建 Bean 实例并构建 Bean 的关系网？</strong></h4>
+
+<p>下面就是 <code>Bean</code> 的实例化代码，是从 <code>finishBeanFactoryInitialization</code> 方法开始的。</p>
+
+<p>清单 4. <code>AbstractApplicationContext.finishBeanFactoryInitialization</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finishBeanFactoryInitialization</span><span class="p">(</span>
+    <span class="n">ConfigurableListableBeanFactory</span> <span class="n">beanFactory</span><span class="o">)</span> <span class="o">{</span> 
+    <span class="c1">// Stop using the temporary ClassLoader for type matching. </span>
+    <span class="n">beanFactory</span><span class="o">.</span><span class="na">setTempClassLoader</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span> 
+    <span class="c1">// Allow for caching all bean definition metadata, not expecting further changes.</span>
+    <span class="n">beanFactory</span><span class="o">.</span><span class="na">freezeConfiguration</span><span class="o">();</span> 
+    <span class="c1">// Instantiate all remaining (non-lazy-init) singletons. </span>
+    <span class="n">beanFactory</span><span class="o">.</span><span class="na">preInstantiateSingletons</span><span class="o">();</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>从上面代码中可以发现 <code>Bean</code> 的实例化是在 <code>BeanFactory</code> 中发生的。<code>preInstantiateSingletons</code> 方法的代码如下：</p>
+
+<p>清单 5. <code>DefaultListableBeanFactory.preInstantiateSingletons</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">preInstantiateSingletons</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span> <span class="o">{</span> 
+    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">isInfoEnabled</span><span class="o">())</span> <span class="o">{</span> 
+        <span class="k">this</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Pre-instantiating singletons in "</span> <span class="o">+</span> <span class="k">this</span><span class="o">);</span> 
+    <span class="o">}</span> 
+    <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">beanDefinitionMap</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">beanName</span> <span class="o">:</span> <span class="k">this</span><span class="o">.</span><span class="na">beanDefinitionNames</span><span class="o">)</span> <span class="o">{</span> 
+            <span class="n">RootBeanDefinition</span> <span class="n">bd</span> <span class="o">=</span> <span class="n">getMergedLocalBeanDefinition</span><span class="o">(</span><span class="n">beanName</span><span class="o">);</span> 
+            <span class="k">if</span> <span class="o">(!</span><span class="n">bd</span><span class="o">.</span><span class="na">isAbstract</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">bd</span><span class="o">.</span><span class="na">isSingleton</span><span class="o">()</span> 
+                <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">bd</span><span class="o">.</span><span class="na">isLazyInit</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">isFactoryBean</span><span class="o">(</span><span class="n">beanName</span><span class="o">))</span> <span class="o">{</span> 
+                    <span class="kd">final</span> <span class="n">FactoryBean</span> <span class="n">factory</span> <span class="o">=</span> 
+                        <span class="o">(</span><span class="n">FactoryBean</span><span class="o">)</span> <span class="n">getBean</span><span class="o">(</span><span class="n">FACTORY_BEAN_PREFIX</span><span class="o">+</span> <span class="n">beanName</span><span class="o">);</span> 
+                    <span class="kt">boolean</span> <span class="n">isEagerInit</span><span class="o">;</span> 
+                    <span class="k">if</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getSecurityManager</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span> 
+                        <span class="o">&amp;&amp;</span> <span class="n">factory</span> <span class="k">instanceof</span> <span class="n">SmartFactoryBean</span><span class="o">)</span> <span class="o">{</span> 
+                        <span class="n">isEagerInit</span> <span class="o">=</span> <span class="n">AccessController</span><span class="o">.</span><span class="na">doPrivileged</span><span class="o">(</span>
+                            <span class="k">new</span> <span class="n">PrivilegedAction</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">&gt;()</span> <span class="o">{</span> 
+                            <span class="kd">public</span> <span class="n">Boolean</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span> 
+                                <span class="k">return</span> <span class="o">((</span><span class="n">SmartFactoryBean</span><span class="o">)</span> <span class="n">factory</span><span class="o">).</span><span class="na">isEagerInit</span><span class="o">();</span> 
+                            <span class="o">}</span> 
+                        <span class="o">},</span> <span class="n">getAccessControlContext</span><span class="o">());</span> 
+                    <span class="o">}</span> 
+                    <span class="k">else</span> <span class="o">{</span> 
+                        <span class="n">isEagerInit</span> <span class="o">=</span> <span class="n">factory</span> <span class="k">instanceof</span> <span class="n">SmartFactoryBean</span> 
+                            <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">SmartFactoryBean</span><span class="o">)</span> <span class="n">factory</span><span class="o">).</span><span class="na">isEagerInit</span><span class="o">();</span> 
+                    <span class="o">}</span> 
+                    <span class="k">if</span> <span class="o">(</span><span class="n">isEagerInit</span><span class="o">)</span> <span class="o">{</span> 
+                        <span class="n">getBean</span><span class="o">(</span><span class="n">beanName</span><span class="o">);</span> 
+                    <span class="o">}</span> 
+                <span class="o">}</span> 
+                <span class="k">else</span> <span class="o">{</span> 
+                    <span class="n">getBean</span><span class="o">(</span><span class="n">beanName</span><span class="o">);</span> 
+                <span class="o">}</span> 
+            <span class="o">}</span> 
+        <span class="o">}</span> 
+    <span class="o">}</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>这里出现了一个非常重要的 <code>Bean</code> —— <code>FactoryBean</code>，可以说 <code>Spring</code> 一大半的扩展的功能都与这个 <code>Bean</code> 有关，这是个特殊的 <code>Bean</code> 他是个工厂 <code>Bean</code>，可以产生 <code>Bean</code> 的 <code>Bean</code>，这里的产生 <code>Bean</code> 是指 <code>Bean</code> 的实例，如果一个类继承 <code>FactoryBean</code> 用户可以自己定义产生实例对象的方法只要实现他的 <code>getObject</code> 方法。然而在 <code>Spring</code> 内部这个 <code>Bean</code> 的实例对象是 <code>FactoryBean</code>，通过调用这个对象的 <code>getObject</code> 方法就能获取用户自定义产生的对象，从而为 <code>Spring</code> 提供了很好的扩展性。<code>Spring</code> 获取 <code>FactoryBean</code> 本身的对象是在前面加上 <code>&amp;</code> 来完成的。</p>
+
+<p>如何创建 <code>Bean</code> 的实例对象以及如何构建 <code>Bean</code> 实例对象之间的关联关系式 <code>Spring</code> 中的一个核心关键，下面是这个过程的流程图。</p>
+
+<p>图 12.<code>Bean</code> 实例创建流程图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/12.gif" alt="Bean实例创建流程图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/12b.gif" target="_blank">查看大图</a></small></p>
+
+<p>如果是普通的 <code>Bean</code> 就直接创建他的实例，是通过调用 <code>getBean</code> 方法。下面是创建 <code>Bean</code> 实例的时序图：</p>
+
+<p>图 13.<code>Bean</code> 实例创建时序图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/13.png" alt="Bean实例创建流程图" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/13b.png" target="_blank">查看大图</a></small></p>
+
+<p>还有一个非常重要的部分就是建立 <code>Bean</code> 对象实例之间的关系，这也是 <code>Spring</code> 框架的核心竞争力，何时、如何建立他们之间的关系请看下面的时序图：</p>
+
+<p>图 14.<code>Bean</code> 对象关系建立</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/14.png" alt="Bean对象关系建立" align="center" /><br />
+<small><a href="/assets/images/article_imgs/architecture/2015/05/09/14b.png" target="_blank">查看大图</a></small></p>
+
+<h4 id="codeioccode-"><strong>2.3 <code>Ioc</code> 容器的扩展点</strong></h4>
+
+<p>现在还有一个问题就是如何让这些 <code>Bean</code>对象有一定的扩展性，就是可以加入用户的一些操作。那么有哪些扩展点呢？ <code>Spring</code> 又是如何调用到这些扩展点的？</p>
+
+<p>对 <code>Spring</code> 的 <code>Ioc</code> 容器来说，主要有这么几个。<code>BeanFactoryPostProcessor</code>， <code>BeanPostProcessor</code>。他们分别是在构建 <code>BeanFactory</code> 和构建 <code>Bean</code> 对象时调用。还有就是 <code>InitializingBean</code> 和 <code>DisposableBean</code> 他们分别是在 <code>Bean</code> 实例创建和销毁时被调用。用户可以实现这些接口中定义的方法，<code>Spring</code> 就会在适当的时候调用他们。还有一个是 <code>FactoryBean</code> 他是个特殊的 <code>Bean</code>，这个 <code>Bean</code> 可以被用户更多的控制。</p>
+
+<p>这些扩展点通常也是我们使用 <code>Spring</code> 来完成我们特定任务的地方，如何精通 <code>Spring</code> 就看你有没有掌握好 <code>Spring</code> 有哪些扩展点，并且如何使用他们，要知道如何使用他们就必须了解他们内在的机理。可以用下面一个比喻来解释。</p>
+
+<p>我们把 <code>Ioc</code> 容器比作一个箱子，这个箱子里有若干个球的模子，可以用这些模子来造很多种不同的球，还有一个造这些球模的机器，这个机器可以产生球模。那么他们的对应关系就是 <code>BeanFactory</code> 就是那个造球模的机器，球模就是 <code>Bean</code>，而球模造出来的球就是 <code>Bean</code> 的实例。那前面所说的几个扩展点又在什么地方呢？ <code>BeanFactoryPostProcessor</code> 对应到当造球模被造出来时，你将有机会可以对其做出适当的修正，也就是他可以帮你修改球模。而 <code>InitializingBean</code> 和 <code>DisposableBean</code> 是在球模造球的开始和结束阶段，你可以完成一些预备和扫尾工作。<code>BeanPostProcessor</code> 就可以让你对球模造出来的球做出适当的修正。最后还有一个 <code>FactoryBean</code>，它可是一个神奇的球模。这个球模不是预先就定型了，而是由你来给他确定它的形状，既然你可以确定这个球模型的形状，当然他造出来的球肯定就是你想要的球了，这样在这个箱子里尼可以发现所有你想要的球</p>
+
+<h4 id="codeioccode"><strong>2.4 <code>Ioc</code>容器如何为我所用</strong></h4>
+
+<p>前面的介绍了 <code>Spring</code> 容器的构建过程，那 <code>Spring</code> 能为我们做什么，<code>Spring</code> 的 <code>Ioc</code> 容器又能做什么呢？我们使用 <code>Spring</code> 必须要首先构建 <code>Ioc</code> 容器，没有它 <code>Spring</code> 无法工作，<code>ApplicatonContext.xml</code> 就是 <code>Ioc</code> 容器的默认配置文件，<code>Spring</code> 的所有特性功能都是基于这个 <code>Ioc</code> 容器工作的，比如后面要介绍的 <code>AOP</code>。</p>
+
+<p><code>Ioc</code> 它实际上就是为你构建了一个魔方，<code>Spring</code> 为你搭好了骨骼架构，这个魔方到底能变出什么好的东西出来，这必须要有你的参与。那我们怎么参与？这就是前面说的要了解 <code>Spring</code> 中那有些扩展点，我们通过实现那些扩展点来改变 <code>Spring</code> 的通用行为。至于如何实现扩展点来得到我们想要的个性结果，<code>Spring</code> 中有很多例子，其中 <code>AOP</code> 的实现就是 <code>Spring</code> 本身实现了其扩展点来达到了它想要的特性功能，可以拿来参考。</p>
+
+<h3 id="spring--aop-"><strong>3、Spring 中 AOP 特性详解</strong></h3>
+
+<h4 id="section-2"><strong>3.1 动态代理的实现原理</strong></h4>
+
+<p>要了解 <code>Spring</code> 的 <code>AOP</code> 就必须先了解的动态代理的原理，因为 <code>AOP</code> 就是基于动态代理实现的。动态代理还要从 <code>JDK</code> 本身说起。</p>
+
+<p>在 <code>Jdk</code> 的 <code>java.lang.reflect</code> 包下有个 <code>Proxy</code> 类，它正是构造代理类的入口。这个类的结构入下：</p>
+
+<p>图 15. <code>Proxy</code> 类结构</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/15.png" alt="Proxy类结构" align="center" /></p>
+
+<p>从上图发现最后面四个是公有方法。而最后一个方法 <code>newProxyInstance</code> 就是创建代理对象的方法。这个方法的源码如下：</p>
+
+<p>清单 6. <code>Proxy.newProxyInstance</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">newProxyInstance</span><span class="p">(</span><span class="n">ClassLoader</span> <span class="n">loader</span><span class="o">,</span> 
+    <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">interfaces</span><span class="o">,</span> 
+    <span class="n">InvocationHandler</span> <span class="n">h</span><span class="o">)</span> 
+    <span class="kd">throws</span> <span class="n">IllegalArgumentException</span> <span class="o">{</span> 
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">NullPointerException</span><span class="o">();</span> 
+    <span class="o">}</span> 
+    <span class="n">Class</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">getProxyClass</span><span class="o">(</span><span class="n">loader</span><span class="o">,</span> <span class="n">interfaces</span><span class="o">);</span> 
+    <span class="k">try</span> <span class="o">{</span> 
+        <span class="n">Constructor</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">constructorParams</span><span class="o">);</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">Object</span><span class="o">)</span> <span class="n">cons</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="n">h</span> <span class="o">});</span> 
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchMethodException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">InternalError</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span> 
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">InternalError</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span> 
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InstantiationException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">InternalError</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span> 
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">InternalError</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span> 
+    <span class="o">}</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>这个方法需要三个参数：<code>ClassLoader</code>，用于加载代理类的 <code>Loader</code> 类，通常这个 <code>Loader</code> 和被代理的类是同一个 <code>Loader</code> 类。<code>Interfaces</code>，是要被代理的那些那些接口。<code>InvocationHandler</code>，就是用于执行除了被代理接口中方法之外的用户自定义的操作，他也是用户需要代理的最终目的。用户调用目标方法都被代理到 <code>InvocationHandler</code> 类中定义的唯一方法 <code>invoke</code> 中。这在后面再详解。</p>
+
+<p>下面还是看看<code>Proxy</code>
+如何产生代理类的过程，他构造出来的代理类到底是什么样子？下面揭晓啦。</p>
+
+<p>图 16. 创建代理对象时序图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/16.png" alt="创建代理对象时序图" align="center" /></p>
+
+<p>其实从上图中可以发现正在构造代理类的是在 <code>ProxyGenerator</code> 的 <code>generateProxyClass</code> 的方法中。<code>ProxyGenerator</code> 类在 <code>sun.misc</code> 包下，感兴趣的话可以看看他的源码。</p>
+
+<p>假如有这样一个接口，如下：</p>
+
+<p>清单 7. <code>SimpleProxy</code> 类</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SimpleProxy</span> <span class="o">{</span> 
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">simpleMethod1</span><span class="o">();</span> 
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">simpleMethod2</span><span class="o">();</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>代理来生成的类结构如下：</p>
+
+<p>清单 8. <code>$Proxy2</code>类</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="err">$</span><span class="nc">Proxy2</span> <span class="kd">extends</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Proxy</span> <span class="kd">implements</span> <span class="n">SimpleProxy</span><span class="o">{</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span><span class="o">;</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span><span class="o">;</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m2</span><span class="o">;</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m3</span><span class="o">;</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m4</span><span class="o">;</span> 
+
+    <span class="kt">int</span> <span class="n">hashCode</span><span class="o">();</span> 
+    <span class="kt">boolean</span> <span class="n">equals</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span><span class="o">);</span> 
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">toString</span><span class="o">();</span> 
+    <span class="kt">void</span> <span class="n">simpleMethod1</span><span class="o">();</span> 
+    <span class="kt">void</span> <span class="n">simpleMethod2</span><span class="o">();</span> 
+<span class="o">}</span></code></pre></figure>
+
+<p>这个类中的方法里面将会是调用 <code>InvocationHandler</code> 的 <code>invoke</code> 方法，而每个方法也将对应一个属性变量，这个属性变量 <code>m</code> 也将传给 <code>invoke</code> 方法中的 <code>Method</code> 参数。整个代理就是这样实现的。</p>
+
+<h4 id="spring-aop-"><strong>3.2 Spring AOP 如何实现</strong></h4>
+
+<p>从前面代理的原理我们知道，代理的目的是调用目标方法时我们可以转而执行 <code>InvocationHandler</code> 类的 <code>invoke</code> 方法，所以如何在 <code>InvocationHandler</code> 上做文章就是 <code>Spring</code> 实现 <code>Aop</code> 的关键所在。</p>
+
+<p><code>Spring</code> 的 <code>Aop</code> 实现是遵守 <code>Aop</code> 联盟的约定。同时 <code>Spring</code> 又扩展了它，增加了如 <code>Pointcut</code>、<code>Advisor</code> 等一些接口使得更加灵活。</p>
+
+<p>下面是 Jdk 动态代理的类图：</p>
+
+<p>图 17. Jdk 动态代理的类图
+<img src="/assets/images/article_imgs/architecture/2015/05/09/17.png" alt="创建代理对象时序图" align="center" /></p>
+
+<p>上图清楚的显示了 <code>Spring</code> 引用了 <code>Aop Alliance</code> 定义的接口。姑且不讨论 <code>Spring</code> 如何扩展 <code>Aop Alliance</code>，先看看 <code>Spring</code> 如何实现代理类的，要实现代理类在 <code>Spring</code> 的配置文件中通常是这样定一个 <code>Bean</code> 的，如下：</p>
+
+<p>清单 9. 配置代理类 <code>Bean</code></p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"testBeanSingleton"</span> 
+    <span class="na">class=</span><span class="s">"org.springframework.aop.framework.ProxyFactoryBean"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"proxyInterfaces"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;value&gt;</span>
+            org.springframework.aop.framework.PrototypeTargetTests$TestBean
+        <span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"target"</span><span class="nt">&gt;&lt;ref</span> <span class="na">local=</span><span class="s">"testBeanTarget"</span><span class="nt">&gt;&lt;/ref&gt;</span> <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"singleton"</span><span class="nt">&gt;&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"interceptorNames"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;list&gt;</span>
+            <span class="nt">&lt;value&gt;</span>testInterceptor<span class="nt">&lt;/value&gt;</span>
+            <span class="nt">&lt;value&gt;</span>testInterceptor2<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/list&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span></code></pre></figure>
+
+<p>配置上看到要设置被代理的接口，和接口的实现类也就是目标类，以及拦截器也就在执行目标方法之前被调用，这里 <code>Spring</code> 中定义的各种各样的拦截器，可以选择使用。
+下面看看 <code>Spring</code> 如何完成了代理以及是如何调用拦截器的。</p>
+
+<p>前面提到 <code>Spring Aop</code> 也是实现其自身的扩展点来完成这个特性的，从这个代理类可以看出它正是继承了 <code>FactoryBean</code> 的 <code>ProxyFactoryBean</code>，<code>FactoryBean</code> 之所以特别就在它可以让你自定义对象的创建方法。当然代理对象要通过 <code>Proxy</code> 类来动态生成。</p>
+
+<p>下面是 <code>Spring</code> 创建的代理对象的时序图：</p>
+
+<p>图 18.<code>Spring</code> 代理对象的产生</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/18.png" alt="Spring代理对象的产生" align="center" /></p>
+
+<p><code>Spring</code> 创建了代理对象后，当你调用目标对象上的方法时，将都会被代理到 <code>InvocationHandler</code> 类的 <code>invoke</code> 方法中执行，这在前面已经解释。在这里 <code>JdkDynamicAopProxy</code> 类实现了 <code>InvocationHandler</code> 接口。</p>
+
+<p>下面再看看 <code>Spring</code> 是如何调用拦截器的，下面是这个过程的时序图：</p>
+
+<p>图 19.<code>Spring</code> 调用拦截器</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/19.png" alt="Spring代理对象的产生" align="center" /></p>
+
+<p>以上所说的都是 <code>Jdk</code> 动态代理，<code>Spring</code> 还支持一种 <code>CGLIB</code> 类代理，感兴趣自己看吧。</p>
+
+<h2 id="spring--1"><strong>四、Spring 中设计模式分析</strong></h2>
+
+<p><code>Spring</code> 中使用的设计模式也很多，比如工厂模式、单例模式、模版模式等，在《Webx框架的系统架构与设计模式》、《Tomcat的系统架构与模式设计分析》已经有介绍，这里就不赘述了。这里主要介绍代理模式和策略模式。</p>
+
+<h3 id="section-3"><strong>1、代理模式</strong></h3>
+
+<h4 id="section-4"><strong>1.1 代理模式原理</strong></h4>
+
+<p>代理模式就是给某一个对象创建一个代理对象，而由这个代理对象控制对原对象的引用，而创建这个代理对象就是可以在调用原对象是可以增加一些额外的操作。下面是代理模式的结构：</p>
+
+<p>图 20. 代理模式的结构</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/20.png" alt="代理模式的结构" align="center" /></p>
+
+<ul>
+  <li><code>Subject</code>：抽象主题，它是代理对象的真实对象要实现的接口，当然这可以是多个接口组成。</li>
+  <li><code>ProxySubject</code>：代理类除了实现抽象主题定义的接口外，还必须持有所代理对象的引用。</li>
+  <li><code>RealSubject</code>：被代理的类，是目标对象。</li>
+</ul>
+
+<h4 id="codespringcode-"><strong>1.2 <code>Spring</code> 中如何实现代理模式</strong></h4>
+
+<p><code>Spring Aop</code> 中 <code>Jdk</code> 动态代理就是利用代理模式技术实现的。在 <code>Spring</code> 中除了实现被代理对象的接口外，还会有 <code>org.springframework.aop.SpringProxy</code> 和 <code>org.springframework.aop.framework.Advised</code> 两个接口。<code>Spring</code> 中使用代理模式的结构图如下：</p>
+
+<p>图 21. <code>Spring</code> 中使用代理模式的结构图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/21.gif" alt="Spring中使用代理模式的结构图" align="center" /></p>
+
+<p><code>$Proxy</code> 就是创建的代理对象，而 <code>Subject</code> 是抽象主题，代理对象是通过 <code>InvocationHandler</code> 来持有对目标对象的引用的。</p>
+
+<p><code>Spring</code> 中一个真实的代理对象结构如下：</p>
+
+<p>清单 10 代理对象 <code>$Proxy4</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="err">$</span><span class="nc">Proxy4</span> <span class="kd">extends</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Proxy</span> <span class="kd">implements</span> 
+    <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">PrototypeTargetTests</span><span class="n">$TestBean</span> 
+    <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">SpringProxy</span> 
+    <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">Advised</span>
+<span class="o">{</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m16</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m9</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m25</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m5</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m2</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m23</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m18</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m26</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m6</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m28</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m14</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m12</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m27</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m11</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m22</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m3</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m8</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m4</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m19</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m7</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m15</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m20</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m10</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m17</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m21</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m13</span><span class="o">;</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m24</span><span class="o">;</span>
+
+    <span class="kt">int</span> <span class="n">hashCode</span><span class="o">();</span>
+    <span class="kt">int</span> <span class="n">indexOf</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">);</span>
+    <span class="kt">int</span> <span class="n">indexOf</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">aopalliance</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advice</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">equals</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span><span class="o">);</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">toString</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">sayhello</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">doSomething</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">doSomething2</span><span class="o">();</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Class</span> <span class="n">getProxiedInterfaces</span><span class="o">();</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Class</span> <span class="n">getTargetClass</span><span class="o">();</span>
+    <span class="kt">boolean</span> <span class="n">isProxyTargetClass</span><span class="o">();</span>
+    <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">;</span> <span class="n">getAdvisors</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">addAdvisor</span><span class="o">(</span><span class="kt">int</span><span class="o">,</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">)</span> 
+        <span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="n">addAdvisor</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="n">setTargetSource</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">TargetSource</span><span class="o">);</span>
+    <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">TargetSource</span> <span class="n">getTargetSource</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">setPreFiltered</span><span class="o">(</span><span class="kt">boolean</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">isPreFiltered</span><span class="o">();</span>
+    <span class="kt">boolean</span> <span class="n">isInterfaceProxied</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Class</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">removeAdvisor</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">);</span>
+    <span class="kt">void</span> <span class="n">removeAdvisor</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">boolean</span> <span class="n">replaceAdvisor</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">,</span> 
+        <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advisor</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="n">addAdvice</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">aopalliance</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advice</span><span class="o">)</span> 
+        <span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="n">addAdvice</span><span class="o">(</span><span class="kt">int</span><span class="o">,</span> <span class="n">org</span><span class="o">.</span><span class="na">aopalliance</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advice</span><span class="o">)</span> 
+        <span class="kd">throws</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">framework</span><span class="o">.</span><span class="na">AopConfigException</span><span class="o">;</span>
+    <span class="kt">boolean</span> <span class="n">removeAdvice</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">aopalliance</span><span class="o">.</span><span class="na">aop</span><span class="o">.</span><span class="na">Advice</span><span class="o">);</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">toProxyConfigString</span><span class="o">();</span>
+    <span class="kt">boolean</span> <span class="n">isFrozen</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="n">setExposeProxy</span><span class="o">(</span><span class="kt">boolean</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">isExposeProxy</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<h3 id="section-5"><strong>2、策略模式</strong></h3>
+
+<h4 id="section-6"><strong>2.1 策略模式原理</strong></h4>
+
+<p>策略模式顾名思义就是做某事的策略，这在编程上通常是指完成某个操作可能有多种方法，这些方法各有千秋，可能有不同的适应的场合，然而这些操作方法都有可能用到。各一个操作方法都当作一个实现策略，使用者可能根据需要选择合适的策略。
+下面是策略模式的结构：</p>
+
+<p>图 22. 策略模式的结构</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/22.png" alt="策略模式的结构" align="center" /></p>
+
+<ul>
+  <li><code>Context</code>：使用不同策略的环境，它可以根据自身的条件选择不同的策略实现类来完成所要的操作。它持有一个策略实例的引用。创建具体策略对象的方法也可以由他完成。</li>
+  <li><code>Strategy</code>：抽象策略，定义每个策略都要实现的策略方法</li>
+  <li><code>ConcreteStrategy</code>：具体策略实现类，实现抽象策略中定义的策略方法</li>
+</ul>
+
+<h4 id="codespringcode--1"><strong>2.2 <code>Spring</code> 中策略模式的实现</strong></h4>
+
+<p><code>Spring</code> 中策略模式使用有多个地方，如 <code>Bean</code> 定义对象的创建以及代理对象的创建等。这里主要看一下代理对象创建的策略模式的实现。</p>
+
+<p>前面已经了解 <code>Spring</code> 的代理方式有两个 <code>Jdk</code> 动态代理和 <code>CGLIB</code> 代理。这两个代理方式的使用正是使用了策略模式。它的结构图如下所示：</p>
+
+<p>图 23. <code>Spring</code> 中策略模式结构图</p>
+
+<p><img src="/assets/images/article_imgs/architecture/2015/05/09/23.png" alt="Spring中策略模式结构图" align="center" /></p>
+
+<p>在上面结构图中与标准的策略模式结构稍微有点不同，这里抽象策略是 <code>AopProxy</code> 接口，<code>Cglib2AopProxy</code> 和 <code>JdkDynamicAopProxy</code> 分别代表两种策略的实现方式，<code>ProxyFactoryBean</code> 就是代表 <code>Context</code> 角色，它根据条件选择使用 <code>Jdk</code> 代理方式还是 <code>CGLIB</code> 方式，而另外三个类主要是来负责创建具体策略对象，<code>ProxyFactoryBean</code> 是通过依赖的方法来关联具体策略对象的，它是通过调用策略对象的 <code>getProxy(ClassLoader classLoader)</code> 方法来完成操作。</p>
+
+<h2 id="section-7"><strong>总结</strong></h2>
+
+<p>本文通过从 <code>Spring</code> 的几个核心组件入手，试图找出构建 <code>Spring</code> 框架的骨骼架构，进而分析 <code>Spring</code> 在设计的一些设计理念，是否从中找出一些好的设计思想，对我们以后程序设计能提供一些思路。接着再详细分析了 <code>Spring</code> 中是如何实现这些理念的，以及在设计模式上是如何使用的。
+通过分析 <code>Spring</code> 给我一个很大的启示就是其这套设计理念其实对我们有很强的借鉴意义，它通过抽象复杂多变的对象，进一步做规范，然后根据它定义的这套规范设计出一个容器，容器中构建它们的复杂关系，其实现在有很多情况都可以用这种类似的处理方法。</p>
+
+<p>本文来源ibm开发者社区，并略作修改，原文地址：<a href="http://www.ibm.com/developerworks/cn/java/j-lo-spring-principle/">http://www.ibm.com/developerworks/cn/java/j-lo-spring-principle/</a></p>
+
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                
+                                
+
+
+  
+
+
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        
+                        <li class="prev">
+                            <a style="border:none" href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command" title="Linux Common Command">
+                                <span class="page-artitle-title">linux常见操作整理</span> &laquo; 上一篇
+                            </a>
+                        </li>
+                        
+                        <!--<li><a href="/archive.html">文章列表</a></li>-->
+                        
+                        <li class="next">
+                            <a style="border:none" href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc" title="Jvm Gc">下一篇 &raquo;
+                                <span class="page-artitle-title">JVM垃圾回收器工作原理及使用实例介绍</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design"
+                         data-title=" Spring框架的设计理念与设计模式分析 "
+                         data-url="http://sunfuchang.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        <div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">About Me</h5>
+            <div class="col-xs-12">
+                <img src="/assets/images/head.jpg" style="width: 60%;" class="img-thumbnail">
+            </div>
+            <div class="col-xs-12">
+                <h4>Dendy</h4>
+                <!-- <div style="text-align:center;">
+                    <wb:follow-button uid="1821809482" type="gray_3" width="100%" height="24" ></wb:follow-button>
+                </div> -->
+                <div style="text-align: left;margin-top: 10px;">
+                    <p class="light-text">轻轻地，我走了，正如我轻轻地来！我挥一挥衣袖，不带走一片云彩！</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    
+                    
+                    <li>
+                        <a href="/categories/web_front.html" name="web_front">网络前端
+                            
+                            
+                            
+                            (2)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/internet.html" name="internet">互联网
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/technology.html" name="technology">技术摘录
+                            
+                            
+                            
+                            (5)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/db.html" name="db">数据库
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/architecture.html" name="architecture">架构设计
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/life.html" name="life">生活杂谈
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/dev_manage.html" name="dev_manage">研发管理
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/mobile.html" name="mobile">移动开发
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/system_management.html" name="system_management">系统运维
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/program_lang.html" name="program_lang">编程语言
+                            
+                            
+                            
+                            (4)
+                            
+                        </a>
+                    </li>
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendy">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2016年04月22日</span>
+                    <h6>
+                        <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">
+                            maven定义profile无法替换property属性值
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月29日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">
+                            微信分享到朋友圈、发送给朋友开发注意事项
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月24日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">
+                            windows下使用nexus搭建maven私服的流程和说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月22日</span>
+                    <h6>
+                        <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">
+                            MySQL慢查询分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb2.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月18日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">
+                            node学习第三课——node的事件触发器EventEmitter
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">
+                            node学习第二课——node的模块
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">
+                            node学习第一课——基于nodeJs的web聊天室程序
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月12日</span>
+                    <h6>
+                        <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">
+                            jQuery validator表单验证框架使用说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月10日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">
+                            JVM垃圾回收器工作原理及使用实例介绍
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月7日</span>
+                    <h6>
+                        <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">
+                            linux常见操作整理
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                
+					
+
+
+  
+
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>April 22, 2016</span> &raquo; <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">Maven Profile Properties</a></li>
+    -->
+    
+      <h6 class="widget-title">2016年</h6></h2>
+      <li><a href="/archive/2016-04.html">04月</a><br></li>
+      
+
+      
+      
+        <h6 class="widget-title">2015年</h6></h2>
+        <li><a href="/archive/2016-12.html">12月</a><br></li>
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 29, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">Weixin Jssdk Use</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 24, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">Install Nexus On Windows For Maven</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 22, 2015</span> &raquo; <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">Query Performance Analysis In Mysql</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-08.html">08月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 18, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">Eventemitter Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">Web Module Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">Web Chat Room Based On Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-06.html">06月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 12, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">Jquery Validator Api</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 10, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">Jvm Gc</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-05.html">05月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  9, 2015</span> &raquo; <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">Spring Architecture And Design</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  7, 2015</span> &raquo; <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">Linux Common Command</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  6, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load">High Performance Javascript Noblocking Load</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql">Mybatis Dynamic Sql</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github">Build Blog On Github</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  4, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/04/install-jekyll-on-windows">Install Jekyll On Windows</a></li>
+    -->
+      
+
+    
+    
+  
+
+
+
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                
+                
+
+
+  
+      <a href="/tags.html#jekyll-ref">
+      jekyll <span>2</span></a>
+  
+      <a href="/tags.html#安装-ref">
+      安装 <span>1</span></a>
+  
+      <a href="/tags.html#windows-ref">
+      windows <span>1</span></a>
+  
+      <a href="/tags.html#gem-ref">
+      gem <span>1</span></a>
+  
+      <a href="/tags.html#ruby-ref">
+      ruby <span>1</span></a>
+  
+      <a href="/tags.html#github-ref">
+      github <span>1</span></a>
+  
+      <a href="/tags.html#博客-ref">
+      博客 <span>1</span></a>
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+      <a href="/tags.html#linux-ref">
+      linux <span>1</span></a>
+  
+      <a href="/tags.html#command-ref">
+      command <span>1</span></a>
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+      <a href="/tags.html#JVM-ref">
+      JVM <span>1</span></a>
+  
+      <a href="/tags.html#垃圾回收-ref">
+      垃圾回收 <span>1</span></a>
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+      <a href="/tags.html#modules-ref">
+      modules <span>1</span></a>
+  
+      <a href="/tags.html#node_modules-ref">
+      node_modules <span>1</span></a>
+  
+      <a href="/tags.html#exports-ref">
+      exports <span>1</span></a>
+  
+      <a href="/tags.html#EventEmitter-ref">
+      EventEmitter <span>1</span></a>
+  
+      <a href="/tags.html#mysql-ref">
+      mysql <span>1</span></a>
+  
+      <a href="/tags.html#sql-ref">
+      sql <span>1</span></a>
+  
+      <a href="/tags.html#performance-ref">
+      performance <span>1</span></a>
+  
+      <a href="/tags.html#nexus-ref">
+      nexus <span>1</span></a>
+  
+      <a href="/tags.html#maven-ref">
+      maven <span>2</span></a>
+  
+      <a href="/tags.html#私服-ref">
+      私服 <span>1</span></a>
+  
+      <a href="/tags.html#搭建-ref">
+      搭建 <span>1</span></a>
+  
+      <a href="/tags.html#微信开发-ref">
+      微信开发 <span>1</span></a>
+  
+      <a href="/tags.html#jssdk-ref">
+      jssdk <span>1</span></a>
+  
+      <a href="/tags.html#分享-ref">
+      分享 <span>1</span></a>
+  
+      <a href="/tags.html#签名-ref">
+      签名 <span>1</span></a>
+  
+      <a href="/tags.html#profile-ref">
+      profile <span>1</span></a>
+  
+
+
+
+
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Weibo</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=3&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1821809482&verifier=02959ff0&dpc=1"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- /.sidebar -->
+</div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+<footer class="site-footer">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <nav class="footer-nav clearfix">
+                              <ul class="footer-menu">
+                                    <li><a href="/index.html">Home</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
+                                    <li><a href="#">Contact</a></li>
+                              </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
+                              <!-- /.footer-menu -->
+                        </nav>
+                        <!-- /.footer-nav -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                  <div class="col-md-12">
+                        <p class="copyright-text">Copyright &copy; 2016 fukas，sunfuchang03@126.com</p>
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</footer>
+<!-- /.site-footer -->
+
+<!-- Scripts -->
+<script src="/assets/themes/medigo/js/min/plugins.min.js"></script>
+<script src="/assets/themes/medigo/js/min/medigo-custom.min.js"></script>
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<!-- Templatemo Script -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
+</script>
+<script type="text/javascript">
+    // $(document).ready(function(){
+    //     $('#tree').ztree_toc({
+    //         is_auto_number: true
+    //     });
+    // });
+</script>
+</body>
+</html>

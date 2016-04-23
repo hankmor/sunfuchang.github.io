@@ -1,0 +1,1251 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="baidu-site-verification" content="MCykuGqiPQ"/>
+<meta name="keywords" content="Fukas's blog!, Fukas, sunfuchang, nodeJs,聊天室,socket"/>
+<meta name="description" content="Fukas's blog!, Fukas, 本文为node学习的第一课，通过实现一个web聊天室程序，对nodeJs做一个整体认识和体验，用到socket.io和mime组建、node核心http模块、node核心fs文件系统模块。"/>
+
+<title> node学习第一课——基于nodeJs的web聊天室程序 </title>
+
+<meta name="author" content="fukas">
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- sina weibo -->
+<meta property="wb:webmaster" content="01d60bef1678aca3"/>
+
+<!-- google fonts -->
+<!--<link href="http://fonts.useso.com/css?family=PT+Serif:400,700,400italic,700itali" rel="stylesheet">-->
+<!--<link href="http://fonts.useso.com/css?family=Raleway:400,900,800,700,500,200,100,600" rel="stylesheet">-->
+
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="/assets/themes/medigo/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/misc.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/blue-scheme.css">
+<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all">
+<!-- syntax css -->
+<link href="/assets/css/main.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/normalize.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/syntax.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/pygment_trac.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/stylesheet.css" rel="stylesheet" type="text/css" media="all">
+
+<!-- JavaScripts -->
+<script src="/assets/themes/medigo/js/jquery-1.10.2.min.js"></script>
+<script src="/assets/themes/medigo/js/jquery-migrate-1.2.1.min.js"></script>
+
+<link rel="shortcut icon" href="/assets/themes/medigo/images/favicon.ico" type="image/x-icon"/>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+<![endif]-->
+
+<!-- atom & rss feed -->
+<link href="/atom.xml" type="application/atom+xml" rel="alternate"
+      title="Sitewide ATOM Feed">
+<link href="/rss.xml" type="application/rss+xml" rel="alternate"
+      title="Sitewide RSS Feed">	
+</head>
+<body>
+<div class="responsive_menu">
+      <ul class="main_menu">
+            <li><a href="/index.html">Home</a></li>
+            <!--<li><a href="#">Portfolio</a></li>-->
+            <li><a href="/blog/index.html">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/concat.html">Contact</a></li>
+      </ul>
+      <!-- /.main_menu -->
+</div>
+<!-- /.responsive_menu -->
+
+<header class="site-header clearfix">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <div class="pull-left logo">
+                              <a href="index.html" style="font-size: 1.8em!important; font-weight: bold; font-family: sans-serif;">
+                                    <img src="/assets/themes/medigo/images/favicon.ico" style="width: 12%;" alt="Medigo by templatemo">
+                                    Fukas's blog!
+                              </a>
+                        </div>
+                        <!-- /.logo -->
+
+                        <div class="main-navigation pull-right">
+                              <nav class="main-nav visible-md visible-lg">
+                                    <ul class="sf-menu">
+                                          <li class=""><a href="/index.html">Home</a></li>
+                                          <!--<li><a href="#">Portfolio</a></li>-->
+                                          <!-- 添加分页后，index。html -->
+                                          <li class=" active "><a href="/blog/index.html">Blog</a></li>
+                                          <li class=""><a href="/about.html">About</a></li>
+                                          <li class=""><a href="/concat.html">Contact</a></li>
+                                    </ul>
+                                    <!-- /.sf-menu -->
+                              </nav>
+                              <!-- /.main-nav -->
+                              <!-- This one in here is responsive menu for tablet and mobiles -->
+                              <div class="responsive-navigation visible-sm visible-xs">
+                                    <a href="#nogo" class="menu-toggle-btn">
+                                          <i class="fa fa-bars"></i>
+                                    </a>
+                              </div>
+                              <!-- /responsive_navigation -->
+                        </div>
+                        <!-- /.main-navigation -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</header>
+<!-- /.site-header -->
+
+<div class="first-widget parallax" style="background-image: url('/assets/themes/medigo/images/includes/blogbg4.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="thunm-bread">
+                      <span class="meta-date"><a href="#">Blog</a></span>            
+                            <span class="meta-comments">
+                                <a href="#">
+                                    文章详情
+                                </a>
+                            </span>     
+                        </div>
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="/assets/themes/medigo/images/includes/blog4.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">2015年08月16日</a></span>
+                            
+                                <span class="meta-comments">
+                                    
+                                    
+
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <a href="/categories/program_lang.html">
+                编程语言
+            </a>
+        
+    
+
+                                </span>
+                            
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>node学习第一课——基于nodeJs的web聊天室程序</h1>
+
+                            <!-- 目录 -->
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
+                            
+                            
+<h2 id="section">源码地址</h2>
+
+<p><a href="https://github.com/sunfuchang/nodeJs-study/tree/master/lesson2/chat">https://github.com/sunfuchang/nodeJs-study/tree/master/lesson2/chat</a></p>
+
+<h2 id="section-1">一、所需组建</h2>
+
+<ul>
+  <li>socket.io组件库(<a href="http://en.wikipedia.org/wiki/WebSocket">http://en.wikipedia.org/wiki/WebSocket</a>)</li>
+</ul>
+
+<p>为实时通讯而设计的轻量的双向通讯协议。</p>
+
+<ul>
+  <li>mime组件库(<a href="http://en.wikipedia.org/wiki/MIME">http://en.wikipedia.org/wiki/MIME</a>)</li>
+</ul>
+
+<p>用于根据文件扩展名获取文件的MIME类型。</p>
+
+<h2 id="section-2">二、文件定义</h2>
+
+<p>该文件为项目的包描述文件，定义了项目的名称、版本、描述、依赖组建等内容，例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">"name"</span><span class="err">:</span> <span class="s2">"chatrooms"</span><span class="p">,</span>
+    <span class="s2">"version"</span><span class="err">:</span> <span class="s2">"0.0.1"</span><span class="p">,</span>
+    <span class="s2">"description"</span><span class="err">:</span> <span class="s2">"聊天程序"</span><span class="p">,</span>
+    <span class="s2">"dependencies"</span><span class="err">:</span> <span class="p">{</span>
+        <span class="s2">"socket.io"</span><span class="err">:</span> <span class="s2">"0.9.6"</span><span class="p">,</span>
+        <span class="s2">"mime"</span><span class="err">:</span> <span class="s2">"1.2.7"</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>dependencies定义了项目所需要的第三方依赖库，包括依赖库得每次和需要的版本号，定义完成后，可以使用node的包管理器npm来安装这些依赖。</p>
+
+<h2 id="npm-install">三、使用<code class="highlighter-rouge">npm install</code>安装依赖</h2>
+
+<p>进入项目的根目录，执行<code class="highlighter-rouge">npm install</code>命令，node会自动下载dependencies定义的库对应的版本，下载完成后的依赖库会放到项目根目录的node_modules文件夹中。</p>
+
+<h2 id="section-3">四、模块的引入：</h2>
+
+<p>使用<code class="highlighter-rouge">require</code>方法将模块引入，例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 加载socket.io模块</span>
+<span class="kd">var</span> <span class="nx">socketIo</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'socket.io'</span><span class="p">);</span></code></pre></figure>
+
+<h2 id="section-4">五、模块方法的导出</h2>
+
+<p>模块放到项目根目录下的lib文件夹中，模块定义的方法不能被外部访问，可以通过<code class="highlighter-rouge">exports</code>对象将模块的方法到处到外部，例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">exports</span><span class="p">.</span><span class="nx">listen</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// some code here</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>那么外部在引入模块后就可以使用该模块的listen方法。</p>
+
+<h2 id="node">六、node的事件驱动</h2>
+
+<p>node采用的是单线程的，而其非阻塞I/O依赖于它的事件驱动机制。事件驱动编程底层依赖于事件循环（event loop），事件循环基本上是事件检测和事件处理器触发这两种函数不断循环调用的一个结构。在每次循环里，事件循环机制需要检测发生了哪些事件，当事件发生时，它找到对应的回调函数并调用它。例如：</p>
+
+<p>传统的数据库查询执行：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">result</span> <span class="o">=</span> <span class="nx">query</span><span class="p">(</span><span class="s1">'SELECT * FROM posts WHERE id = 1'</span><span class="p">);</span>
+<span class="nx">do_something_with</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">// 必须等到result结果返回才能继续执行，此时I/O被阻塞</span></code></pre></figure>
+
+<p>而如果采用事件驱动：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">query_finished</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 查询结束后回调执行</span>
+    <span class="nx">do_something_with</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">query</span><span class="p">(</span><span class="s1">'SELECT * FROM posts WHERE id = 1'</span><span class="p">,</span> <span class="nx">query_finished</span><span class="p">);</span>
+<span class="c1">// 不必等到query完成，而代码可以继续，非阻塞I/O</span>
+<span class="nx">do_something_other</span></code></pre></figure>
+
+<h2 id="section-5">七、连接的建立</h2>
+
+<p>通过自定义模块的<code class="highlighter-rouge">listen</code>方法，传入http server来对其进行监听：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 将listen方法倒出以供外部调用</span>
+<span class="nx">exports</span><span class="p">.</span><span class="nx">listen</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 启动socket.io服务器，搭载在server服务器上</span>
+    <span class="nx">io</span> <span class="o">=</span> <span class="nx">socketIo</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">server</span><span class="p">);</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'log level'</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="c1">// 处理每个用户连接到聊天室的逻辑</span>
+    <span class="nx">io</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connection'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">socket</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="cm">/**
+ * 创建服务器
+ */</span>
+ <span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+ <span class="p">}).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Server is running on port 3000.'</span><span class="p">);</span>
+ <span class="p">});</span>
+
+<span class="c1">// 启动socket.io服务器</span>
+<span class="nx">chatServer</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">server</span><span class="p">);</span></code></pre></figure>
+
+<p>客户端连接，需要引入<code class="highlighter-rouge">socket.io.js</code>文件：</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"/socket.io/socket.io.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<p>然后连接到服务器上：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">socket</span> <span class="o">=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s1">'http://127.0.0.1:3000'</span><span class="p">);</span></code></pre></figure>
+
+<p>这样就拿到了客户端的socket，我们根据注册事件，供服务端触发，同时也可以触发服务端的事件。</p>
+
+<h2 id="section-6">八、事件触发</h2>
+
+<p>在socket.io中，通过<code class="highlighter-rouge">on</code>方法来注册事件，而通过<code class="highlighter-rouge">emit</code>方法来发射事件：</p>
+
+<p>服务端注册一个<code class="highlighter-rouge">message</code>事件：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 注册服务端message事件，广播服务器响应的消息</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 触发客户端socket的message事件，广播msg</span>
+    <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">text</span> <span class="p">:</span> <span class="nx">nickNames</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">+</span> <span class="s1">' : '</span> <span class="o">+</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">text</span>
+    <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>客户端的<code class="highlighter-rouge">socket</code>通过<code class="highlighter-rouge">emit</code>方法调用：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 消息发送方法</span>
+<span class="nx">Chat</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">room</span><span class="p">,</span> <span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">room</span> <span class="p">:</span> <span class="nx">room</span><span class="p">,</span>
+        <span class="na">text</span> <span class="p">:</span> <span class="nx">text</span>
+    <span class="p">};</span>
+    <span class="c1">// 触发客户端message事件</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="nx">msg</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="socket-api">九、用到的socket api</h2>
+
+<ul>
+  <li>建立socket.io服务器<br />
+<code class="highlighter-rouge">socketIo.listen(server);</code><br /></li>
+  <li>注册事件<br />
+<code class="highlighter-rouge">socket.on</code><br /></li>
+  <li>触发事件<br />
+<code class="highlighter-rouge">socket.emit</code><br />
+socket.emit信息传输对象为当前socket对应的client，各个client socket相互不影响。</li>
+  <li>加入房间，分组<br />
+<code class="highlighter-rouge">socket.join</code><br /></li>
+  <li>发送广播<br />
+<code class="highlighter-rouge">socket.broadcast.to</code><br /></li>
+  <li>不知道是什么对象？<br />
+<code class="highlighter-rouge">io.sockets.manager</code><br /></li>
+  <li>建立连接<br />
+<code class="highlighter-rouge">io.connect</code><br /></li>
+  <li><code class="highlighter-rouge">socket.broadcast.emit</code><br />
+socket.broadcast.emit信息传输对象为所有client，排除当前socket对应的client。</li>
+  <li>io.sockets.emit<br />
+信息传输对象为所有client。<br /></li>
+  <li>key为房间名，value为房间名对应的socket ID数组<br />
+<code class="highlighter-rouge">io.sockets.manager.rooms</code><br /></li>
+  <li>获取particular room中的客户端，返回所有在此房间的socket实例<br />
+<code class="highlighter-rouge">io.sockets.clients('particular room')</code><br /></li>
+  <li>通过socket.id来获取此socket进入的房间信息<br />
+<code class="highlighter-rouge">io.sockets.manager.roomClients[socket.id]</code><br /></li>
+</ul>
+
+<p>详见：<a href="https://github.com/sunfuchang/nodeJs-study/wiki">https://github.com/sunfuchang/nodeJs-study/wiki</a></p>
+
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                
+                                
+
+
+  
+
+
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        
+                        <li class="prev">
+                            <a style="border:none" href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api" title="Jquery Validator Api">
+                                <span class="page-artitle-title">jQuery validator表单验证框架使用说明</span> &laquo; 上一篇
+                            </a>
+                        </li>
+                        
+                        <!--<li><a href="/archive.html">文章列表</a></li>-->
+                        
+                        <li class="next">
+                            <a style="border:none" href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs" title="Web Module Of Nodejs">下一篇 &raquo;
+                                <span class="page-artitle-title">node学习第二课——node的模块</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs"
+                         data-title=" node学习第一课——基于nodeJs的web聊天室程序 "
+                         data-url="http://sunfuchang.github.io/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        <div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">About Me</h5>
+            <div class="col-xs-12">
+                <img src="/assets/images/head.jpg" style="width: 60%;" class="img-thumbnail">
+            </div>
+            <div class="col-xs-12">
+                <h4>Dendy</h4>
+                <!-- <div style="text-align:center;">
+                    <wb:follow-button uid="1821809482" type="gray_3" width="100%" height="24" ></wb:follow-button>
+                </div> -->
+                <div style="text-align: left;margin-top: 10px;">
+                    <p class="light-text">轻轻地，我走了，正如我轻轻地来！我挥一挥衣袖，不带走一片云彩！</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    
+                    
+                    <li>
+                        <a href="/categories/web_front.html" name="web_front">网络前端
+                            
+                            
+                            
+                            (2)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/internet.html" name="internet">互联网
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/technology.html" name="technology">技术摘录
+                            
+                            
+                            
+                            (5)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/db.html" name="db">数据库
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/architecture.html" name="architecture">架构设计
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/life.html" name="life">生活杂谈
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/dev_manage.html" name="dev_manage">研发管理
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/mobile.html" name="mobile">移动开发
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/system_management.html" name="system_management">系统运维
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/program_lang.html" name="program_lang">编程语言
+                            
+                            
+                            
+                            (4)
+                            
+                        </a>
+                    </li>
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendy">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2016年04月22日</span>
+                    <h6>
+                        <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">
+                            maven定义profile无法替换property属性值
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月29日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">
+                            微信分享到朋友圈、发送给朋友开发注意事项
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月24日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">
+                            windows下使用nexus搭建maven私服的流程和说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月22日</span>
+                    <h6>
+                        <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">
+                            MySQL慢查询分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb2.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月18日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">
+                            node学习第三课——node的事件触发器EventEmitter
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">
+                            node学习第二课——node的模块
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月12日</span>
+                    <h6>
+                        <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">
+                            jQuery validator表单验证框架使用说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月10日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">
+                            JVM垃圾回收器工作原理及使用实例介绍
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月9日</span>
+                    <h6>
+                        <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">
+                            Spring框架的设计理念与设计模式分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月7日</span>
+                    <h6>
+                        <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">
+                            linux常见操作整理
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                
+					
+
+
+  
+
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>April 22, 2016</span> &raquo; <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">Maven Profile Properties</a></li>
+    -->
+    
+      <h6 class="widget-title">2016年</h6></h2>
+      <li><a href="/archive/2016-04.html">04月</a><br></li>
+      
+
+      
+      
+        <h6 class="widget-title">2015年</h6></h2>
+        <li><a href="/archive/2016-12.html">12月</a><br></li>
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 29, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">Weixin Jssdk Use</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 24, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">Install Nexus On Windows For Maven</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 22, 2015</span> &raquo; <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">Query Performance Analysis In Mysql</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-08.html">08月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 18, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">Eventemitter Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">Web Module Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">Web Chat Room Based On Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-06.html">06月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 12, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">Jquery Validator Api</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 10, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">Jvm Gc</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-05.html">05月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  9, 2015</span> &raquo; <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">Spring Architecture And Design</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  7, 2015</span> &raquo; <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">Linux Common Command</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  6, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load">High Performance Javascript Noblocking Load</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql">Mybatis Dynamic Sql</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github">Build Blog On Github</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  4, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/04/install-jekyll-on-windows">Install Jekyll On Windows</a></li>
+    -->
+      
+
+    
+    
+  
+
+
+
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                
+                
+
+
+  
+      <a href="/tags.html#jekyll-ref">
+      jekyll <span>2</span></a>
+  
+      <a href="/tags.html#安装-ref">
+      安装 <span>1</span></a>
+  
+      <a href="/tags.html#windows-ref">
+      windows <span>1</span></a>
+  
+      <a href="/tags.html#gem-ref">
+      gem <span>1</span></a>
+  
+      <a href="/tags.html#ruby-ref">
+      ruby <span>1</span></a>
+  
+      <a href="/tags.html#github-ref">
+      github <span>1</span></a>
+  
+      <a href="/tags.html#博客-ref">
+      博客 <span>1</span></a>
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+      <a href="/tags.html#linux-ref">
+      linux <span>1</span></a>
+  
+      <a href="/tags.html#command-ref">
+      command <span>1</span></a>
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+      <a href="/tags.html#JVM-ref">
+      JVM <span>1</span></a>
+  
+      <a href="/tags.html#垃圾回收-ref">
+      垃圾回收 <span>1</span></a>
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+      <a href="/tags.html#modules-ref">
+      modules <span>1</span></a>
+  
+      <a href="/tags.html#node_modules-ref">
+      node_modules <span>1</span></a>
+  
+      <a href="/tags.html#exports-ref">
+      exports <span>1</span></a>
+  
+      <a href="/tags.html#EventEmitter-ref">
+      EventEmitter <span>1</span></a>
+  
+      <a href="/tags.html#mysql-ref">
+      mysql <span>1</span></a>
+  
+      <a href="/tags.html#sql-ref">
+      sql <span>1</span></a>
+  
+      <a href="/tags.html#performance-ref">
+      performance <span>1</span></a>
+  
+      <a href="/tags.html#nexus-ref">
+      nexus <span>1</span></a>
+  
+      <a href="/tags.html#maven-ref">
+      maven <span>2</span></a>
+  
+      <a href="/tags.html#私服-ref">
+      私服 <span>1</span></a>
+  
+      <a href="/tags.html#搭建-ref">
+      搭建 <span>1</span></a>
+  
+      <a href="/tags.html#微信开发-ref">
+      微信开发 <span>1</span></a>
+  
+      <a href="/tags.html#jssdk-ref">
+      jssdk <span>1</span></a>
+  
+      <a href="/tags.html#分享-ref">
+      分享 <span>1</span></a>
+  
+      <a href="/tags.html#签名-ref">
+      签名 <span>1</span></a>
+  
+      <a href="/tags.html#profile-ref">
+      profile <span>1</span></a>
+  
+
+
+
+
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Weibo</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=3&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1821809482&verifier=02959ff0&dpc=1"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- /.sidebar -->
+</div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+<footer class="site-footer">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <nav class="footer-nav clearfix">
+                              <ul class="footer-menu">
+                                    <li><a href="/index.html">Home</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
+                                    <li><a href="#">Contact</a></li>
+                              </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
+                              <!-- /.footer-menu -->
+                        </nav>
+                        <!-- /.footer-nav -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                  <div class="col-md-12">
+                        <p class="copyright-text">Copyright &copy; 2016 fukas，sunfuchang03@126.com</p>
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</footer>
+<!-- /.site-footer -->
+
+<!-- Scripts -->
+<script src="/assets/themes/medigo/js/min/plugins.min.js"></script>
+<script src="/assets/themes/medigo/js/min/medigo-custom.min.js"></script>
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<!-- Templatemo Script -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
+</script>
+<script type="text/javascript">
+    // $(document).ready(function(){
+    //     $('#tree').ztree_toc({
+    //         is_auto_number: true
+    //     });
+    // });
+</script>
+</body>
+</html>

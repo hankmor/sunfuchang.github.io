@@ -1,0 +1,1300 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="baidu-site-verification" content="MCykuGqiPQ"/>
+<meta name="keywords" content="Fukas's blog!, Fukas, sunfuchang, mybatis,SQL,动态"/>
+<meta name="description" content="Fukas's blog!, Fukas, MyBatis的强大特性之一便是它的动态SQL能力。如果你有使用JDBC或其他类似框架的经验，你就能体会到根据不同条件拼接SQL字符串有多么痛苦。拼接的时候要确保不能忘了必要的空格，还要注意省掉列名列表最后的逗号。利用动态SQL这一特性可以彻底摆脱这种痛苦。"/>
+
+<title> mybatis——动态SQL </title>
+
+<meta name="author" content="fukas">
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- sina weibo -->
+<meta property="wb:webmaster" content="01d60bef1678aca3"/>
+
+<!-- google fonts -->
+<!--<link href="http://fonts.useso.com/css?family=PT+Serif:400,700,400italic,700itali" rel="stylesheet">-->
+<!--<link href="http://fonts.useso.com/css?family=Raleway:400,900,800,700,500,200,100,600" rel="stylesheet">-->
+
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="/assets/themes/medigo/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/misc.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/blue-scheme.css">
+<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all">
+<!-- syntax css -->
+<link href="/assets/css/main.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/normalize.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/syntax.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/pygment_trac.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/stylesheet.css" rel="stylesheet" type="text/css" media="all">
+
+<!-- JavaScripts -->
+<script src="/assets/themes/medigo/js/jquery-1.10.2.min.js"></script>
+<script src="/assets/themes/medigo/js/jquery-migrate-1.2.1.min.js"></script>
+
+<link rel="shortcut icon" href="/assets/themes/medigo/images/favicon.ico" type="image/x-icon"/>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+<![endif]-->
+
+<!-- atom & rss feed -->
+<link href="/atom.xml" type="application/atom+xml" rel="alternate"
+      title="Sitewide ATOM Feed">
+<link href="/rss.xml" type="application/rss+xml" rel="alternate"
+      title="Sitewide RSS Feed">	
+</head>
+<body>
+<div class="responsive_menu">
+      <ul class="main_menu">
+            <li><a href="/index.html">Home</a></li>
+            <!--<li><a href="#">Portfolio</a></li>-->
+            <li><a href="/blog/index.html">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/concat.html">Contact</a></li>
+      </ul>
+      <!-- /.main_menu -->
+</div>
+<!-- /.responsive_menu -->
+
+<header class="site-header clearfix">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <div class="pull-left logo">
+                              <a href="index.html" style="font-size: 1.8em!important; font-weight: bold; font-family: sans-serif;">
+                                    <img src="/assets/themes/medigo/images/favicon.ico" style="width: 12%;" alt="Medigo by templatemo">
+                                    Fukas's blog!
+                              </a>
+                        </div>
+                        <!-- /.logo -->
+
+                        <div class="main-navigation pull-right">
+                              <nav class="main-nav visible-md visible-lg">
+                                    <ul class="sf-menu">
+                                          <li class=""><a href="/index.html">Home</a></li>
+                                          <!--<li><a href="#">Portfolio</a></li>-->
+                                          <!-- 添加分页后，index。html -->
+                                          <li class=" active "><a href="/blog/index.html">Blog</a></li>
+                                          <li class=""><a href="/about.html">About</a></li>
+                                          <li class=""><a href="/concat.html">Contact</a></li>
+                                    </ul>
+                                    <!-- /.sf-menu -->
+                              </nav>
+                              <!-- /.main-nav -->
+                              <!-- This one in here is responsive menu for tablet and mobiles -->
+                              <div class="responsive-navigation visible-sm visible-xs">
+                                    <a href="#nogo" class="menu-toggle-btn">
+                                          <i class="fa fa-bars"></i>
+                                    </a>
+                              </div>
+                              <!-- /responsive_navigation -->
+                        </div>
+                        <!-- /.main-navigation -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</header>
+<!-- /.site-header -->
+
+<div class="first-widget parallax" style="background-image: url('/assets/themes/medigo/images/includes/blogbg4.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="thunm-bread">
+                      <span class="meta-date"><a href="#">Blog</a></span>            
+                            <span class="meta-comments">
+                                <a href="#">
+                                    文章详情
+                                </a>
+                            </span>     
+                        </div>
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="/assets/themes/medigo/images/includes/blog4.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">2015年05月5日</a></span>
+                            
+                                <span class="meta-comments">
+                                    
+                                    
+
+
+    
+        
+    
+        
+    
+        
+            <a href="/categories/technology.html">
+                技术摘录
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+                                </span>
+                            
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>mybatis——动态SQL</h1>
+
+                            <!-- 目录 -->
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
+                            
+                            
+<p>MyBatis的强大特性之一便是它的动态<code>SQL</code>能力。如果你有使用JDBC或其他类似框架的经验，你就能体会到根据不同条件拼接<code>SQL</code>字符串有多么痛苦。拼接的时候要确保不能忘了必要的空格，还要注意省掉列名列表最后的逗号。利用动态<code>SQL</code>这一特性可以彻底摆脱这种痛苦。</p>
+
+<p>通常使用动态SQL不可能是独立的一部分,MyBatis当然使用一种强大的动态<code>SQL</code>语言来改进这种情形,这种语言可以被用在任意映射的<code>SQL</code>语句中。</p>
+
+<p>动态<code>SQL</code>元素和使用<code>JSTL</code>或其他相似的基于<code>XML</code>的文本处理器相似。在MyBatis之前的版本中,有很多的元素需要来了解。MyBatis3大大提升了它们,现在用不到原先一半的元素就能工作了。MyBatis 采用功能强大的基于<code>OGNL</code>的表达式来消除其他元素。</p>
+
+<h2 id="if-choose-when-otherwise-trim-where-set-foreach-if">一、if, choose (when, otherwise), trim (where, set), foreach, if</h2>
+
+<p>动态<code>SQL</code>通常要做的事情是有条件地包含<code>where</code> 子句的一部分。比如:</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"findActiveBlogWithTitleLike"</span>
+     <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG 
+  WHERE state = ‘ACTIVE’ 
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"title != null"</span><span class="nt">&gt;</span>
+    AND title like #{title}
+  <span class="nt">&lt;/if&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p>这条语句提供了一个可选的文本查找类型的功能。如果没有传入“title”，那么所有处于“ACTIVE”状态的BLOG都会返回；反之若传入了“title”，那么就会把相近“title”的BLOG返回（就这个例子而言，细心的读者会发现其中的参数值是可以包含一些掩码或通配符的）。</p>
+
+<p>如果想可选地通过“title”和“author”两个条件搜索该怎么办呢？首先，改变语句的名称让它更具实际意义；然后只要加入另一个条件即可。</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"findActiveBlogLike"</span> <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG WHERE state = ‘ACTIVE’ 
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"title != null"</span><span class="nt">&gt;</span>
+    AND title like #{title}
+  <span class="nt">&lt;/if&gt;</span>
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"author != null and author.name != null"</span><span class="nt">&gt;</span>
+    AND author_name like #{author.name}
+  <span class="nt">&lt;/if&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<h2 id="choose-when-otherwise">二、choose, when, otherwise</h2>
+
+<p>有些时候，我们不想用到所有的条件语句，而只想从中择其一二。针对这种情况，MyBatis 提供了<code>choose</code>元素，它有点像<code>Java</code>中的<code>switch</code>语句。</p>
+
+<p>还是上面的例子，但是这次变为提供了“title”就按“title”查找，提供了“author”就按“author”查找，若两者都没有提供，就返回所有符合条件的BLOG（实际情况可能是由管理员策略地选出BLOG列表，而不是返回大量无意义的随机结果）。</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"findActiveBlogLike"</span>
+     <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+  <span class="nt">&lt;choose&gt;</span>
+    <span class="nt">&lt;when</span> <span class="na">test=</span><span class="s">"title != null"</span><span class="nt">&gt;</span>
+      AND title like #{title}
+    <span class="nt">&lt;/when&gt;</span>
+    <span class="nt">&lt;when</span> <span class="na">test=</span><span class="s">"author != null and author.name != null"</span><span class="nt">&gt;</span>
+      AND author_name like #{author.name}
+    <span class="nt">&lt;/when&gt;</span>
+    <span class="nt">&lt;otherwise&gt;</span>
+      AND featured = 1
+    <span class="nt">&lt;/otherwise&gt;</span>
+  <span class="nt">&lt;/choose&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<h2 id="trim-where-set">三、trim, where, set</h2>
+
+<p>前面几个例子已经合宜地解决了一个臭名昭著的动态<code>SQL</code>问题。现在考虑回到“if”示例，这次我们将“ACTIVE=1”也设置成动态的条件，看看会发生什么。</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"findActiveBlogLike"</span>
+     <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG 
+  WHERE 
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"state != null"</span><span class="nt">&gt;</span>
+    state = #{state}
+  <span class="nt">&lt;/if&gt;</span> 
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"title != null"</span><span class="nt">&gt;</span>
+    AND title like #{title}
+  <span class="nt">&lt;/if&gt;</span>
+  <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"author != null and author.name != null"</span><span class="nt">&gt;</span>
+    AND author_name like #{author.name}
+  <span class="nt">&lt;/if&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p>如果这些条件没有一个能匹配上将会怎样？最终这条 SQL 会变成这样：</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">BLOG</span> <span class="k">WHERE</span></code></pre></figure>
+
+<p>这会导致查询失败。如果仅仅第二个条件匹配又会怎样？这条 SQL 最终会是这样:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">BLOG</span> <span class="k">WHERE</span> <span class="k">AND</span> <span class="n">title</span> <span class="k">like</span> <span class="err">‘</span><span class="n">someTitle</span><span class="err">’</span></code></pre></figure>
+
+<p>这个查询也会失败。这个问题不能简单的用条件句式来解决，如果你也曾经被迫这样写过，那么你很可能从此以后都不想再这样去写。</p>
+
+<p>MyBatis有一个简单的处理，这在90%的情况下都会有用。而在不能使用的地方，你可以自定义处理方式来令其正常工作。一处简单的修改就能得到想要的效果:</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"findActiveBlogLike"</span>
+     <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG 
+  <span class="nt">&lt;where&gt;</span> 
+    <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"state != null"</span><span class="nt">&gt;</span>
+         state = #{state}
+    <span class="nt">&lt;/if&gt;</span> 
+    <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"title != null"</span><span class="nt">&gt;</span>
+        AND title like #{title}
+    <span class="nt">&lt;/if&gt;</span>
+    <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"author != null and author.name != null"</span><span class="nt">&gt;</span>
+        AND author_name like #{author.name}
+    <span class="nt">&lt;/if&gt;</span>
+  <span class="nt">&lt;/where&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p><code>where</code>元素知道只有在一个以上的<code>if</code>条件有值的情况下才去插入“WHERE”子句。而且，若最后的内容是“AND”或“OR”开头的，<code>where</code>元素也知道如何将他们去除。</p>
+
+<p>如果<code>where</code>元素没有按正常套路出牌，我们还是可以通过自定义<code>trim</code>元素来定制我们想要的功能。比如，和<code>where</code>元素等价的自定义<code>trim</code>元素为：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;trim</span> <span class="na">prefix=</span><span class="s">"WHERE"</span> <span class="na">prefixOverrides=</span><span class="s">"AND |OR "</span><span class="nt">&gt;</span>
+  ... 
+<span class="nt">&lt;/trim&gt;</span></code></pre></figure>
+
+<p><code>prefixOverrides</code>属性会忽略通过管道分隔的文本序列（注意此例中的空格也是必要的）。它带来的结果就是所有在<code>prefixOverrides</code>属性中指定的内容将被移除，并且插入<code>prefix</code>属性中指定的内容。</p>
+
+<p>类似的用于动态更新语句的解决方案叫做<code>set</code>。<code>set</code>元素可以被用于动态包含需要更新的列，而舍去其他的。比如：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;update</span> <span class="na">id=</span><span class="s">"updateAuthorIfNecessary"</span><span class="nt">&gt;</span>
+  update Author
+    <span class="nt">&lt;set&gt;</span>
+      <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"username != null"</span><span class="nt">&gt;</span>username=#{username},<span class="nt">&lt;/if&gt;</span>
+      <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"password != null"</span><span class="nt">&gt;</span>password=#{password},<span class="nt">&lt;/if&gt;</span>
+      <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"email != null"</span><span class="nt">&gt;</span>email=#{email},<span class="nt">&lt;/if&gt;</span>
+      <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"bio != null"</span><span class="nt">&gt;</span>bio=#{bio}<span class="nt">&lt;/if&gt;</span>
+    <span class="nt">&lt;/set&gt;</span>
+  where id=#{id}
+<span class="nt">&lt;/update&gt;</span></code></pre></figure>
+
+<p>这里，<code>set</code>元素会动态前置<code>SET</code>关键字，同时也会消除无关的逗号，因为用了条件语句之后很可能就会在生成的赋值语句的后面留下这些逗号。</p>
+
+<p>若你对等价的自定义<code>trim</code>元素的样子感兴趣，那这就应该是它的真面目：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;trim</span> <span class="na">prefix=</span><span class="s">"SET"</span> <span class="na">suffixOverrides=</span><span class="s">","</span><span class="nt">&gt;</span>
+  ...
+<span class="nt">&lt;/trim&gt;</span></code></pre></figure>
+
+<p>注意这里我们忽略的是后缀中的值，而又一次附加了前缀中的值。</p>
+
+<h2 id="foreach">四、foreach</h2>
+
+<p>动态<code>SQL</code>的另外一个常用的必要操作是需要对一个集合进行遍历，通常是在构建<code>IN</code>条件语句的时候。比如：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"selectPostIn"</span> <span class="na">resultType=</span><span class="s">"domain.blog.Post"</span><span class="nt">&gt;</span>
+  SELECT *
+  FROM POST P
+  WHERE ID in
+  <span class="nt">&lt;foreach</span> <span class="na">item=</span><span class="s">"item"</span> <span class="na">index=</span><span class="s">"index"</span> <span class="na">collection=</span><span class="s">"list"</span>
+      <span class="na">open=</span><span class="s">"("</span> <span class="na">separator=</span><span class="s">","</span> <span class="na">close=</span><span class="s">")"</span><span class="nt">&gt;</span>
+        #{item}
+  <span class="nt">&lt;/foreach&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p><code>foreach</code>元素是非常强大的，它允许你指定一个集合，声明可以用在元素体内的集合项和索引变量。它也允许你指定开闭匹配的字符串以及在迭代之间放置分隔符。这个元素是很智能的，因此它不会偶然地附加多余的分隔符。</p>
+
+<p><strong>注意</strong> 你可以将一个<code>List</code>实例或者数组作为参数对象传给MyBatis，当你这么做的时候，<code>MyBatis</code>会自动将它包装在一个 Map 中并以名称为键。<code>List</code>实例将会以“list”作为键，而数组实例的键将是“array”。</p>
+
+<p>到此我们已经完成了涉及<code>XML</code>配置文件和<code>XML</code>映射文件的讨论。下一部分将详细探讨<code>Java</code>API，这样才能从已创建的映射中获取最大利益。</p>
+
+<h2 id="bind">五、bind</h2>
+<p><code>bind</code>元素可以从<code>OGNL</code>表达式中创建一个变量并将其绑定到上下文。比如：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"selectBlogsLike"</span> <span class="na">resultType=</span><span class="s">"Blog"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;bind</span> <span class="na">name=</span><span class="s">"pattern"</span> <span class="na">value=</span><span class="s">"'%' + _parameter.getTitle() + '%'"</span> <span class="nt">/&gt;</span>
+  SELECT * FROM BLOG
+  WHERE title LIKE #{pattern}
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<h2 id="multi-db-vendor-support">六、Multi-db vendor support</h2>
+
+<p>一个配置了“_databaseId”变量的<code>databaseIdProvider</code>对于动态代码来说是可用的，这样就可以根据不同的数据库厂商构建特定的语句。比如下面的例子：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;insert</span> <span class="na">id=</span><span class="s">"insert"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;selectKey</span> <span class="na">keyProperty=</span><span class="s">"id"</span> <span class="na">resultType=</span><span class="s">"int"</span> <span class="na">order=</span><span class="s">"BEFORE"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"_databaseId == 'oracle'"</span><span class="nt">&gt;</span>
+      select seq_users.nextval from dual
+    <span class="nt">&lt;/if&gt;</span>
+    <span class="nt">&lt;if</span> <span class="na">test=</span><span class="s">"_databaseId == 'db2'"</span><span class="nt">&gt;</span>
+      select nextval for seq_users from sysibm.sysdummy1"
+    <span class="nt">&lt;/if&gt;</span>
+  <span class="nt">&lt;/selectKey&gt;</span>
+  insert into users values (#{id}, #{name})
+<span class="nt">&lt;/insert&gt;</span></code></pre></figure>
+
+<h2 id="pluggable-scripting-languages-for-dynamic-sql">七、Pluggable Scripting Languages For Dynamic SQL</h2>
+
+<p>MyBatis从3.2开始支持可插拔的脚本语言，因此你可以在插入一种语言的驱动（language driver）之后来写基于这种语言的动态<code>SQL</code>查询。</p>
+
+<p>可以通过实现下面接口的方式来插入一种语言：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">LanguageDriver</span> <span class="o">{</span>
+  <span class="n">ParameterHandler</span> <span class="n">createParameterHandler</span><span class="o">(</span><span class="n">MappedStatement</span> <span class="n">mappedStatement</span><span class="o">,</span> <span class="n">Object</span> <span class="n">parameterObject</span><span class="o">,</span> <span class="n">BoundSql</span> <span class="n">boundSql</span><span class="o">);</span>
+  <span class="n">SqlSource</span> <span class="n">createSqlSource</span><span class="o">(</span><span class="n">Configuration</span> <span class="n">configuration</span><span class="o">,</span> <span class="n">XNode</span> <span class="n">script</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">parameterType</span><span class="o">);</span>
+  <span class="n">SqlSource</span> <span class="n">createSqlSource</span><span class="o">(</span><span class="n">Configuration</span> <span class="n">configuration</span><span class="o">,</span> <span class="n">String</span> <span class="n">script</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">parameterType</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>一旦有了自定义的语言驱动，你就可以在<code>mybatis-config.xml</code>文件中将它设置位默认语言：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;typeAliases&gt;</span>
+  <span class="nt">&lt;typeAlias</span> <span class="na">type=</span><span class="s">"org.sample.MyLanguageDriver"</span> <span class="na">alias=</span><span class="s">"myLanguage"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/typeAliases&gt;</span>
+<span class="nt">&lt;settings&gt;</span>
+  <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"defaultScriptingLanguage"</span> <span class="na">value=</span><span class="s">"myLanguage"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/settings&gt;</span></code></pre></figure>
+
+<p>除了设置默认语言，你也可以针对特殊的语句指定特定语言，这可以通过如下的<code>lang</code>属性来完成：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"selectBlog"</span> <span class="na">lang=</span><span class="s">"myLanguage"</span><span class="nt">&gt;</span>
+  SELECT * FROM BLOG
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p>或者在你正在使用的映射中加上注解<code>@Lang</code>来完成：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Mapper</span> <span class="o">{</span>
+  <span class="nd">@Lang</span><span class="o">(</span><span class="n">MyLanguageDriver</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+  <span class="nd">@Select</span><span class="o">(</span><span class="s">"SELECT * FROM BLOG"</span><span class="o">)</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">selectBlog</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<p><strong>注意</strong> 可以将Apache Velocity作为动态语言来使用，更多细节请参考MyBatis-Velocity项目。</p>
+
+<p>你前面看到的所有<code>xml</code>标签都是默认MyBatis语言提供的，它是由别名为<code>xml</code>语言驱动器<code>org.apache.ibatis.scripting.xmltags.XmlLanguageDriver</code>驱动的。</p>
+
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                
+                                
+
+
+  
+
+
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        
+                        <li class="prev">
+                            <a style="border:none" href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github" title="Build Blog On Github">
+                                <span class="page-artitle-title">使用github和jekyll搭建个人站点系列——总览</span> &laquo; 上一篇
+                            </a>
+                        </li>
+                        
+                        <!--<li><a href="/archive.html">文章列表</a></li>-->
+                        
+                        <li class="next">
+                            <a style="border:none" href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load" title="High Performance Javascript Noblocking Load">下一篇 &raquo;
+                                <span class="page-artitle-title">高性能Javascript--脚本的无阻塞加载策略</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql"
+                         data-title=" mybatis——动态SQL "
+                         data-url="http://sunfuchang.github.io/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        <div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">About Me</h5>
+            <div class="col-xs-12">
+                <img src="/assets/images/head.jpg" style="width: 60%;" class="img-thumbnail">
+            </div>
+            <div class="col-xs-12">
+                <h4>Dendy</h4>
+                <!-- <div style="text-align:center;">
+                    <wb:follow-button uid="1821809482" type="gray_3" width="100%" height="24" ></wb:follow-button>
+                </div> -->
+                <div style="text-align: left;margin-top: 10px;">
+                    <p class="light-text">轻轻地，我走了，正如我轻轻地来！我挥一挥衣袖，不带走一片云彩！</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    
+                    
+                    <li>
+                        <a href="/categories/web_front.html" name="web_front">网络前端
+                            
+                            
+                            
+                            (2)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/internet.html" name="internet">互联网
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/technology.html" name="technology">技术摘录
+                            
+                            
+                            
+                            (5)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/db.html" name="db">数据库
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/architecture.html" name="architecture">架构设计
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/life.html" name="life">生活杂谈
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/dev_manage.html" name="dev_manage">研发管理
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/mobile.html" name="mobile">移动开发
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/system_management.html" name="system_management">系统运维
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/program_lang.html" name="program_lang">编程语言
+                            
+                            
+                            
+                            (4)
+                            
+                        </a>
+                    </li>
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendy">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2016年04月22日</span>
+                    <h6>
+                        <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">
+                            maven定义profile无法替换property属性值
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月29日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">
+                            微信分享到朋友圈、发送给朋友开发注意事项
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月24日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">
+                            windows下使用nexus搭建maven私服的流程和说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月22日</span>
+                    <h6>
+                        <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">
+                            MySQL慢查询分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb2.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月18日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">
+                            node学习第三课——node的事件触发器EventEmitter
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">
+                            node学习第二课——node的模块
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">
+                            node学习第一课——基于nodeJs的web聊天室程序
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月12日</span>
+                    <h6>
+                        <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">
+                            jQuery validator表单验证框架使用说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月10日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">
+                            JVM垃圾回收器工作原理及使用实例介绍
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月9日</span>
+                    <h6>
+                        <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">
+                            Spring框架的设计理念与设计模式分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                
+					
+
+
+  
+
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>April 22, 2016</span> &raquo; <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">Maven Profile Properties</a></li>
+    -->
+    
+      <h6 class="widget-title">2016年</h6></h2>
+      <li><a href="/archive/2016-04.html">04月</a><br></li>
+      
+
+      
+      
+        <h6 class="widget-title">2015年</h6></h2>
+        <li><a href="/archive/2016-12.html">12月</a><br></li>
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 29, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">Weixin Jssdk Use</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 24, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">Install Nexus On Windows For Maven</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 22, 2015</span> &raquo; <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">Query Performance Analysis In Mysql</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-08.html">08月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 18, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">Eventemitter Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">Web Module Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">Web Chat Room Based On Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-06.html">06月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 12, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">Jquery Validator Api</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 10, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">Jvm Gc</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-05.html">05月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  9, 2015</span> &raquo; <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">Spring Architecture And Design</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  7, 2015</span> &raquo; <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">Linux Common Command</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  6, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load">High Performance Javascript Noblocking Load</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql">Mybatis Dynamic Sql</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github">Build Blog On Github</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  4, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/04/install-jekyll-on-windows">Install Jekyll On Windows</a></li>
+    -->
+      
+
+    
+    
+  
+
+
+
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                
+                
+
+
+  
+      <a href="/tags.html#jekyll-ref">
+      jekyll <span>2</span></a>
+  
+      <a href="/tags.html#安装-ref">
+      安装 <span>1</span></a>
+  
+      <a href="/tags.html#windows-ref">
+      windows <span>1</span></a>
+  
+      <a href="/tags.html#gem-ref">
+      gem <span>1</span></a>
+  
+      <a href="/tags.html#ruby-ref">
+      ruby <span>1</span></a>
+  
+      <a href="/tags.html#github-ref">
+      github <span>1</span></a>
+  
+      <a href="/tags.html#博客-ref">
+      博客 <span>1</span></a>
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+      <a href="/tags.html#linux-ref">
+      linux <span>1</span></a>
+  
+      <a href="/tags.html#command-ref">
+      command <span>1</span></a>
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+      <a href="/tags.html#JVM-ref">
+      JVM <span>1</span></a>
+  
+      <a href="/tags.html#垃圾回收-ref">
+      垃圾回收 <span>1</span></a>
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+      <a href="/tags.html#modules-ref">
+      modules <span>1</span></a>
+  
+      <a href="/tags.html#node_modules-ref">
+      node_modules <span>1</span></a>
+  
+      <a href="/tags.html#exports-ref">
+      exports <span>1</span></a>
+  
+      <a href="/tags.html#EventEmitter-ref">
+      EventEmitter <span>1</span></a>
+  
+      <a href="/tags.html#mysql-ref">
+      mysql <span>1</span></a>
+  
+      <a href="/tags.html#sql-ref">
+      sql <span>1</span></a>
+  
+      <a href="/tags.html#performance-ref">
+      performance <span>1</span></a>
+  
+      <a href="/tags.html#nexus-ref">
+      nexus <span>1</span></a>
+  
+      <a href="/tags.html#maven-ref">
+      maven <span>2</span></a>
+  
+      <a href="/tags.html#私服-ref">
+      私服 <span>1</span></a>
+  
+      <a href="/tags.html#搭建-ref">
+      搭建 <span>1</span></a>
+  
+      <a href="/tags.html#微信开发-ref">
+      微信开发 <span>1</span></a>
+  
+      <a href="/tags.html#jssdk-ref">
+      jssdk <span>1</span></a>
+  
+      <a href="/tags.html#分享-ref">
+      分享 <span>1</span></a>
+  
+      <a href="/tags.html#签名-ref">
+      签名 <span>1</span></a>
+  
+      <a href="/tags.html#profile-ref">
+      profile <span>1</span></a>
+  
+
+
+
+
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Weibo</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=3&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1821809482&verifier=02959ff0&dpc=1"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- /.sidebar -->
+</div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+<footer class="site-footer">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <nav class="footer-nav clearfix">
+                              <ul class="footer-menu">
+                                    <li><a href="/index.html">Home</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
+                                    <li><a href="#">Contact</a></li>
+                              </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
+                              <!-- /.footer-menu -->
+                        </nav>
+                        <!-- /.footer-nav -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                  <div class="col-md-12">
+                        <p class="copyright-text">Copyright &copy; 2016 fukas，sunfuchang03@126.com</p>
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</footer>
+<!-- /.site-footer -->
+
+<!-- Scripts -->
+<script src="/assets/themes/medigo/js/min/plugins.min.js"></script>
+<script src="/assets/themes/medigo/js/min/medigo-custom.min.js"></script>
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<!-- Templatemo Script -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
+</script>
+<script type="text/javascript">
+    // $(document).ready(function(){
+    //     $('#tree').ztree_toc({
+    //         is_auto_number: true
+    //     });
+    // });
+</script>
+</body>
+</html>

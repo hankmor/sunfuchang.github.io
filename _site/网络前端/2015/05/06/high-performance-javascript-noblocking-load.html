@@ -1,0 +1,1347 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="baidu-site-verification" content="MCykuGqiPQ"/>
+<meta name="keywords" content="Fukas's blog!, Fukas, sunfuchang, 高性能,javascript,加载"/>
+<meta name="description" content="Fukas's blog!, Fukas, JavaScript在浏览器中的性能，可以说是前端开发者所要面对的最重要的可用性问题。在Yahoo的Yslow23条规则当中，其中一条是将JS放在底部 。原因是，事实上，大多数浏览器使用单进程处理UI和更新JavaScript运行等多个任务，而同一时间只能有一个任务被执行。JavaScript运行了多长时间，那么在浏览器空闲下来响应用户交互之前的等待时间就有多长。"/>
+
+<title> 高性能Javascript--脚本的无阻塞加载策略 </title>
+
+<meta name="author" content="fukas">
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- sina weibo -->
+<meta property="wb:webmaster" content="01d60bef1678aca3"/>
+
+<!-- google fonts -->
+<!--<link href="http://fonts.useso.com/css?family=PT+Serif:400,700,400italic,700itali" rel="stylesheet">-->
+<!--<link href="http://fonts.useso.com/css?family=Raleway:400,900,800,700,500,200,100,600" rel="stylesheet">-->
+
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="/assets/themes/medigo/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/misc.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/blue-scheme.css">
+<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all">
+<!-- syntax css -->
+<link href="/assets/css/main.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/normalize.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/syntax.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/pygment_trac.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/stylesheet.css" rel="stylesheet" type="text/css" media="all">
+
+<!-- JavaScripts -->
+<script src="/assets/themes/medigo/js/jquery-1.10.2.min.js"></script>
+<script src="/assets/themes/medigo/js/jquery-migrate-1.2.1.min.js"></script>
+
+<link rel="shortcut icon" href="/assets/themes/medigo/images/favicon.ico" type="image/x-icon"/>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+<![endif]-->
+
+<!-- atom & rss feed -->
+<link href="/atom.xml" type="application/atom+xml" rel="alternate"
+      title="Sitewide ATOM Feed">
+<link href="/rss.xml" type="application/rss+xml" rel="alternate"
+      title="Sitewide RSS Feed">	
+</head>
+<body>
+<div class="responsive_menu">
+      <ul class="main_menu">
+            <li><a href="/index.html">Home</a></li>
+            <!--<li><a href="#">Portfolio</a></li>-->
+            <li><a href="/blog/index.html">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/concat.html">Contact</a></li>
+      </ul>
+      <!-- /.main_menu -->
+</div>
+<!-- /.responsive_menu -->
+
+<header class="site-header clearfix">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <div class="pull-left logo">
+                              <a href="index.html" style="font-size: 1.8em!important; font-weight: bold; font-family: sans-serif;">
+                                    <img src="/assets/themes/medigo/images/favicon.ico" style="width: 12%;" alt="Medigo by templatemo">
+                                    Fukas's blog!
+                              </a>
+                        </div>
+                        <!-- /.logo -->
+
+                        <div class="main-navigation pull-right">
+                              <nav class="main-nav visible-md visible-lg">
+                                    <ul class="sf-menu">
+                                          <li class=""><a href="/index.html">Home</a></li>
+                                          <!--<li><a href="#">Portfolio</a></li>-->
+                                          <!-- 添加分页后，index。html -->
+                                          <li class=" active "><a href="/blog/index.html">Blog</a></li>
+                                          <li class=""><a href="/about.html">About</a></li>
+                                          <li class=""><a href="/concat.html">Contact</a></li>
+                                    </ul>
+                                    <!-- /.sf-menu -->
+                              </nav>
+                              <!-- /.main-nav -->
+                              <!-- This one in here is responsive menu for tablet and mobiles -->
+                              <div class="responsive-navigation visible-sm visible-xs">
+                                    <a href="#nogo" class="menu-toggle-btn">
+                                          <i class="fa fa-bars"></i>
+                                    </a>
+                              </div>
+                              <!-- /responsive_navigation -->
+                        </div>
+                        <!-- /.main-navigation -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</header>
+<!-- /.site-header -->
+
+<div class="first-widget parallax" style="background-image: url('/assets/themes/medigo/images/includes/blogbg3.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="thunm-bread">
+                      <span class="meta-date"><a href="#">Blog</a></span>            
+                            <span class="meta-comments">
+                                <a href="#">
+                                    文章详情
+                                </a>
+                            </span>     
+                        </div>
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="/assets/themes/medigo/images/includes/blog3.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">2015年05月6日</a></span>
+                            
+                                <span class="meta-comments">
+                                    
+                                    
+
+
+    
+        
+            <a href="/categories/web_front.html">
+                网络前端
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+                                </span>
+                            
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>高性能Javascript--脚本的无阻塞加载策略</h1>
+
+                            <!-- 目录 -->
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
+                            
+                            
+<p>  <code>JavaScript</code>在浏览器中的性能，可以说是前端开发者所要面对的最重要的可用性问题。</p>
+
+<p>  在Yahoo的Yslow23条规则当中，其中一条是将JS放在底部 。原因是，事实上，大多数浏览器使用单进程处理UI和更新<code>JavaScript</code>运行等多个任务，而同一时间只能有一个任务被执行。<code>JavaScript</code>运行了多长时间，那么在浏览器空闲下来响应用户交互之前的等待时间就有多长。<br />
+  从基本层面说,这意味着<code>&lt;script&gt;</code>标签的出现使整个页面因脚本解析、运行而出现等待。不论实际的<code>JavaScript</code>代码是内联的还是包含在一个不相干的外部文件中,页面下载和解析过程必须停下,等待脚本 完成这些处理,然后才能继续。这是页面生命周期必不可少的部分,因为脚本可能在运行过程中修改页面 内容。典型的例子是<code>document.write()</code>函数,例如:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Script Example<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+     <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+           <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">"The date is "</span> <span class="o">+</span> <span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">toDateString</span><span class="p">());</span>
+        <span class="nt">&lt;/script&gt;</span> 
+     <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
+
+<p>  当浏览器遇到一个<code>&lt;script&gt;</code>标签时,正如上面<code>HTML</code>页面中那样,无法预知<code>JavaScript</code>是否在&lt;p&gt;标签中添加内容。因此,浏览器停下来,运行此 <code>JavaScript</code> 代码,然后再继续解析、翻译页面。同样的事情发生 在使用 src 属性加载 <code>JavaScript</code> 的过程中。浏览器必须首先下载外部文件的代码,这要占用一些时间,然后解析并运行此代码。此过程中,页面解析和用户交互是被完全阻塞的。<br />
+  因为脚本阻塞其他页面资源的下载过程,所以推荐的办法是:将所有<code>&lt;script&gt;</code>标签放在尽可能接近<code>&lt;body&gt;</code>标签底部的位置,尽量减少对整个页面下载的影响。例如:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Script Example<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"styles.css"</span><span class="nt">&gt;</span> 
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;p&gt;</span>Hello world!<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;--</span> <span class="na">Example</span> <span class="na">of</span> <span class="na">recommended</span> <span class="na">script</span> <span class="na">positioning</span> <span class="na">--</span><span class="nt">&gt;</span> 
+      <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"file1.js"</span><span class="nt">&gt;&lt;/script&gt;</span> 
+      <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"file2.js"</span><span class="nt">&gt;&lt;/script&gt;</span> 
+      <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"file3.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
+
+<p>此代码展示了所推荐的<code>&lt;script&gt;</code>标签在<code>HTML</code>文件中的位置。尽管脚本下载之间互相阻塞,但页面已经下载完成并且显示在用户面前了,进入页面的速度不会显得太慢。这就是上面提到的将JS放到底部。<br />
+  另外，Yahoo!为他的“Yahoo!用户接口(Yahoo! User Interface,YUI)”库创建一个“联合句柄”,这是通过他们的“内容投递网络(Content Delivery Network,CDN)”实现的。任何一个网站可以使用一个“联合句柄”<code>URL</code>指出包含<code>YUI</code>文件包中的哪些文件。例如,下面的<code>URL</code>包含两个文件:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"http://yui.yahooapis.com/combo?2.7.0/build/yahoo/yahoo-min.js&amp;2.7.0/build/event/event-min.js"</span><span class="nt">&gt;&lt;/script&gt;</span> </code></pre></figure>
+
+<p>  此<code>URL</code>调用2.7.0版本的<code>yahoo-min.js</code>和<code>event-min.js</code>文件。这些文件在服务器上是两个分离的文件,但是当服务器收到此<code>URL</code>请求时,两个文件将被合并在一起返回给客户端。通过这种方法,就不再需要两个<code>&lt;script&gt;</code>标签(每个标签加载一个文件),一个<code>&lt;script&gt;</code>标签就可以加载他们。这是在<code>HTML</code>页面包含多个外部<code>JavaScript</code>的最佳方法。</p>
+
+<h2 id="noblocking-scripts">Noblocking Scripts非阻塞脚本</h2>
+
+<p>  上述是页面初始状态包含多个<code>JavaScript</code>脚本加载的最佳方法。<code>JavaScript</code>倾向于阻塞浏览器某些处理过程，如<code>http</code>请求和界面刷新，这是开发者面临的最显著性能问题。保持<code>JavaScript</code>文件短小，并限制<code>http</code>请求的数量，只是创建反应迅速的网页应用第一步。<br />
+  但诸如大型网页有大量的Js代码，保持源码短小并不总是一种最佳选择。So，非阻塞脚本应运而生，我们需要的是向页面中逐步添加<code>JavaScript</code>，某种程度上而言不会阻塞浏览器。<br />
+  而非阻塞脚本的关键在于，等页面完成加载之后，再加载<code>JavaScript</code>源码，这意味着在<code>window</code>的<code>load</code>事件发出之后开始下载代码。</p>
+
+<pre>
+相关解释：  
+&emsp;&emsp;<code>window</code>的<code>load</code>事件只会在页面载入完毕后触发一次且仅一次。
+&emsp;&emsp;<code>window.onload=function(){}</code>必须等待网页中所有的内容加载完毕后(包括元素的所有关联文件，例如图片)才能执行，即<code>JavaScript</code>此时才可以访问页面中的任何元素。
+</pre>
+
+<p>  如下述几种方法：</p>
+
+<p>  <strong>1. Deferred Scripts延期脚本</strong></p>
+
+<p>  <code>Html4</code>为<code>&lt;script&gt;</code>标签定义了一个扩展属性：<code>defer</code>。<br />
+  这个<code>defer</code>属性指明元素中所包含的脚本不打算修改<code>DOM</code>，因此代码可以稍后执行。<code>defer</code>属性只被Internet Explorer 4+和Firefox 3.5+支持，它不是一个理想的跨浏览器解决方案。在其他浏览器上，<code>defer</code>属性将被忽略。所以，<code>&lt;script&gt;</code>标签会按照正常默认方式处理，即是会造成阻塞。如果得到各个主流浏览器的支持，这仍是一种有效的解决方式。</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"file1.js"</span> <span class="na">defer</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<p>  一个带有<code>defer</code>属性的<code>&lt;script&gt;</code>标签可以放置在文档的任何位置，它会在被解析时启动下载，直到<code>DOM</code>加载完成（在<code>onload</code>事件句柄被调用之前）。当一个<code>defer</code>的<code>JavaScript</code>文件被下载时，它不会阻塞浏览器的其他处理过程，所以这些文件可以与其他资源一起并行下载。
+defer可以使用下述代码测试浏览器是否支持defer属性：</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Script Defer Example<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span> 
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">defer</span><span class="nt">&gt;</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"defer"</span><span class="p">);</span><span class="nt">&lt;/script&gt;</span> 
+    <span class="nt">&lt;script&gt;</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"script"</span><span class="p">);</span> <span class="nt">&lt;/script&gt;</span> 
+    <span class="nt">&lt;script&gt;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"load"</span><span class="p">);};</span> <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
+
+<p>  如果浏览器不支持<code>defer</code>，那么弹出的对话框的顺序是“defer”，“script”，“load”。<br />
+  如果浏览器支持<code>defer</code>，那么弹出的对话框的顺序是“script”，“load”，“defer”。<br />
+  根据大家评论的反馈，<code>HTML5</code>新增了一个<code>async</code>属性。在上述的基础上，对比一下<code>defer</code>与<code>async</code>的异同：</p>
+
+<p><strong>相同之处：</strong></p>
+
+<ul>
+  <li>加载文件时不阻塞页面渲染</li>
+  <li>使用这两个属性的脚本中不能调用<code>document.write</code>方法</li>
+  <li>有脚本的onload的事件回调</li>
+</ul>
+
+<p><strong>区别点：</strong></p>
+
+<ul>
+  <li>html的版本 html4.0中定义了defer；html5.0中定义了async</li>
+  <li>执行时刻</li>
+</ul>
+
+<p>  每一个<code>async</code>属性的脚本都在它下载结束之后立刻执行，同时会在<code>window</code>的,<code>load</code>事件之前执行。所以就有可能出现脚本执行顺序被打乱的情况；每一个,<code>defer</code>属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在<code>document</code>的<code>DOMContentLoaded</code>之前执行。</p>
+
+<ul>
+  <li>浏览器</li>
+</ul>
+
+<table class="table table-condensed" style="width: 100%;">
+<tbody>
+<tr>
+    <th>Feature</th>
+    <th>Chrome</th>
+    <th>Firefox (Gecko)</th>
+    <th>Internet Explorer</th>
+    <th>Opera</th>
+    <th>Safari</th>
+</tr>
+<tr>
+<td>Basic support</td>
+<td>1.0</td>
+<td>1.0 (1.7 or earlier)</td>
+<td>(Supported)</td>
+<td>(Supported)</td>
+<td>(Supported)</td>
+</tr>
+<tr>
+<td><code>async</code>attribute</td>
+<td>(Supported)</td>
+<td>3.6 (1.9.2)</td>
+<td>10</td>
+<td>–</td>
+<td>(Supported)</td>
+</tr>
+<tr>
+<td><code>defer</code>attribute</td>
+<td>(Supported)</td>
+<td>3.5 (1.9.1)</td>
+<td>4</td>
+<td>–</td>
+<td>(Supported)</td>
+</tr>
+</tbody>
+</table>
+
+<p>  <strong>2. Dynamic Script Elements 动态脚本元素</strong></p>
+
+<p>  <code>DOM</code>允许我们使用<code>JavaScript</code>动态创建<code>HTML</code>的几乎所有文档内容，一个新的<code>&lt;script&gt;</code>元素可以非常容易的通过标准<code>DOM</code>创建：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">document_createElement_x</span> <span class="p">(</span><span class="s2">"script"</span><span class="p">);</span>
+<span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">"text/javascript"</span><span class="p">;</span>
+<span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">"file1.js"</span><span class="p">;</span> 
+<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">a</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span></code></pre></figure>
+
+<p>  新的<code>&lt;script&gt;</code>元素加载<code>file1.js</code>源文件。此文件当元素添加到页面后立刻开始下载。此技术的重点在于：无论在何处启动下载，文件的下载和运行都不会阻塞其他页面处理过程。<br />
+  当文件使用动态脚本节点下载时，返回的代码通常立即执行（除了Firefox和Opera，它们将等待此前的所有动态脚本节点执行完毕）。<br />
+  大多数情况下，我们希望调用一个函数就可以实现<code>JavaScript</code>文件的动态下载。下面的函数封装实现了标准实现和IE实现：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">loadScript</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">document_createElement_x</span> <span class="p">(</span><span class="s2">"script"</span><span class="p">)</span> <span class="p">;</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">"text/javascript"</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span><span class="p">){</span> <span class="c1">//IE</span>
+       <span class="nx">script</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+         <span class="k">if</span> <span class="p">(</span><span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s2">"loaded"</span> <span class="o">||</span> <span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s2">"complete"</span><span class="p">){</span>
+           <span class="nx">script</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+           <span class="nx">callback</span><span class="p">();</span> 
+          <span class="p">}</span>
+       <span class="p">};</span>
+     <span class="p">}</span> 
+     <span class="k">else</span> <span class="p">{</span> <span class="c1">//Others</span>
+       <span class="nx">script</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">callback</span><span class="p">();</span>
+     <span class="p">};</span> 
+   <span class="p">}</span>
+   <span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+   <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName_r</span><span class="p">(</span><span class="s2">"head"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">a</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span> 
+ <span class="p">}</span>
+
+<span class="nx">loadScript</span><span class="p">(</span><span class="s2">"file1.js"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>  <span class="c1">//调用</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">"File is loaded!"</span><span class="p">);</span> 
+<span class="p">});</span></code></pre></figure>
+
+<p>  此函数接受两个参数：<code>JavaScript</code>文件的Url和一个当<code>JavaScript</code>接收完成时触发的回调函数。属性检查用于决定监视哪种事件。最后一步<code>src</code>属性，并将<code>JavaScript</code>文件添加到<code>head</code>。<br />
+  动态脚本加载是非阻塞<code>JavaScript</code>下载中最常用的模式，因为它可以跨浏览器，而且简单易用。</p>
+
+<p>  <strong>3. XMLHttpRequest Script Injection XHR脚本注入</strong></p>
+
+<p>  另一个以非阻塞方式获得脚本的方法是使用<code>XMLHttpRequest(XHR)</code>对象将脚本注入到页面中。此技术首先创建一个<code>XHR</code>对象，然后下载<code>JavaScript</code>文件，接着用一个动态<code>&lt;script&gt;</code>元素将<code>JavaScript</code>代码注入页面。看demo:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span> 
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">"get"</span><span class="p">,</span> <span class="s2">"file1.js"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span> 
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="mi">4</span><span class="p">){</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">&gt;=</span> <span class="mi">200</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">&lt;</span> <span class="mi">300</span> <span class="o">||</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">==</span> <span class="mi">304</span><span class="p">){</span> <span class="c1">// 检查http状态码</span>
+        <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">document_createElement_x</span><span class="p">(</span><span class="s2">"script"</span><span class="p">);</span> 
+        <span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">"text/javascript"</span><span class="p">;</span>
+        <span class="nx">script</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">a</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+      <span class="p">}</span> 
+   <span class="p">}</span>
+<span class="p">};</span> 
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span></code></pre></figure>
+
+<p>  此代码向服务器发送一个获取<code>file1.js</code>的文件<code>get</code>请求。<code>onreadystatechange</code>事件处理函数检查<code>readyState</code>是不是4，然后检查<code>http</code>状态码是不是有效（200表示确定客户端请求已成功，2xx表示有效回应，304表示一个缓存响应）。如果收到一个有效响应，那么就创建一个新的<code>&lt;script&gt;</code>元素，将它的文本属性设置为从服务器接收到的<code>responseText</code>字符串。这样做实际上会创建一个带有内联代码的<code>&lt;script&gt;</code>元素，一旦新的<code>&lt;script&gt;</code>元素被添加到文档，代码将被执行，并准备使用。<br />
+  此方法的优点是兼容性佳，且你可以下载不立即执行的<code>JavaScript</code>代码。由于代码返回在<code>&lt;script&gt;</code>标签之外，它下载后不会自动执行，这使得你可以推迟执行。<br />
+  此方法的确定是受到浏览器同源限制，<code>JavaScript</code>文件必须与页面放置在同一个域内，不能从CDN(内容分发网络Content Delivery Network)下载。正因为这个原因，大型网页通常不采用XHR脚本注入技术。</p>
+
+<p>  <strong>4. Recommended Noblocking Pattern 推荐的非阻塞模式</strong></p>
+
+<p>  推荐的向页面加载大量<code>JavaScript</code>的方法分为两个步骤：
+*  第一步，包含动态加载<code>JavaScript</code>所需的代码，然后加载页面初始化所需的除了<code>JavaScript</code>之外的部分。这部分代码尽量小，可能只包含<code>loadScript()</code>函数，它的下载和运行非常迅速，不会对页面造成很大干扰。
+*  第二步，当初始代码准备好之后，用它来加载其余的<code>JavaScript</code>。<br />
+  例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"loader.js"</span><span class="o">&gt;&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="nx">loadScript</span><span class="p">(</span><span class="s2">"the-rest.js"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> 
+    <span class="nx">Application</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
+<span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<p>将此代码放置在body的关闭标签<code>&lt;/body&gt;</code>之前。这样做的好处是，首先，这样确保<code>JavaScript</code>运行不会影响其他页面的其他部分显示。其次，当第二部分<code>JavaScript</code>文件完成下载，所有应用程序所必须的<code>DOM</code>已经创建完毕，并做好被访问的准备，避免使用额外的事件处理（如<code>window.onload</code>）来得知页面是否已经准备好了。<br />
+  另一个选择是直接将<code>loadScript()</code>函数嵌入在页面中，这可以减少一个<code>http</code>请求的开销。例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">function</span> <span class="nx">loadScript</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">document_createElement_x</span> <span class="p">(</span><span class="s2">"script"</span><span class="p">);</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">"text/javascript"</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// IE </span>
+        <span class="nx">script</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s2">"loaded"</span> <span class="o">||</span> <span class="nx">script</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s2">"complete"</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">script</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> 
+                <span class="nx">callback</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// Others </span>
+        <span class="nx">script</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">callback</span><span class="p">();</span> 
+        <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span> 
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName_r</span><span class="p">(</span><span class="s2">"head"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">a</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">loadScript</span><span class="p">(</span><span class="s2">"the-rest.js"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">Application</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span> 
+<span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<p>  一旦页面初始化代码下载完成，还可以使用<code>loadScript()</code>函数加载页面所需的额外功能函数。<br />
+  介绍一个通用的工具，Yahoo! Search的Ryan Grove创建了<code>LazyLoad</code>库（参见：<a href="http://github.com/rgrove/lazyload/">http://github.com/rgrove/lazyload/</a>）。<code>LazyLoad</code>是一个强大的<code>loadScript()</code>函数。<code>LazyLoad</code>精缩之后只有大约1.5KB。用法举例如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"lazyload-min.js"</span><span class="o">&gt;&lt;</span><span class="sr">/script&gt;</span><span class="err"> 
+</span><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+    <span class="nx">LazyLoad</span><span class="p">.</span><span class="nx">js</span><span class="p">(</span><span class="s2">"the-rest.js"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> 
+        <span class="nx">Application</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
+    <span class="p">});</span> 
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h2 id="summary-">Summary 总结</h2>
+
+<ul>
+  <li>将所有<code>&lt;script&gt;</code>标签放置在页面底部，紧靠关闭标签<code>&lt;script&gt;</code>的上方。此方法可以保证页面在脚本运行之前完成解析。</li>
+  <li>将脚本成组打包。页面的<code>&lt;script&gt;</code>标签越少，页面的加载速度就越快，响应也更迅速。不论外部脚本文件还是内联代码都是如此。</li>
+  <li>有几种方法可以使用非阻塞方式下载<code>JavaScript</code>：
+  *  为<code>&lt;script&gt;</code>标签添加defer属性
+  *  动态创建<code>&lt;script&gt;</code>元素，用它下载并执行代码
+  *  用XHR对象下载代码，并注入到页面
+ 通过上述策略，可以极大提高那些使用<code>JavaScript</code>代码的网页应用的实际性能。</li>
+</ul>
+
+<p>参考书籍《高性能Javascript》。<br />
+原文地址：<a href="http://blog.sina.com.cn/s/blog_6c969b4a0102vnl2.html">http://blog.sina.com.cn/s/blog_6c969b4a0102vnl2.html</a></p>
+
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                
+                                
+
+
+  
+
+
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        
+                        <li class="prev">
+                            <a style="border:none" href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql" title="Mybatis Dynamic Sql">
+                                <span class="page-artitle-title">mybatis——动态SQL</span> &laquo; 上一篇
+                            </a>
+                        </li>
+                        
+                        <!--<li><a href="/archive.html">文章列表</a></li>-->
+                        
+                        <li class="next">
+                            <a style="border:none" href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command" title="Linux Common Command">下一篇 &raquo;
+                                <span class="page-artitle-title">linux常见操作整理</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load"
+                         data-title=" 高性能Javascript--脚本的无阻塞加载策略 "
+                         data-url="http://sunfuchang.github.io/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        <div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">About Me</h5>
+            <div class="col-xs-12">
+                <img src="/assets/images/head.jpg" style="width: 60%;" class="img-thumbnail">
+            </div>
+            <div class="col-xs-12">
+                <h4>Dendy</h4>
+                <!-- <div style="text-align:center;">
+                    <wb:follow-button uid="1821809482" type="gray_3" width="100%" height="24" ></wb:follow-button>
+                </div> -->
+                <div style="text-align: left;margin-top: 10px;">
+                    <p class="light-text">轻轻地，我走了，正如我轻轻地来！我挥一挥衣袖，不带走一片云彩！</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    
+                    
+                    <li>
+                        <a href="/categories/web_front.html" name="web_front">网络前端
+                            
+                            
+                            
+                            (2)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/internet.html" name="internet">互联网
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/technology.html" name="technology">技术摘录
+                            
+                            
+                            
+                            (5)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/db.html" name="db">数据库
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/architecture.html" name="architecture">架构设计
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/life.html" name="life">生活杂谈
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/dev_manage.html" name="dev_manage">研发管理
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/mobile.html" name="mobile">移动开发
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/system_management.html" name="system_management">系统运维
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/program_lang.html" name="program_lang">编程语言
+                            
+                            
+                            
+                            (4)
+                            
+                        </a>
+                    </li>
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendy">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2016年04月22日</span>
+                    <h6>
+                        <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">
+                            maven定义profile无法替换property属性值
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月29日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">
+                            微信分享到朋友圈、发送给朋友开发注意事项
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月24日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">
+                            windows下使用nexus搭建maven私服的流程和说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月22日</span>
+                    <h6>
+                        <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">
+                            MySQL慢查询分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb2.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月18日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">
+                            node学习第三课——node的事件触发器EventEmitter
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">
+                            node学习第二课——node的模块
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">
+                            node学习第一课——基于nodeJs的web聊天室程序
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月12日</span>
+                    <h6>
+                        <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">
+                            jQuery validator表单验证框架使用说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月10日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">
+                            JVM垃圾回收器工作原理及使用实例介绍
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月9日</span>
+                    <h6>
+                        <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">
+                            Spring框架的设计理念与设计模式分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                
+					
+
+
+  
+
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>April 22, 2016</span> &raquo; <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">Maven Profile Properties</a></li>
+    -->
+    
+      <h6 class="widget-title">2016年</h6></h2>
+      <li><a href="/archive/2016-04.html">04月</a><br></li>
+      
+
+      
+      
+        <h6 class="widget-title">2015年</h6></h2>
+        <li><a href="/archive/2016-12.html">12月</a><br></li>
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 29, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">Weixin Jssdk Use</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 24, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">Install Nexus On Windows For Maven</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 22, 2015</span> &raquo; <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">Query Performance Analysis In Mysql</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-08.html">08月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 18, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">Eventemitter Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">Web Module Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">Web Chat Room Based On Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-06.html">06月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 12, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">Jquery Validator Api</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 10, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">Jvm Gc</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-05.html">05月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  9, 2015</span> &raquo; <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">Spring Architecture And Design</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  7, 2015</span> &raquo; <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">Linux Common Command</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  6, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load">High Performance Javascript Noblocking Load</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql">Mybatis Dynamic Sql</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github">Build Blog On Github</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  4, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/04/install-jekyll-on-windows">Install Jekyll On Windows</a></li>
+    -->
+      
+
+    
+    
+  
+
+
+
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                
+                
+
+
+  
+      <a href="/tags.html#jekyll-ref">
+      jekyll <span>2</span></a>
+  
+      <a href="/tags.html#安装-ref">
+      安装 <span>1</span></a>
+  
+      <a href="/tags.html#windows-ref">
+      windows <span>1</span></a>
+  
+      <a href="/tags.html#gem-ref">
+      gem <span>1</span></a>
+  
+      <a href="/tags.html#ruby-ref">
+      ruby <span>1</span></a>
+  
+      <a href="/tags.html#github-ref">
+      github <span>1</span></a>
+  
+      <a href="/tags.html#博客-ref">
+      博客 <span>1</span></a>
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+      <a href="/tags.html#linux-ref">
+      linux <span>1</span></a>
+  
+      <a href="/tags.html#command-ref">
+      command <span>1</span></a>
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+      <a href="/tags.html#JVM-ref">
+      JVM <span>1</span></a>
+  
+      <a href="/tags.html#垃圾回收-ref">
+      垃圾回收 <span>1</span></a>
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+      <a href="/tags.html#modules-ref">
+      modules <span>1</span></a>
+  
+      <a href="/tags.html#node_modules-ref">
+      node_modules <span>1</span></a>
+  
+      <a href="/tags.html#exports-ref">
+      exports <span>1</span></a>
+  
+      <a href="/tags.html#EventEmitter-ref">
+      EventEmitter <span>1</span></a>
+  
+      <a href="/tags.html#mysql-ref">
+      mysql <span>1</span></a>
+  
+      <a href="/tags.html#sql-ref">
+      sql <span>1</span></a>
+  
+      <a href="/tags.html#performance-ref">
+      performance <span>1</span></a>
+  
+      <a href="/tags.html#nexus-ref">
+      nexus <span>1</span></a>
+  
+      <a href="/tags.html#maven-ref">
+      maven <span>2</span></a>
+  
+      <a href="/tags.html#私服-ref">
+      私服 <span>1</span></a>
+  
+      <a href="/tags.html#搭建-ref">
+      搭建 <span>1</span></a>
+  
+      <a href="/tags.html#微信开发-ref">
+      微信开发 <span>1</span></a>
+  
+      <a href="/tags.html#jssdk-ref">
+      jssdk <span>1</span></a>
+  
+      <a href="/tags.html#分享-ref">
+      分享 <span>1</span></a>
+  
+      <a href="/tags.html#签名-ref">
+      签名 <span>1</span></a>
+  
+      <a href="/tags.html#profile-ref">
+      profile <span>1</span></a>
+  
+
+
+
+
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Weibo</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=3&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1821809482&verifier=02959ff0&dpc=1"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- /.sidebar -->
+</div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+<footer class="site-footer">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <nav class="footer-nav clearfix">
+                              <ul class="footer-menu">
+                                    <li><a href="/index.html">Home</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
+                                    <li><a href="#">Contact</a></li>
+                              </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
+                              <!-- /.footer-menu -->
+                        </nav>
+                        <!-- /.footer-nav -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                  <div class="col-md-12">
+                        <p class="copyright-text">Copyright &copy; 2016 fukas，sunfuchang03@126.com</p>
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</footer>
+<!-- /.site-footer -->
+
+<!-- Scripts -->
+<script src="/assets/themes/medigo/js/min/plugins.min.js"></script>
+<script src="/assets/themes/medigo/js/min/medigo-custom.min.js"></script>
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<!-- Templatemo Script -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
+</script>
+<script type="text/javascript">
+    // $(document).ready(function(){
+    //     $('#tree').ztree_toc({
+    //         is_auto_number: true
+    //     });
+    // });
+</script>
+</body>
+</html>

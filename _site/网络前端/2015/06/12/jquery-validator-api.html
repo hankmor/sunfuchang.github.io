@@ -1,0 +1,2212 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="baidu-site-verification" content="MCykuGqiPQ"/>
+<meta name="keywords" content="Fukas's blog!, Fukas, sunfuchang, jQuery,validator,api"/>
+<meta name="description" content="Fukas's blog!, Fukas, jquery.validate.js是jquery旗下的一个验证框架，借助jquery的优势，我们可以迅速验证一些常见的输入,并且可以自己扩充自己的验证方法，并且对国际化也有很好的支持。"/>
+
+<title> jQuery validator表单验证框架使用说明 </title>
+
+<meta name="author" content="fukas">
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- sina weibo -->
+<meta property="wb:webmaster" content="01d60bef1678aca3"/>
+
+<!-- google fonts -->
+<!--<link href="http://fonts.useso.com/css?family=PT+Serif:400,700,400italic,700itali" rel="stylesheet">-->
+<!--<link href="http://fonts.useso.com/css?family=Raleway:400,900,800,700,500,200,100,600" rel="stylesheet">-->
+
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="/assets/themes/medigo/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/misc.css">
+<link rel="stylesheet" href="/assets/themes/medigo/css/blue-scheme.css">
+<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all">
+<!-- syntax css -->
+<link href="/assets/css/main.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/normalize.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/syntax.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/pygment_trac.css" rel="stylesheet" type="text/css" media="all">
+<link href="/assets/css/stylesheet.css" rel="stylesheet" type="text/css" media="all">
+
+<!-- JavaScripts -->
+<script src="/assets/themes/medigo/js/jquery-1.10.2.min.js"></script>
+<script src="/assets/themes/medigo/js/jquery-migrate-1.2.1.min.js"></script>
+
+<link rel="shortcut icon" href="/assets/themes/medigo/images/favicon.ico" type="image/x-icon"/>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+<![endif]-->
+
+<!-- atom & rss feed -->
+<link href="/atom.xml" type="application/atom+xml" rel="alternate"
+      title="Sitewide ATOM Feed">
+<link href="/rss.xml" type="application/rss+xml" rel="alternate"
+      title="Sitewide RSS Feed">	
+</head>
+<body>
+<div class="responsive_menu">
+      <ul class="main_menu">
+            <li><a href="/index.html">Home</a></li>
+            <!--<li><a href="#">Portfolio</a></li>-->
+            <li><a href="/blog/index.html">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/concat.html">Contact</a></li>
+      </ul>
+      <!-- /.main_menu -->
+</div>
+<!-- /.responsive_menu -->
+
+<header class="site-header clearfix">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <div class="pull-left logo">
+                              <a href="index.html" style="font-size: 1.8em!important; font-weight: bold; font-family: sans-serif;">
+                                    <img src="/assets/themes/medigo/images/favicon.ico" style="width: 12%;" alt="Medigo by templatemo">
+                                    Fukas's blog!
+                              </a>
+                        </div>
+                        <!-- /.logo -->
+
+                        <div class="main-navigation pull-right">
+                              <nav class="main-nav visible-md visible-lg">
+                                    <ul class="sf-menu">
+                                          <li class=""><a href="/index.html">Home</a></li>
+                                          <!--<li><a href="#">Portfolio</a></li>-->
+                                          <!-- 添加分页后，index。html -->
+                                          <li class=" active "><a href="/blog/index.html">Blog</a></li>
+                                          <li class=""><a href="/about.html">About</a></li>
+                                          <li class=""><a href="/concat.html">Contact</a></li>
+                                    </ul>
+                                    <!-- /.sf-menu -->
+                              </nav>
+                              <!-- /.main-nav -->
+                              <!-- This one in here is responsive menu for tablet and mobiles -->
+                              <div class="responsive-navigation visible-sm visible-xs">
+                                    <a href="#nogo" class="menu-toggle-btn">
+                                          <i class="fa fa-bars"></i>
+                                    </a>
+                              </div>
+                              <!-- /responsive_navigation -->
+                        </div>
+                        <!-- /.main-navigation -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</header>
+<!-- /.site-header -->
+
+<div class="first-widget parallax" style="background-image: url('/assets/themes/medigo/images/includes/blogbg0.jpg')" id="blogId">
+    <div class="parallax-overlay">
+        <div class="container pageTitle">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="page-title">Blog Single</h2>
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-md-6 col-sm-6 text-right">
+                    <span class="page-location">Home / Blog Single</span>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.parallax-overlay -->
+</div> <!-- /.pageTitle -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 blog-posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="thunm-bread">
+                      <span class="meta-date"><a href="#">Blog</a></span>            
+                            <span class="meta-comments">
+                                <a href="#">
+                                    文章详情
+                                </a>
+                            </span>     
+                        </div>
+                    <div class="post-blog">
+                        <div class="blog-image">
+                            <img src="/assets/themes/medigo/images/includes/blog0.jpg" alt="">
+                        </div>
+                        <!-- /.blog-image -->
+                        <div class="blog-content">
+                            <span class="meta-date"><a href="#">2015年06月12日</a></span>
+                            
+                                <span class="meta-comments">
+                                    
+                                    
+
+
+    
+        
+            <a href="/categories/web_front.html">
+                网络前端
+            </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+                                </span>
+                            
+                            <!--<span class="meta-author"><a href="#blog-author">Candy Sharp</a></span>-->
+
+                            <h1>jQuery validator表单验证框架使用说明</h1>
+
+                            <!-- 目录 -->
+                            <div class="toc">
+                            	<p class="toc-title">目录</p>
+                            	<div class="toc-content"></div>
+                            </div>
+                            
+                            
+<p><code class="highlighter-rouge">jquery.validate.js</code>是<code class="highlighter-rouge">jquery</code>旗下的一个验证框架，借助<code class="highlighter-rouge">jquery</code>的优势，我们可以迅速验证一些常见的输入,并且可以自己扩充自己的验证方法，并且对国际化也有很好的支持，本文介绍了该框架的基本使用及常见API。</p>
+
+<p>官网地址：<a href="http://jqueryvalidation.org/">http://jqueryvalidation.org/</a></p>
+
+<h2 id="js">一、导入js库</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;script src='../js/jquery.js' type='text/javascript'&gt;&lt;/script&gt;
+&lt;script src='../js/jquery.validate.js' type='text/javascript'&gt;&lt;/script&gt;
+</code></pre>
+</div>
+
+<h2 id="section">二、默认校验规则</h2>
+
+<ul>
+  <li>required:true 必输字段</li>
+  <li>remote:”check.php” 使用ajax方法调用check.php验证输入值</li>
+  <li>email:true 必须输入正确格式的电子邮件</li>
+  <li>url:true 必须输入正确格式的网址</li>
+  <li>date:true 必须输入正确格式的日期 日期校验ie6出错，慎用</li>
+  <li>dateISO:true 必须输入正确格式的日期(ISO)，例如：2009-06-23，1998/01/22 只验证格式，不验证有效性</li>
+  <li>number:true 必须输入合法的数字(负数，小数)</li>
+  <li>digits:true 必须输入整数</li>
+  <li>creditcard: 必须输入合法的信用卡号</li>
+  <li>equalTo:”#field” 输入值必须和#field相同</li>
+  <li>accept: 输入拥有合法后缀名的字符串（上传文件的后缀）</li>
+  <li>maxlength:5 输入长度最多是5的字符串(汉字算一个字符)</li>
+  <li>minlength:10 输入长度最小是10的字符串(汉字算一个字符)</li>
+  <li>rangelength:[5,10] 输入长度必须介于 5 和 10 之间的字符串”)(汉字算一个字符)</li>
+  <li>range:[5,10] 输入值必须介于 5 和 10 之间</li>
+  <li>max:5 输入值不能大于5</li>
+  <li>min:10  输入值不能小于10</li>
+</ul>
+
+<h2 id="section-1">三、默认的提示</h2>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">messages</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nl">required</span><span class="p">:</span> <span class="s2">"This field is required."</span><span class="p">,</span>
+    <span class="nx">remote</span><span class="err">:</span> <span class="s2">"Please fix this field."</span><span class="p">,</span>
+    <span class="nx">email</span><span class="err">:</span> <span class="s2">"Please enter a valid email address."</span><span class="p">,</span>
+    <span class="nx">url</span><span class="err">:</span> <span class="s2">"Please enter a valid URL."</span><span class="p">,</span>
+    <span class="nx">date</span><span class="err">:</span> <span class="s2">"Please enter a valid date."</span><span class="p">,</span>
+    <span class="nx">dateISO</span><span class="err">:</span> <span class="s2">"Please enter a valid date (ISO)."</span><span class="p">,</span>
+    <span class="nx">dateDE</span><span class="err">:</span> <span class="s2">"Bitte geben Sie ein g眉ltiges Datum ein."</span><span class="p">,</span>
+    <span class="nx">number</span><span class="err">:</span> <span class="s2">"Please enter a valid number."</span><span class="p">,</span>
+    <span class="nx">numberDE</span><span class="err">:</span> <span class="s2">"Bitte geben Sie eine Nummer ein."</span><span class="p">,</span>
+    <span class="nx">digits</span><span class="err">:</span> <span class="s2">"Please enter only digits"</span><span class="p">,</span>
+    <span class="nx">creditcard</span><span class="err">:</span> <span class="s2">"Please enter a valid credit card number."</span><span class="p">,</span>
+    <span class="nx">equalTo</span><span class="err">:</span> <span class="s2">"Please enter the same value again."</span><span class="p">,</span>
+    <span class="nx">accept</span><span class="err">:</span> <span class="s2">"Please enter a value with a valid extension."</span><span class="p">,</span>
+    <span class="nx">maxlength</span><span class="err">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter no more than {0} characters."</span><span class="p">),</span>
+    <span class="nx">minlength</span><span class="err">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter at least {0} characters."</span><span class="p">),</span>
+    <span class="nx">rangelength</span><span class="err">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter a value between {0} and {1} characters long."</span><span class="p">)</span>
+    <span class="nl">range</span><span class="p">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter a value between {0} and {1}."</span><span class="p">),</span>
+    <span class="nx">max</span><span class="err">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter a value less than or equal to {0}."</span><span class="p">),</span>
+    <span class="nx">min</span><span class="err">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"Please enter a value greater than or equal to {0}."</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>如需要修改，可在js代码中加入：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">messages</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">required</span><span class="p">:</span> <span class="s2">"必选字段"</span><span class="p">,</span>
+    <span class="na">remote</span><span class="p">:</span> <span class="s2">"请修正该字段"</span><span class="p">,</span>
+    <span class="na">email</span><span class="p">:</span> <span class="s2">"请输入正确格式的电子邮件"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="s2">"请输入合法的网址"</span><span class="p">,</span>
+    <span class="na">date</span><span class="p">:</span> <span class="s2">"请输入合法的日期"</span><span class="p">,</span>
+    <span class="na">dateISO</span><span class="p">:</span> <span class="s2">"请输入合法的日期 (ISO)."</span><span class="p">,</span>
+    <span class="na">number</span><span class="p">:</span> <span class="s2">"请输入合法的数字"</span><span class="p">,</span>
+    <span class="na">digits</span><span class="p">:</span> <span class="s2">"只能输入整数"</span><span class="p">,</span>
+    <span class="na">creditcard</span><span class="p">:</span> <span class="s2">"请输入合法的信用卡号"</span><span class="p">,</span>
+    <span class="na">equalTo</span><span class="p">:</span> <span class="s2">"请再次输入相同的值"</span><span class="p">,</span>
+    <span class="na">accept</span><span class="p">:</span> <span class="s2">"请输入拥有合法后缀名的字符串"</span><span class="p">,</span>
+    <span class="na">maxlength</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入一个 长度最多是 {0} 的字符串"</span><span class="p">),</span>
+    <span class="na">minlength</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入一个 长度最少是 {0} 的字符串"</span><span class="p">),</span>
+    <span class="na">rangelength</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入 一个长度介于 {0} 和 {1} 之间的字符串"</span><span class="p">),</span>
+    <span class="na">range</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入一个介于 {0} 和 {1} 之间的值"</span><span class="p">),</span>
+    <span class="na">max</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入一个最大为{0} 的值"</span><span class="p">),</span>
+    <span class="na">min</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请输入一个最小为{0} 的值"</span><span class="p">)</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>推荐做法，将此文件放入<code class="highlighter-rouge">messages_cn.js</code>中，在页面中引入</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"../js/messages_cn.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<h2 id="section-2">四、使用方式</h2>
+
+<h3 id="section-3">1、将校验规则写到控件中</h3>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"../js/jquery.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"../js/jquery.validate.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./js/jquery.metadata.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span>
+$().ready(function() {$("#signupForm").validate();});
+<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"signupForm"</span> <span class="na">method=</span><span class="s">"get"</span> <span class="na">action=</span><span class="s">""</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"firstname"</span><span class="nt">&gt;</span>Firstname<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"firstname"</span> <span class="na">name=</span><span class="s">"firstname"</span> <span class="na">class=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"email"</span><span class="nt">&gt;</span>E-Mail<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"email"</span> <span class="na">name=</span><span class="s">"email"</span> <span class="na">class=</span><span class="s">"required email"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"password"</span><span class="nt">&gt;</span>Password<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">class=</span><span class="s">"{required:true,minlength:5}"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"confirm_password"</span><span class="nt">&gt;</span>确认密码<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"confirm_password"</span> <span class="na">name=</span><span class="s">"confirm_password"</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">class=</span><span class="s">"{required:true,minlength:5,equalTo:'#password'}"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">"submit"</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Submit"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/form&gt;</span></code></pre></figure>
+
+<p>使用<code class="highlighter-rouge">class="{}"</code>的方式，必须引入包：<code class="highlighter-rouge">jquery.metadata.js</code></p>
+
+<p>可以使用如下的方法，修改提示内容：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class="{required:true,minlength:5,messages:{required:'请输入内容'}}"
+</code></pre>
+</div>
+
+<p>在使用<code class="highlighter-rouge">equalTo</code>关键字时，后面的内容必须加上引号，如下代码：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class="{required:true,minlength:5,equalTo:'#password'}"
+</code></pre>
+</div>
+
+<h3 id="js-1">2、将校验规则写到js代码中</h3>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">().</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="nx">$</span><span class="p">(</span><span class="s2">"#signupForm"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+    <span class="na">rules</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">firstname</span><span class="p">:</span> <span class="s2">"required"</span><span class="p">,</span>
+        <span class="na">email</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">email</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="na">password</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">minlength</span><span class="p">:</span> <span class="mi">5</span>
+        <span class="p">},</span>
+        <span class="na">confirm_password</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">minlength</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="na">equalTo</span><span class="p">:</span> <span class="s2">"#password"</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">messages</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">firstname</span><span class="p">:</span> <span class="s2">"请输入姓名"</span><span class="p">,</span>
+        <span class="na">email</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="s2">"请输入Email地址"</span><span class="p">,</span>
+            <span class="na">email</span><span class="p">:</span> <span class="s2">"请输入正确的email地址"</span>
+        <span class="p">},</span>
+        <span class="na">password</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="s2">"请输入密码"</span><span class="p">,</span>
+            <span class="na">minlength</span><span class="p">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"密码不能小于{0}个字 符"</span><span class="p">)</span>
+        <span class="p">},</span>
+        <span class="na">confirm_password</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">required</span><span class="p">:</span> <span class="s2">"请输入确认密码"</span><span class="p">,</span>
+            <span class="na">minlength</span><span class="p">:</span> <span class="s2">"确认密码不能小于5个字符"</span><span class="p">,</span>
+            <span class="na">equalTo</span><span class="p">:</span> <span class="s2">"两次输入密码不一致不一致"</span>
+        <span class="p">}</span>
+    <span class="p">}});</span>
+<span class="p">});</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">//messages处，如果某个控件没有message，将调用默认的信息
+<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"signupForm"</span> <span class="na">method=</span><span class="s">"get"</span> <span class="na">action=</span><span class="s">""</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"firstname"</span><span class="nt">&gt;</span>Firstname<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"firstname"</span> <span class="na">name=</span><span class="s">"firstname"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"email"</span><span class="nt">&gt;</span>E-Mail<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"email"</span> <span class="na">name=</span><span class="s">"email"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"password"</span><span class="nt">&gt;</span>Password<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">type=</span><span class="s">"password"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"confirm_password"</span><span class="nt">&gt;</span>确认密码<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"confirm_password"</span> <span class="na">name=</span><span class="s">"confirm_password"</span> <span class="na">type=</span><span class="s">"password"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">"submit"</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Submit"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/form&gt;</span></code></pre></figure>
+
+<ul>
+  <li>required:true 必须有值</li>
+  <li>required:”#aa:checked”表达式的值为真，则需要验证</li>
+  <li>required:function(){}返回为真，表时需要验证</li>
+</ul>
+
+<p>后边两种常用于，表单中需要同时填或不填的元素</p>
+
+<h2 id="section-4">五、常用方法及注意问题</h2>
+
+<h3 id="submit">1、用其他方式替代默认的SUBMIT</h3>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">().</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#signupForm"</span><span class="p">).</span><span class="nx">validate</span><span class="p">();</span>
+<span class="p">});</span>
+<span class="nx">$</span><span class="p">().</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#signupForm"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+        <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s2">"submitted"</span><span class="p">);</span>
+            <span class="nx">form</span><span class="p">.</span><span class="nx">submit</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>使用ajax方式</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+    <span class="na">submitHandler</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">form</span><span class="p">).</span><span class="nx">ajaxSubmit</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>可以设置<code class="highlighter-rouge">validate</code>的默认值，写法如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+    <span class="na">submitHandler</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"submitted!"</span><span class="p">);</span><span class="nx">form</span><span class="p">.</span><span class="nx">submit</span><span class="p">();</span> <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>如果想提交表单, 需要使用<code class="highlighter-rouge">form.submit()</code>而不要使用<code class="highlighter-rouge">$(form).submit()</code></p>
+
+<h3 id="debug">2、<code class="highlighter-rouge">debug</code>，只验证不提交表单</h3>
+
+<p>如果这个参数为<code class="highlighter-rouge">true</code>，那么表单不会提交，只进行检查，调试时十分方便</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">().</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#signupForm"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+        <span class="na">debug</span><span class="p">:</span><span class="kc">true</span>
+    <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>如果一个页面中有多个表单都想设置成为<code class="highlighter-rouge">debug</code>，用</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+    <span class="na">debug</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">})</span></code></pre></figure>
+
+<h3 id="ignore">3、<code class="highlighter-rouge">ignore</code>：忽略某些元素不验证</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ignore: ".ignore"
+</code></pre>
+</div>
+
+<h3 id="section-5">4、更改错误信息显示的位置</h3>
+
+<ul>
+  <li>errorPlacement：Callback</li>
+  <li>Default: 把错误信息放在验证的元素后面，指明错误放置的位置，默认情况是：<code class="highlighter-rouge">error.appendTo(element.parent())</code>;即把错误信息放在验证的元素后面</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">errorPlacement</span><span class="err">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">error</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">parent</span><span class="p">());</span>
+<span class="p">}</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">//示例：
+<span class="nt">&lt;tr&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">"label"</span><span class="nt">&gt;&lt;label</span> <span class="na">id=</span><span class="s">"lfirstname"</span> <span class="na">for=</span><span class="s">"firstname"</span><span class="nt">&gt;</span>First Name<span class="nt">&lt;/label&gt;&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;&lt;input</span> <span class="na">id=</span><span class="s">"firstname"</span> <span class="na">name=</span><span class="s">"firstname"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">""</span> <span class="na">maxlength=</span><span class="s">"100"</span> <span class="nt">/&gt;&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">"status"</span><span class="nt">&gt;&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span>
+<span class="nt">&lt;tr&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">style=</span><span class="s">"padding-right: 5px;"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"dateformat_eu"</span> <span class="na">name=</span><span class="s">"dateformat"</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">value=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">id=</span><span class="s">"ldateformat_eu"</span> <span class="na">for=</span><span class="s">"dateformat_eu"</span><span class="nt">&gt;</span>14/02/07<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">style=</span><span class="s">"padding-left: 5px;"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"dateformat_am"</span> <span class="na">name=</span><span class="s">"dateformat"</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">value=</span><span class="s">"1"</span>  <span class="nt">/&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">id=</span><span class="s">"ldateformat_am"</span> <span class="na">for=</span><span class="s">"dateformat_am"</span><span class="nt">&gt;</span>02/14/07<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td&gt;&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span>
+<span class="nt">&lt;tr&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">"label"</span><span class="nt">&gt;</span> <span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">"field"</span> <span class="na">colspan=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"termswrap"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"terms"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"terms"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;label</span> <span class="na">id=</span><span class="s">"lterms"</span> <span class="na">for=</span><span class="s">"terms"</span><span class="nt">&gt;</span>I have read and accept the Terms of Use.<span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">errorPlacement</span><span class="err">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s2">":radio"</span><span class="p">)</span> <span class="p">)</span>
+        <span class="nx">error</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">next</span><span class="p">().</span><span class="nx">next</span><span class="p">()</span> <span class="p">);</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s2">":checkbox"</span><span class="p">)</span> <span class="p">)</span>
+        <span class="nx">error</span><span class="p">.</span><span class="nx">appendTo</span> <span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">next</span><span class="p">()</span> <span class="p">);</span>
+    <span class="k">else</span>
+        <span class="nx">error</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">next</span><span class="p">()</span> <span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>代码的作用是：一般情况下把错误信息显示在中，如果是<code class="highlighter-rouge">radio</code>显示在中，如果是 <code class="highlighter-rouge">checkbox</code>显示在内容的后面</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>errorClass：String Default: "error"
+</code></pre>
+</div>
+
+<p>指定错误提示的<code class="highlighter-rouge">css</code>类名，可以自定义错误提示的样式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>errorElement：String Default: "label"
+</code></pre>
+</div>
+
+<p>用什么标签标记错误，默认的是<code class="highlighter-rouge">label</code>你可以改成<code class="highlighter-rouge">em</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>errorContainer：Selector
+</code></pre>
+</div>
+
+<p>显示或者隐藏验证信息，可以自动实现有错误信息出现时把容器属性变为显示，无错误时隐藏，用处不大</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>errorContainer: "#messageBox1, #messageBox2"
+errorLabelContainer：Selector
+</code></pre>
+</div>
+
+<p>把错误信息统一放在一个容器里面。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>wrapper：String
+</code></pre>
+</div>
+
+<p>用什么标签再把上边的<code class="highlighter-rouge">errorELement</code>包起来
+一般这三个属性同时使用，实现在一个容器内显示所有错误提示的功能，并且没有信息时自动隐藏</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>errorContainer: "div.error",
+errorLabelContainer: $("#signupForm div.error"),
+wrapper: "li"
+</code></pre>
+</div>
+
+<h3 id="section-6">5、更改错误信息显示的样式</h3>
+
+<p>设置错误提示的样式，可以增加图标显示，在该系统中已经建立了一个<code class="highlighter-rouge">validation.css</code>专门用于维护校验文件的样式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>input.error { border: 1px solid red; }
+label.error {
+    background:url("./demo/images/unchecked.gif") no-repeat 0px 0px;
+    padding-left: 16px;
+    padding-bottom: 2px;
+    font-weight: bold;
+    color: #EA5200;
+}
+label.checked {
+    background:url("./demo/images/checked.gif") no-repeat 0px 0px;
+}
+</code></pre>
+</div>
+
+<h3 id="section-7">6、每个字段验证通过执行函数</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>success：String,Callback
+</code></pre>
+</div>
+
+<p>要验证的元素通过验证后的动作，如果跟一个字符串，会当做一个<code class="highlighter-rouge">css</code>类，也可跟一个函数</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>success: function(label) {
+    // set   as text for IE
+    label.html(" ").addClass("checked");
+    //label.addClass("valid").text("Ok!")
+}
+</code></pre>
+</div>
+
+<p>添加”<code class="highlighter-rouge">valid</code>” 到验证元素, 在<code class="highlighter-rouge">CSS</code>中定义的样式</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>success: "valid"
+</code></pre>
+</div>
+
+<h3 id="section-8">7、验证的触发方式修改</h3>
+
+<p>下面的虽然是<code class="highlighter-rouge">boolean</code>型的，但建议除非要改为<code class="highlighter-rouge">false</code>,否则别乱添加。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>onsubmit：Boolean Default: true
+</code></pre>
+</div>
+
+<p>提交时验证. 设置为<code class="highlighter-rouge">false</code>就用其他方法去验证</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>onfocusout：Boolean Default: true
+</code></pre>
+</div>
+
+<p>失去焦点是验证(不包括<code class="highlighter-rouge">checkboxes/radio buttons</code>)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>onkeyup：Boolean Default: true
+</code></pre>
+</div>
+
+<p>在<code class="highlighter-rouge">keyup</code>时验证.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>onclick：Boolean Default: true
+</code></pre>
+</div>
+
+<p>在<code class="highlighter-rouge">checkboxes</code> 和 <code class="highlighter-rouge">radio</code> 点击时验证</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>focusInvalid：Boolean Default: true
+</code></pre>
+</div>
+
+<p>提交表单后，未通过验证的表单(第一个或提交之前获得焦点的未通过验证的表单)会获得焦点</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>focusCleanup：Boolean Default: false
+</code></pre>
+</div>
+
+<p>如果是<code class="highlighter-rouge">true</code>那么当未通过验证的元素获得焦点时，移除错误提示。避免和 <code class="highlighter-rouge">focusInvalid</code> 一起用</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 重置表单</span>
+<span class="nx">$</span><span class="p">().</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">validator</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">"#signupForm"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+        <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s2">"submitted"</span><span class="p">);</span>
+            <span class="nx">form</span><span class="p">.</span><span class="nx">submit</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#reset"</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">validator</span><span class="p">.</span><span class="nx">resetForm</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<h3 id="section-9">8、异步验证</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>remote：URL
+</code></pre>
+</div>
+
+<p>使用<code class="highlighter-rouge">ajax</code>方式进行验证，默认会提交当前验证的值到远程地址，如果需要提交其他的值，可以使用<code class="highlighter-rouge">data</code>选项</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>remote: "check-email.php"
+remote: {
+    url: "check-email.php", //后台处理程序
+    type: "post", //数据发送方式
+    dataType: "json", //接受数据格式
+    data: { //要传递的数据
+        username: function() {
+            return $("#username").val();
+        }
+    }
+}
+</code></pre>
+</div>
+
+<p>远程地址只能输出 “<code class="highlighter-rouge">true</code>” 或 “<code class="highlighter-rouge">false</code>“，不能有其它输出</p>
+
+<h3 id="section-10">9、添加自定义校验</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>addMethod：name, method, message
+</code></pre>
+</div>
+
+<p>自定义验证方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 中文字两个字节</span>
+<span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">addMethod</span><span class="p">(</span><span class="s2">"byteRangeLength"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">param</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">){</span>
+            <span class="nx">length</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">optional</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">length</span> <span class="o">&lt;=</span> <span class="nx">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+<span class="p">},</span> <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"请确保输入的值在{0}-{1}个字节之间(一个中文字算2个字节)"</span><span class="p">));</span>
+
+<span class="c1">// 邮政编码验证</span>
+<span class="nx">jQuery</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">addMethod</span><span class="p">(</span><span class="s2">"isZipCode"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tel</span> <span class="o">=</span> <span class="sr">/^</span><span class="se">[</span><span class="sr">0-9</span><span class="se">]{6}</span><span class="sr">$/</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">optional</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nx">tel</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">value</span><span class="p">));</span>
+<span class="p">},</span> <span class="s2">"请正确填写您的邮政编码"</span><span class="p">);</span></code></pre></figure>
+
+<p>(1)、要在<code class="highlighter-rouge">additional-methods.js</code>文件中添加或者在<code class="highlighter-rouge">jquery.validate.js</code>添加，建议一般写在<code class="highlighter-rouge">additional-methods.js</code>文件中</p>
+
+<p>(2)、在<code class="highlighter-rouge">messages_cn.js</code>文件添加：isZipCode: “只能包括中文字、英文字母、数字和下划线”,
+调用前要添加对<code class="highlighter-rouge">additional-methods.js</code>文件的引用。</p>
+
+<h3 id="radiocheckboxselect">10、<code class="highlighter-rouge">radio</code>和<code class="highlighter-rouge">checkbox</code>、<code class="highlighter-rouge">select</code>的验证</h3>
+
+<p>(1)、radio的required表示必须选中一个</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;input</span>  <span class="na">type=</span><span class="s">"radio"</span> <span class="na">id=</span><span class="s">"gender_male"</span> <span class="na">value=</span><span class="s">"m"</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">class=</span><span class="s">"{required:true}"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;input</span>  <span class="na">type=</span><span class="s">"radio"</span> <span class="na">id=</span><span class="s">"gender_female"</span> <span class="na">value=</span><span class="s">"f"</span> <span class="na">name=</span><span class="s">"gender"</span><span class="nt">/&gt;</span></code></pre></figure>
+
+<p>(2)、<code class="highlighter-rouge">checkbox</code>的<code class="highlighter-rouge">required</code>表示必须选中</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">class=</span><span class="s">"checkbox"</span> <span class="na">id=</span><span class="s">"agree"</span> <span class="na">name=</span><span class="s">"agree"</span> <span class="na">class=</span><span class="s">"{required:true}"</span> <span class="nt">/&gt;</span>
+checkbox的minlength表示必须选中的最小个数,maxlength表示最大的选中个数,rangelength:[2,3]表 示选中个数区间
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">class=</span><span class="s">"checkbox"</span> <span class="na">id=</span><span class="s">"spam_email"</span> <span class="na">value=</span><span class="s">"email"</span> <span class="na">name=</span><span class="s">"spam[]"</span> <span class="na">class=</span><span class="s">"{required:true, minlength:2}"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">class=</span><span class="s">"checkbox"</span> <span class="na">id=</span><span class="s">"spam_phone"</span> <span class="na">value=</span><span class="s">"phone"</span> <span class="na">name=</span><span class="s">"spam[]"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">class=</span><span class="s">"checkbox"</span> <span class="na">id=</span><span class="s">"spam_mail"</span> <span class="na">value=</span><span class="s">"mail"</span> <span class="na">name=</span><span class="s">"spam[]"</span> <span class="nt">/&gt;</span></code></pre></figure>
+
+<p>(3)、<code class="highlighter-rouge">select</code>的<code class="highlighter-rouge">required</code>表示选中的<code class="highlighter-rouge">value</code>不能为空</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"jungle"</span> <span class="na">name=</span><span class="s">"jungle"</span> <span class="na">title=</span><span class="s">"Please select something!"</span> <span class="na">class=</span><span class="s">"{required:true}"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">""</span><span class="nt">&gt;&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;</span>Buga<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"2"</span><span class="nt">&gt;</span>Baga<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"3"</span><span class="nt">&gt;</span>Oi<span class="nt">&lt;/option&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">select</code>的<code class="highlighter-rouge">minlength</code>表示选中的最小个数（可多选的<code class="highlighter-rouge">select</code>）,<code class="highlighter-rouge">maxlength</code>表示最大的选中个 数,<code class="highlighter-rouge">rangelength:[2,3]</code>表示选中个数区间</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">"fruit"</span> <span class="na">name=</span><span class="s">"fruit"</span> <span class="na">title=</span><span class="s">"Please select at least two fruits"</span> <span class="na">class=</span><span class="s">"{required:true, minlength:2}"</span> <span class="na">multiple=</span><span class="s">"multiple"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"b"</span><span class="nt">&gt;</span>Banana<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"a"</span><span class="nt">&gt;</span>Apple<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"p"</span><span class="nt">&gt;</span>Peach<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"t"</span><span class="nt">&gt;</span>Turtle<span class="nt">&lt;/option&gt;</span>
+<span class="nt">&lt;/select&gt;</span></code></pre></figure>
+
+<h2 id="jqueryvalidate-api">六、 jQuery.validate 中文API</h2>
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th>名称</th>
+        <th>返回类型</th>
+        <th>描述</th>
+    </tr>
+    <tr>
+        <td>validate(options)</td>
+        <td>返回:Validator</td>
+        <td>验证所选的FORM</td>
+    </tr>
+    <tr>
+        <td>valid()</td>
+        <td>返回:Boolean</td>
+        <td>检查是否验证通过</td>
+    </tr>
+    <tr>
+        <td>validate(options)</td>
+        <td>返回:Validator</td>
+        <td>验证所选的FORM</td>
+    </tr>
+    <tr>
+        <td>rules()</td>
+        <td>返回:Options</td>
+        <td>返回元素的验证规则</td>
+    </tr>
+    <tr>
+        <td>validate(options)</td>
+        <td>返回:Validator</td>
+        <td>验证所选的FORM</td>
+    </tr>
+    <tr>
+        <td>rules("add",rules)</td>
+        <td>返回:Options</td>
+        <td>增加验证规则</td>
+    </tr>
+    <tr>
+        <td>rules("remove",rules)</td>
+        <td>返回:Options</td>
+        <td>删除验证规则</td>
+    </tr>
+    <tr>
+        <td>removeAttrs(attributes)</td>
+        <td>返回:Options</td>
+        <td>删除特殊属性并且返回他们</td>
+    </tr>
+    <tr>
+        <th colspan="3">Custom selectors</th>
+    </tr>
+    <tr>
+        <td>:blank</td>
+        <td>返回:Validator</td>
+        <td>没有值的筛选器</td>
+    </tr>
+    <tr>
+        <td>:filled</td>
+        <td>返回:Array &lt;Element &gt;</td>
+        <td>有值的筛选器</td>
+    </tr>
+    <tr>
+        <td>:unchecked</td>
+        <td>返回:Array &lt;Element &gt;</td>
+        <td>没选择的元素的筛选器</td>
+    </tr>
+    <tr>
+        <td colspan="3">Utilities</td>
+    </tr>
+    <tr>
+        <td>jQuery.format</td>
+        <td>(template,argument ,argumentN...)</td>
+        <td>返回:String</td>
+    </tr>
+    <tr>
+        <th colspan="3">Validator:</th>
+    </tr>
+    <tr>
+        <td colspan="3">validate方法返回一个Validator对象,它有很多方法, 让你能使用引发校验程序或者改变form的内容. validator对象有很多方法,但下面只是列出常用的。</td>
+    </tr>
+    <tr>
+        <td>form()</td>
+        <td>返回:Boolean</td>
+        <td>验证form返回成功还是失败</td>
+    </tr>
+    <tr>
+        <td>element(element)</td>
+        <td>返回:Boolean</td>
+        <td>验证单个元素是成功还是失败</td>
+    </tr>
+    <tr>
+        <td>resetForm()</td>
+        <td>返回:undefined</td>
+        <td>把前面验证的FORM恢复到验证前原来的状态</td>
+    </tr>
+    <tr>
+        <td>showErrors(errors)</td>
+        <td>返回:undefined</td>
+        <td>显示特定的错误信息</td>
+    </tr>
+    <tr>
+        <th colspan="3">Validator functions:</th>
+    </tr>
+    <tr>
+        <td>setDefaults(defaults)</td>
+        <td>返回:undefined</td>
+        <td>改变默认的设置</td>
+    </tr>
+    <tr>
+        <td>addMethod(name,method,message)</td>
+        <td>返回:undefined</td>
+        <td>添加一个新的验证方法. 必须包括一个独一无二的名字,一个JAVASCRIPT的方法和一个默认的信息</td>
+    </tr>
+    <tr>
+        <td>addClassRules(name,rules)</td>
+        <td>返回:undefined</td>
+        <td>增加组合验证类型 在一个类里面用多种验证方法里比较有用</td>
+    </tr>
+    <tr>
+        <td>addClassRules(rules)</td>
+        <td>返回:undefined</td>
+        <td>增加组合验证类型，在一个类里面用多种验证方法里比较有用,这个是一下子加多个</td>
+    </tr>
+    <tr>
+        <th colspan="3">内置验证方式：</th>
+    </tr>
+    <tr>
+        <td>required()</td>
+        <td>返回:Boolean</td>
+        <td>必填验证元素</td>
+    </tr>
+    <tr>
+        <td>required(dependency-expression)</td>
+        <td>返回:Boolean</td>
+        <td>必填元素依赖于表达式的结果</td>
+    </tr>
+    <tr>
+        <td>required(dependency-callback)</td>
+        <td>返回:Boolean</td>
+        <td>必填元素依赖于回调函数的结果</td>
+    </tr>
+    <tr>
+        <td>remote(url)</td>
+        <td>返回:Boolean</td>
+        <td>请求远程校验。url通常是一个远程调用方法</td>
+    </tr>
+    <tr>
+        <td>minlength(length)</td>
+        <td>返回:Boolean</td>
+        <td>设置最小长度</td>
+    </tr>
+    <tr>
+        <td>maxlength(length)</td>
+        <td>返回:Boolean</td>
+        <td>设置最大长度</td>
+    </tr>
+    <tr>
+        <td>rangelength(range)</td>
+        <td>返回:Boolean</td>
+        <td>设置一个长度范围[min,max]</td>
+    </tr>
+    <tr>
+        <td>min(value)</td>
+        <td>返回:Boolean</td>
+        <td>设置最大值</td>
+    </tr>
+    <tr>
+        <td>max(value)</td>
+        <td>返回:Boolean</td>
+        <td>设置最小值</td>
+    </tr>
+    <tr>
+        <td>email()</td>
+        <td>返回:Boolean</td>
+        <td>验证电子邮箱格式</td>
+    </tr>
+    <tr>
+        <td>range(range)</td>
+        <td>返回:Boolean</td>
+        <td>设置值的范围</td>
+    </tr>
+    <tr>
+        <td>url()</td>
+        <td>返回:Boolean</td>
+        <td>验证URL格式</td>
+    </tr>
+    <tr>
+        <td>date()</td>
+        <td>返回:Boolean</td>
+        <td>验证日期格式(类似30/30/2008的格式,不验证日期准确性只验证格式)</td>
+    </tr>
+    <tr>
+        <td>dateISO()</td>
+        <td>返回:Boolean</td>
+        <td>验证ISO类型的日期格式</td>
+    </tr>
+    <tr>
+        <td>dateDE()</td>
+        <td>返回:Boolean</td>
+        <td>验证德式的日期格式（29.04.1994 or 1.1.2006）</td>
+    </tr>
+    <tr>
+        <td>number()</td>
+        <td>返回:Boolean</td>
+        <td>验证十进制数字（包括小数的）</td>
+    </tr>
+    <tr>
+        <td>digits()</td>
+        <td>返回:Boolean</td>
+        <td>验证整数</td>
+    </tr>
+    <tr>
+        <td>creditcard()</td>
+        <td>返回:Boolean</td>
+        <td>验证信用卡号</td>
+    </tr>
+    <tr>
+        <td>accept(extension)</td>
+        <td>返回:Boolean</td>
+        <td>验证相同后缀名的字符串</td>
+    </tr>
+    <tr>
+        <td>equalTo(other)</td>
+        <td>返回:Boolean</td>
+        <td>验证两个输入框的内容是否相同</td>
+    </tr>
+    <tr>
+        <td>phoneUS()</td>
+        <td>返回:Boolean</td>
+        <td>验证美式的电话号码</td>
+    </tr>
+</table>
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th colspan="2">validate ()的可选项：</th>
+    </tr>
+    <tr>
+        <th>参数名称</th>
+        <th>用法示例</th>
+    </tr>
+    <tr>
+        <td>debug:<br />进行调试模式（表单不提交）</td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+                <span class="na">debug</span><span class="p">:</span><span class="kc">true</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>setDefaults:<br />设置默认</td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+                <span class="na">debug</span><span class="p">:</span><span class="kc">true</span>
+            <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            submitHandler:<br />
+            通过验证后运行的函数,里面要加上表单提交的函数,否则表单不会提交
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+                <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="nx">form</span><span class="p">).</span><span class="nx">ajaxSubmit</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        ignore:<br />
+        对某些元素不进行验证
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+               <span class="na">ignore</span><span class="p">:</span><span class="s2">".ignore"</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            rules:<br />
+            自定义规则,key:value的形式,key是要验证的元素,value可以是字符串或对象
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+               <span class="na">rules</span><span class="p">:{</span>
+                 <span class="na">name</span><span class="p">:</span><span class="s2">"required"</span><span class="p">,</span>
+                 <span class="na">email</span><span class="p">:{</span>
+                   <span class="na">required</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+                   <span class="na">email</span><span class="p">:</span><span class="kc">true</span>
+                 <span class="p">}</span>
+               <span class="p">}</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            messages:<br />
+            自定义的提示信息key:value的形式key是要验证的元素,值是字符串或函数
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">rules</span><span class="p">:{</span>
+             <span class="na">name</span><span class="p">:</span><span class="s2">"required"</span><span class="p">,</span>
+             <span class="na">email</span><span class="p">:{</span>
+               <span class="na">required</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+               <span class="na">email</span><span class="p">:</span><span class="kc">true</span>
+             <span class="p">}</span>
+           <span class="p">},</span>
+           <span class="na">messages</span><span class="p">:{</span>
+             <span class="na">name</span><span class="p">:</span><span class="s2">"Name不能为空"</span><span class="p">,</span>
+             <span class="na">email</span><span class="p">:{</span>
+               <span class="na">required</span><span class="p">:</span><span class="s2">"E-mail不能为空"</span><span class="p">,</span>
+               <span class="na">email</span><span class="p">:</span><span class="s2">"E-mail地址不正确"</span>
+             <span class="p">}</span>
+           <span class="p">}</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            groups:<br />
+            对一组元素的验证,用一个错误提示,用error Placement控制把出错信息放在哪里
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+          <span class="na">groups</span><span class="p">:{</span>
+            <span class="na">username</span><span class="p">:</span><span class="s2">"fname lname"</span>
+          <span class="p">},</span>
+          <span class="na">errorPlacement</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+             <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"fname"</span> <span class="o">||</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"lname"</span><span class="p">)</span>
+               <span class="nx">error</span><span class="p">.</span><span class="nx">insertAfter</span><span class="p">(</span><span class="s2">"#lastname"</span><span class="p">);</span>
+             <span class="k">else</span>
+               <span class="nx">error</span><span class="p">.</span><span class="nx">insertAfter</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+           <span class="p">},</span>
+           <span class="na">debug</span><span class="p">:</span><span class="kc">true</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        Onubmit Boolean 默认:true<br />
+        是否提交时验证
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">onsubmit</span><span class="p">:</span><span class="kc">false</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            onfocusout Boolean 默认:true<br />
+            是否在获取焦点时验证
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">onfocusout</span><span class="p">:</span><span class="kc">false</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            onkeyup Boolean 默认:true <br />
+            是否在敲击键盘时验证
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">onkeyup</span><span class="p">:</span><span class="kc">false</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            onclick Boolean 默认:true<br />
+            是否在鼠标点击时验证（一般验证checkbox,radiobox）
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">                <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+                   <span class="na">onclick</span><span class="p">:</span><span class="kc">false</span>
+                <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            focusInvalid Boolean 默认:true<br />
+            提交表单后,未通过验证的表单(第一个或提交之前获得焦点的未通过验证的表单)会获得焦点
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">focusInvalid</span><span class="p">:</span><span class="kc">false</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            focusCleanup Boolean 默认:false<br />
+            当未通过验证的元素获得焦点时,并移除错误提示（避免和 focusInvalid.一起使用）
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+               <span class="na">focusCleanup</span><span class="p">:</span><span class="kc">true</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            errorClass String 默认:"error"<br />
+            指定错误提示的css类名,可以自定义错误提示的样式
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+               <span class="na">errorClass</span><span class="p">:</span><span class="s2">"invalid"</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        errorElement String 默认:"label"<br />
+        使用什么标签标记错误
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span>
+           <span class="nl">errorElement</span><span class="p">:</span><span class="s2">"em"</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        wrapper String<br />
+        使用什么标签再把上边的errorELement包起来
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">wrapper</span><span class="p">:</span><span class="s2">"li"</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            errorLabelContainer Selector<br />
+            把错误信息统一放在一个容器里面
+        </td>
+        <td>
+            
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">            <span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+               <span class="na">errorLabelContainer</span><span class="p">:</span><span class="s2">"#messageBox"</span><span class="p">,</span>
+               <span class="na">wrapper</span><span class="p">:</span><span class="s2">"li"</span><span class="p">,</span>
+               <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"Submitted!"</span><span class="p">)</span> <span class="p">}</span>
+            <span class="p">})</span>
+            </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        showErrors:<br />
+        跟一个函数,可以显示总共有多少个未通过验证的元素
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">".selector"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+           <span class="na">showErrors</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">errorMap</span><span class="p">,</span><span class="nx">errorList</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$</span><span class="p">(</span><span class="s2">"#summary"</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">"Your form contains "</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">numberOfInvalids</span><span class="p">()</span> <span class="o">+</span> <span class="s2">" errors,see details below."</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">defaultShowErrors</span><span class="p">();</span>
+           <span class="p">}</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        errorPlacement:<br />
+        跟一个函数,可以自定义错误放到哪里
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+          <span class="na">rrorPlacement</span><span class="p">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>  <span class="nx">error</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">parent</span><span class="p">(</span><span class="s2">"td"</span><span class="p">).</span><span class="nx">next</span><span class="p">(</span><span class="s2">"td"</span><span class="p">));</span>
+           <span class="p">},</span>
+           <span class="na">debug</span><span class="p">:</span><span class="kc">true</span>
+
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        success:<br />
+        要验证的元素通过验证后的动作,如果跟一个字符串,会当做一个css类,也可跟一个函数
+        </td>
+        <td>
+        
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">        <span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+                <span class="na">success</span><span class="p">:</span><span class="s2">"valid"</span><span class="p">,</span>
+                <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"Submitted!"</span><span class="p">)</span> <span class="p">}</span>
+        <span class="p">})</span>
+        </code></pre></figure>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+        highlight:<br />
+        可以给未通过验证的元素加效果,闪烁等
+        </td>
+        <td>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="addmethodnamemethodmessage">addMethod(name,method,message)方法：</h2>
+
+<ul>
+  <li>参数name是添加的方法的名字</li>
+  <li>参数method是一个函数,接收三个参数<code class="highlighter-rouge">(value,element,param)</code> <code class="highlighter-rouge">value</code>是元素的值,<code class="highlighter-rouge">element</code>是元素本身 <code class="highlighter-rouge">param</code>是参数,我们可以用<code class="highlighter-rouge">addMethod</code>来添加除<code class="highlighter-rouge">built-in Validation methods</code>之外的验证方法 比如有一个字段,只能输一个字母,范围是a-f,写法如下:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">addMethod</span><span class="p">(</span><span class="s2">"af"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span><span class="nx">element</span><span class="p">,</span><span class="nx">params</span><span class="p">){</span>
+   <span class="k">if</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">){</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+   <span class="p">}</span>
+   <span class="k">if</span><span class="p">(</span><span class="nx">value</span><span class="o">&gt;=</span><span class="nx">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span><span class="o">&lt;=</span><span class="nx">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]){</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+   <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+   <span class="p">}</span>
+<span class="p">},</span><span class="s2">"必须是一个字母,且a-f"</span><span class="p">);</span></code></pre></figure>
+
+<p>用的时候,比如有个表单字段的<code class="highlighter-rouge">id="username"</code>,则在<code class="highlighter-rouge">rules</code>中写</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">username</span><span class="err">:</span><span class="p">{</span>
+   <span class="nl">af</span><span class="p">:[</span><span class="s2">"a"</span><span class="p">,</span><span class="s2">"f"</span><span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+<ul>
+  <li>addMethod的第一个参数,就是添加的验证方法的名子,这时是af</li>
+  <li>addMethod的第三个参数,就是自定义的错误提示,这里的提示为:”必须是一个字母,且a-f”</li>
+  <li>addMethod的第二个参数,是一个函数,这个比较重要,决定了用这个验证方法时的写法</li>
+</ul>
+
+<p>如果只有一个参数,直接写,如果af:”a”,那么a就是这个唯一的参数,如果多个参数,用在[]里,用逗号分开</p>
+
+<h2 id="meta-string">meta String方式：</h2>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s2">"#myform"</span><span class="p">).</span><span class="nx">validate</span><span class="p">({</span>
+   <span class="na">meta</span><span class="p">:</span><span class="s2">"validate"</span><span class="p">,</span>
+   <span class="na">submitHandler</span><span class="p">:</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"Submitted!"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">})</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"js/jquery.metadata.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"js/jquery.validate.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"myform"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"email"</span> <span class="na">class=</span><span class="s">"{validate:{ required:true,email:true }}"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Submit"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span></code></pre></figure>
+
+<p>点此下载<a href="/assets/downloads/web_front/jQuery.validate.js+API_cn.pdf">jQuery-validator中文api</a></p>
+
+
+                            <div class="tag-items">
+                                <span class="small-text">Tags:</span>
+                                
+                                
+
+
+  
+
+
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <!-- /.blog-content -->
+                    </div>
+                    <!-- /.post-blog -->
+
+                    <wb:share-button appkey="1271833232" addition="full" type="button" ralateUid="1821809482"
+                                     pic="http%3A%2F%2Fsunfuchang.github.io%2Fassets%2Fimages%2Fhead.jpg"></wb:share-button>
+
+                    <ul class="pagination">
+                        
+                        <li class="prev">
+                            <a style="border:none" href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc" title="Jvm Gc">
+                                <span class="page-artitle-title">JVM垃圾回收器工作原理及使用实例介绍</span> &laquo; 上一篇
+                            </a>
+                        </li>
+                        
+                        <!--<li><a href="/archive.html">文章列表</a></li>-->
+                        
+                        <li class="next">
+                            <a style="border:none" href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs" title="Web Chat Room Based On Nodejs">下一篇 &raquo;
+                                <span class="page-artitle-title">node学习第一课——基于nodeJs的web聊天室程序</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api"
+                         data-title=" jQuery validator表单验证框架使用说明 "
+                         data-url="http://sunfuchang.github.io/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api"></div>
+                    <!-- 多说评论框 end -->
+                </div>
+                <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.col-md-8 -->
+
+        <div class="col-md-4">
+    <div class="sidebar">
+        <div class="sidebar-widget">
+            <h5 class="widget-title">About Me</h5>
+            <div class="col-xs-12">
+                <img src="/assets/images/head.jpg" style="width: 60%;" class="img-thumbnail">
+            </div>
+            <div class="col-xs-12">
+                <h4>Dendy</h4>
+                <!-- <div style="text-align:center;">
+                    <wb:follow-button uid="1821809482" type="gray_3" width="100%" height="24" ></wb:follow-button>
+                </div> -->
+                <div style="text-align: left;margin-top: 10px;">
+                    <p class="light-text">轻轻地，我走了，正如我轻轻地来！我挥一挥衣袖，不带走一片云彩！</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Categories</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    
+                    
+                    <li>
+                        <a href="/categories/web_front.html" name="web_front">网络前端
+                            
+                            
+                            
+                            (2)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/internet.html" name="internet">互联网
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/technology.html" name="technology">技术摘录
+                            
+                            
+                            
+                            (5)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/db.html" name="db">数据库
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/architecture.html" name="architecture">架构设计
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/life.html" name="life">生活杂谈
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/dev_manage.html" name="dev_manage">研发管理
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/mobile.html" name="mobile">移动开发
+                            
+                            
+                            
+                            (0)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/system_management.html" name="system_management">系统运维
+                            
+                            
+                            
+                            (1)
+                            
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/program_lang.html" name="program_lang">编程语言
+                            
+                            
+                            
+                            (4)
+                            
+                        </a>
+                    </li>
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Link</h5>
+
+            <div class="row categories">
+                <div class="col-md-12">
+                    <li><a target="_blank" href="http://blog.sina.com.cn/superbugs">新浪博客</a><br></li>
+                    <li><a target="_blank" href="http://blog.csdn.net/z_Dendy">CSDN博客</a></li>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Recent Posts</h5>
+
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2016年04月22日</span>
+                    <h6>
+                        <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">
+                            maven定义profile无法替换property属性值
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月29日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">
+                            微信分享到朋友圈、发送给朋友开发注意事项
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月24日</span>
+                    <h6>
+                        <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">
+                            windows下使用nexus搭建maven私服的流程和说明
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年12月22日</span>
+                    <h6>
+                        <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">
+                            MySQL慢查询分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb2.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月18日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">
+                            node学习第三课——node的事件触发器EventEmitter
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">
+                            node学习第二课——node的模块
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb4.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年08月16日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">
+                            node学习第一课——基于nodeJs的web聊天室程序
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb1.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年06月10日</span>
+                    <h6>
+                        <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">
+                            JVM垃圾回收器工作原理及使用实例介绍
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月9日</span>
+                    <h6>
+                        <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">
+                            Spring框架的设计理念与设计模式分析
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <div class="last-post clearfix">
+                <div class="thumb pull-left">
+                    <a href="#"><img
+                            src="/assets/themes/medigo/images/includes/blogthumb0.jpg" alt=""></a>
+                </div>
+                <div class="content">
+                    <span>2015年05月7日</span>
+                    <h6>
+                        <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">
+                            linux常见操作整理
+                        </a>
+                    </h6>
+                </div>
+            </div>
+            
+            <!-- /.last-post -->
+        </div>
+        <!-- /.sidebar-widget -->
+
+		<!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Archives</h5>
+            <div class="row categories">
+                <div class="col-md-12">
+	                
+					
+
+
+  
+
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>April 22, 2016</span> &raquo; <a href="/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/2016/04/22/maven-profile-properties">Maven Profile Properties</a></li>
+    -->
+    
+      <h6 class="widget-title">2016年</h6></h2>
+      <li><a href="/archive/2016-04.html">04月</a><br></li>
+      
+
+      
+      
+        <h6 class="widget-title">2015年</h6></h2>
+        <li><a href="/archive/2016-12.html">12月</a><br></li>
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 29, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/29/weixin-jssdk-use">Weixin Jssdk Use</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 24, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/12/24/install-nexus-on-windows-for-maven">Install Nexus On Windows For Maven</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>December 22, 2015</span> &raquo; <a href="/%E6%95%B0%E6%8D%AE%E5%BA%93/2015/12/22/query-performance-analysis-in-mysql">Query Performance Analysis In Mysql</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-08.html">08月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 18, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/18/EventEmitter-of-nodeJs">Eventemitter Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-module-of-nodeJs">Web Module Of Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>August 16, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/08/16/web-chat-room-based-on-nodeJs">Web Chat Room Based On Nodejs</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-06.html">06月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 12, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/06/12/jquery-validator-api">Jquery Validator Api</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>June 10, 2015</span> &raquo; <a href="/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/2015/06/10/jvm-gc">Jvm Gc</a></li>
+    -->
+      
+
+      
+          
+        
+          <li><a href="/archive/2015-05.html">05月</a><br></li>
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  9, 2015</span> &raquo; <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/2015/05/09/spring-architecture-and-design">Spring Architecture And Design</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  7, 2015</span> &raquo; <a href="/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/2015/05/07/linux-common-command">Linux Common Command</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  6, 2015</span> &raquo; <a href="/%E7%BD%91%E7%BB%9C%E5%89%8D%E7%AB%AF/2015/05/06/high-performance-javascript-noblocking-load">High Performance Javascript Noblocking Load</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/mybatis-dynamic-sql">Mybatis Dynamic Sql</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  5, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/05/build-blog-on-github">Build Blog On Github</a></li>
+    -->
+      
+
+      
+          
+        
+        
+      
+    
+  
+    
+    
+    
+    
+
+    <!--
+    <li><span>May  4, 2015</span> &raquo; <a href="/%E6%8A%80%E6%9C%AF%E6%91%98%E5%BD%95/2015/05/04/install-jekyll-on-windows">Install Jekyll On Windows</a></li>
+    -->
+      
+
+    
+    
+  
+
+
+
+	            </div>
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <!-- /.sidebar-widget -->
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Tags</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                
+                
+
+
+  
+      <a href="/tags.html#jekyll-ref">
+      jekyll <span>2</span></a>
+  
+      <a href="/tags.html#安装-ref">
+      安装 <span>1</span></a>
+  
+      <a href="/tags.html#windows-ref">
+      windows <span>1</span></a>
+  
+      <a href="/tags.html#gem-ref">
+      gem <span>1</span></a>
+  
+      <a href="/tags.html#ruby-ref">
+      ruby <span>1</span></a>
+  
+      <a href="/tags.html#github-ref">
+      github <span>1</span></a>
+  
+      <a href="/tags.html#博客-ref">
+      博客 <span>1</span></a>
+  
+      <a href="/tags.html#mybatis-ref">
+      mybatis <span>1</span></a>
+  
+      <a href="/tags.html#SQL-ref">
+      SQL <span>1</span></a>
+  
+      <a href="/tags.html#动态-ref">
+      动态 <span>1</span></a>
+  
+      <a href="/tags.html#高性能-ref">
+      高性能 <span>1</span></a>
+  
+      <a href="/tags.html#javascript-ref">
+      javascript <span>1</span></a>
+  
+      <a href="/tags.html#加载-ref">
+      加载 <span>1</span></a>
+  
+      <a href="/tags.html#linux-ref">
+      linux <span>1</span></a>
+  
+      <a href="/tags.html#command-ref">
+      command <span>1</span></a>
+  
+      <a href="/tags.html#Spring-ref">
+      Spring <span>1</span></a>
+  
+      <a href="/tags.html#architecture-ref">
+      architecture <span>1</span></a>
+  
+      <a href="/tags.html#design-ref">
+      design <span>1</span></a>
+  
+      <a href="/tags.html#JVM-ref">
+      JVM <span>1</span></a>
+  
+      <a href="/tags.html#垃圾回收-ref">
+      垃圾回收 <span>1</span></a>
+  
+      <a href="/tags.html#jQuery-ref">
+      jQuery <span>1</span></a>
+  
+      <a href="/tags.html#validator-ref">
+      validator <span>1</span></a>
+  
+      <a href="/tags.html#api-ref">
+      api <span>1</span></a>
+  
+      <a href="/tags.html#nodeJs-ref">
+      nodeJs <span>3</span></a>
+  
+      <a href="/tags.html#聊天室-ref">
+      聊天室 <span>1</span></a>
+  
+      <a href="/tags.html#socket-ref">
+      socket <span>1</span></a>
+  
+      <a href="/tags.html#modules-ref">
+      modules <span>1</span></a>
+  
+      <a href="/tags.html#node_modules-ref">
+      node_modules <span>1</span></a>
+  
+      <a href="/tags.html#exports-ref">
+      exports <span>1</span></a>
+  
+      <a href="/tags.html#EventEmitter-ref">
+      EventEmitter <span>1</span></a>
+  
+      <a href="/tags.html#mysql-ref">
+      mysql <span>1</span></a>
+  
+      <a href="/tags.html#sql-ref">
+      sql <span>1</span></a>
+  
+      <a href="/tags.html#performance-ref">
+      performance <span>1</span></a>
+  
+      <a href="/tags.html#nexus-ref">
+      nexus <span>1</span></a>
+  
+      <a href="/tags.html#maven-ref">
+      maven <span>2</span></a>
+  
+      <a href="/tags.html#私服-ref">
+      私服 <span>1</span></a>
+  
+      <a href="/tags.html#搭建-ref">
+      搭建 <span>1</span></a>
+  
+      <a href="/tags.html#微信开发-ref">
+      微信开发 <span>1</span></a>
+  
+      <a href="/tags.html#jssdk-ref">
+      jssdk <span>1</span></a>
+  
+      <a href="/tags.html#分享-ref">
+      分享 <span>1</span></a>
+  
+      <a href="/tags.html#签名-ref">
+      签名 <span>1</span></a>
+  
+      <a href="/tags.html#profile-ref">
+      profile <span>1</span></a>
+  
+
+
+
+
+            </div>
+        </div>
+        <!-- /.sidebar-widget -->
+
+        <div class="sidebar-widget">
+            <h5 class="widget-title">Weibo</h5>
+            <div class="tag-items" style="margin-top: 0px;">
+                <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=3&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1821809482&verifier=02959ff0&dpc=1"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- /.sidebar -->
+</div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+
+<footer class="site-footer">
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-12">
+                        <nav class="footer-nav clearfix">
+                              <ul class="footer-menu">
+                                    <li><a href="/index.html">Home</a></li>
+                                    <!--<li><a href="#">Portfolio</a></li>-->
+                                    <li><a href="/blog/index.html">Blog</a></li>
+                                    <!--<li><a href="#">Shortcodes</a></li>-->
+                                    <li><a href="#">Contact</a></li>
+                              </ul>
+                            <ul class="sn" style="text-align: center; margin-top: 30px;">
+                                <li><a href="http://weibo.com/superbugs" target="_blank" title="新浪微博"><span class="icon-img weibo"></span></a></li>
+                                <li><a href="https://github.com/sunfuchang" target="_blank" title="GitHub"><span class="icon-img github"></span></a></li>
+                                <li><a href="http://blog.sina.com.cn/superbugs" target="_blank" title="新浪博客"><span class="icon-img blog"></span></a></li>
+                                <li><a href="https://twitter.com/sunfuchang" target="_blank" title="Twitter"><span class="icon-img twitter"></span></a></li>
+                            </ul>
+                              <!-- /.footer-menu -->
+                        </nav>
+                        <!-- /.footer-nav -->
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                  <div class="col-md-12">
+                        <p class="copyright-text">Copyright &copy; 2016 fukas，sunfuchang03@126.com</p>
+                  </div>
+                  <!-- /.col-md-12 -->
+            </div>
+            <!-- /.row -->
+      </div>
+      <!-- /.container -->
+</footer>
+<!-- /.site-footer -->
+
+<!-- Scripts -->
+<script src="/assets/themes/medigo/js/min/plugins.min.js"></script>
+<script src="/assets/themes/medigo/js/min/medigo-custom.min.js"></script>
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<!-- Templatemo Script -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7f4b9df646e2d704fdc6bb9cf7f261fb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 多说公共JS代码 start (一个网页只需插入一次)
+    var duoshuoQuery = {short_name:"sunfuchang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+
+    $(document).ready(function(){
+        $("h2,h3,h4,h5,h6", ".blog-posts").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","toc"+i);
+            $(".toc-content").append('<a class="toc'+tag+'" href="#toc'+i+'">'+$(this).text()+'</a></br>');
+            $(".toch2").css("margin-left",0);
+            $(".toch3").css("margin-left",20);
+            $(".toch4").css("margin-left",40);
+            $(".toch5").css("margin-left",60);
+            $(".toch6").css("margin-left",80);
+        });
+    });
+</script>
+<script type="text/javascript">
+    // $(document).ready(function(){
+    //     $('#tree').ztree_toc({
+    //         is_auto_number: true
+    //     });
+    // });
+</script>
+</body>
+</html>
